@@ -4,6 +4,11 @@ export interface Review {
   text: string;
 }
 
+export const reviewsHeading = {
+  eyebrow: 'Отзывы',
+  title: 'Что говорят клиенты',
+};
+
 // TODO: заменить на реальные отзывы клиентов (имена, районы, тексты)
 export const reviews: Review[] = [
   {

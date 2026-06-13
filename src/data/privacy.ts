@@ -13,6 +13,8 @@ export interface Privacy {
   intro: string;
   points: string[];
   operator: PrivacyOperator;
+  /** Текст ссылки возврата на главную */
+  backLabel: string;
 }
 
 export const privacy: Privacy = {
@@ -31,4 +33,5 @@ export const privacy: Privacy = {
     inn: site.inn, // TODO: ИНН оператора
     address: site.office, // TODO: юридический адрес оператора
   },
+  backLabel: 'Вернуться на главную',
 };

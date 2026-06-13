@@ -7,6 +7,20 @@ export interface CaseStudy {
   metric: string;
 }
 
+export const casesHeading = {
+  eyebrow: 'Кейсы',
+  title: 'Результаты, которые можно посчитать',
+};
+
+/** Подписи полей кейса */
+export const caseFields = {
+  task: 'Задача',
+  actions: 'Что сделал',
+  result: 'Итог',
+};
+
+export const casesCta = 'Обсудить мою ситуацию';
+
 export const cases: CaseStudy[] = [
   {
     // TODO: данные кейса (объект/задача/действия/результат/метрика) — плейсхолдеры

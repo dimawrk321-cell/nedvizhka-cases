@@ -5,6 +5,16 @@ export interface FaqItem {
   answer: string;
 }
 
+export const faqHeading = {
+  eyebrow: 'Вопросы и ответы',
+  title: 'Что обычно спрашивают',
+};
+
+export const faqHelp = {
+  question: 'Не нашли ответ?',
+  ctaLabel: 'Оставить заявку',
+};
+
 export const faq: FaqItem[] = [
   {
     question: 'Сколько стоят ваши услуги?',

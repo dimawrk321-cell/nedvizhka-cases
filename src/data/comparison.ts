@@ -14,6 +14,12 @@ export const comparisonColumns = {
   mine: 'Со мной',
 } as const;
 
+export const comparisonHeading = {
+  eyebrow: 'Сравнение',
+  title: 'Три способа продать квартиру',
+  recommended: 'рекомендую',
+};
+
 export const comparison: ComparisonRow[] = [
   {
     criterion: 'Кто занимается продажей',

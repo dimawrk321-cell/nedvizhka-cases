@@ -1,0 +1,46 @@
+---
+/**
+ * FinalCTA — ТЁМНАЯ кульминационная секция (градиент ink→pine).
+ * Двухколоночно: слева заголовок/текст/точки доверия, справа СВЕТЛАЯ карточка с формой.
+ * ВАЖНО: класс surface-dark стоит ТОЛЬКО на левой колонке (для адаптации SectionHeading),
+ * а карточка формы остаётся вне surface-dark — иначе её поля перекрасятся в тёмные
+ * (баг прошлого этапа). Числа лимита/мест — из site.ts через finalCta.text.
+ * idPrefix у формы отличается от hero-формы.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { finalCta } from '../data/finalCta';
+import { Check } from 'lucide-static';
+---
+
+<section
+  id="cta"
+  data-section="final-cta"
+  class="section-y bg-[linear-gradient(135deg,var(--color-ink),var(--color-pine))] text-paper"
+>
+  <div class="wrap">
+    <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
+      {/* Левая колонка — surface-dark только здесь */}
+      <div class="surface-dark flex flex-col gap-6">
+        <SectionHeading eyebrow={finalCta.eyebrow} title={finalCta.heading} />
+        <p class="max-w-[52ch] text-lg text-paper/85">{finalCta.text}</p>
+        <ul class="flex flex-col gap-3">
+          {
+            finalCta.points.map((point) => (
+              <li class="flex items-center gap-3">
+                <span class="inline-flex shrink-0 text-brass-light [&>svg]:h-5 [&>svg]:w-5" set:html={Check} aria-hidden="true" />
+                <span class="text-paper">{point}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      {/* Правая колонка — СВЕТЛАЯ карточка формы (вне surface-dark) */}
+      <div class="rounded-xl bg-paper p-7 text-ink shadow-2xl lg:p-8">
+        <LeadForm variant="light" submitText={finalCta.submitText} idPrefix="final-lead" />
+        <p class="mt-4 text-[13px] text-muted">{finalCta.note}</p>
+      </div>
+    </div>
+  </div>
+</section>

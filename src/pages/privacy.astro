@@ -1,0 +1,48 @@
+---
+/**
+ * /privacy — страница политики/согласия по 152-ФЗ. Светлая, читаемая типографика.
+ * Контент из privacy.ts; реквизиты оператора — // TODO. Попадает в sitemap автоматически.
+ */
+import Layout from '../layouts/Layout.astro';
+import { privacy } from '../data/privacy';
+import { Check, ArrowLeft } from 'lucide-static';
+---
+
+<Layout title={privacy.title} description="Политика обработки персональных данных по № 152-ФЗ.">
+  <main id="main" class="section-y">
+    <div class="wrap">
+      <div class="mx-auto flex max-w-[760px] flex-col gap-6">
+        <a
+          href="/"
+          class="inline-flex w-fit items-center gap-2 text-sm font-medium text-brass transition-colors hover:underline [&>svg]:h-4 [&>svg]:w-4"
+        >
+          <span set:html={ArrowLeft} aria-hidden="true" />{privacy.backLabel}
+        </a>
+
+        <h1>{privacy.title}</h1>
+        <p class="text-sm text-muted">Редакция от {privacy.updated}</p>{/* TODO: дата редакции */}
+
+        <p class="measure text-ink/90">{privacy.intro}</p>
+
+        <ul class="flex flex-col gap-3">
+          {
+            privacy.points.map((point) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 inline-flex shrink-0 text-brass [&>svg]:h-4 [&>svg]:w-4" set:html={Check} aria-hidden="true" />
+                <span class="measure text-ink/90">{point}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="rounded-lg border border-stone p-6">
+          <p class="font-semibold text-ink">Оператор персональных данных</p>
+          {/* TODO: реальные реквизиты оператора */}
+          <p class="mt-2 text-muted">{privacy.operator.name}</p>
+          <p class="text-muted">ИНН {privacy.operator.inn}</p>
+          <p class="text-muted">{privacy.operator.address}</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

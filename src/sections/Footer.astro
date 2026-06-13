@@ -1,0 +1,80 @@
+---
+/**
+ * Footer — тёмный подвал (ink), естественное продолжение FinalCTA.
+ * Отделён от секции выше тонкой границей brass/20. Контакты/реквизиты — из site.ts,
+ * остальной контент — из footer.ts. Контраст текста на ink — AA.
+ */
+import { footer } from '../data/footer';
+import { site } from '../data/site';
+import { Phone, MessageCircle, Send } from 'lucide-static';
+
+const year = new Date().getFullYear();
+const linkBase =
+  'inline-flex min-h-[44px] items-center gap-2 text-sm text-paper transition-colors hover:text-brass-light [&>svg]:h-4 [&>svg]:w-4';
+const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
+---
+
+<footer data-section="footer" class="border-t border-brass/20 bg-ink text-paper">
+  <div class="wrap py-16 lg:py-20">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.2fr]">
+      {/* Бренд */}
+      <div class="flex flex-col gap-3">
+        <p class="font-display text-[22px] leading-none">{site.name}</p>
+        <p class="text-sm font-medium text-brass-light">{site.role}</p>
+        <p class="mt-2 max-w-[42ch] text-sm text-stone">{footer.tagline}</p>
+      </div>
+
+      {/* Навигация */}
+      <nav aria-label="Подвал — разделы" class="flex flex-col gap-2">
+        <p class={titleClass}>{footer.navTitle}</p>
+        <ul class="flex flex-col">
+          {
+            footer.nav.map((link) => (
+              <li>
+                <a href={link.href} class="inline-flex min-h-[44px] items-center text-sm text-paper transition-colors hover:text-brass-light">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      {/* Контакты */}
+      <div class="flex flex-col gap-2">
+        <p class={titleClass}>{footer.contactsTitle}</p>
+        <ul class="flex flex-col">
+          <li>
+            <a href={site.phoneHref} class={linkBase}>
+              <span set:html={Phone} aria-hidden="true" />{site.phone}
+            </a>
+          </li>
+          <li>
+            <a href={site.whatsappHref} target="_blank" rel="noopener" class={linkBase}>
+              <span set:html={MessageCircle} aria-hidden="true" />{footer.whatsappLabel}
+            </a>
+          </li>
+          <li>
+            <a href={site.telegramHref} target="_blank" rel="noopener" class={linkBase}>
+              <span set:html={Send} aria-hidden="true" />{footer.telegramLabel} {site.telegram}
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      {/* Реквизиты */}
+      <div class="flex flex-col gap-2">
+        <p class={titleClass}>{footer.legalTitle}</p>
+        <p class="text-sm text-stone">{site.name}</p>
+        <p class="text-sm text-stone">ИНН {site.inn}</p>
+        <p class="text-sm text-stone">{site.office}</p>
+        {/* TODO: ОГРНИП, расчётный счёт и прочие реквизиты оператора */}
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-3 border-t border-stone/15 pt-6 text-sm text-stone sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} {site.name}</p>
+      <a href="/privacy" class="transition-colors hover:text-brass-light">{footer.privacyLabel}</a>
+    </div>
+  </div>
+</footer>

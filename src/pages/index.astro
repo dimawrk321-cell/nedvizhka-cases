@@ -20,6 +20,12 @@ import ProblemsSolutions from '../sections/ProblemsSolutions.astro';
 import About from '../sections/About.astro';
 import Services from '../sections/Services.astro';
 import Process from '../sections/Process.astro';
+import Cases from '../sections/Cases.astro';
+import Reviews from '../sections/Reviews.astro';
+import Comparison from '../sections/Comparison.astro';
+import FAQ from '../sections/FAQ.astro';
+import FinalCTA from '../sections/FinalCTA.astro';
+import Footer from '../sections/Footer.astro';
 ---
 
 <Layout>
@@ -46,35 +52,23 @@ import Process from '../sections/Process.astro';
     <Process />
 
     {/* КЕЙСЫ / ПОРТФОЛИО СДЕЛОК (якорь #cases) */}
-    <section id="cases" data-section="cases">
-      <!-- TODO: Cases -->
-    </section>
+    <Cases />
 
     {/* ОТЗЫВЫ КЛИЕНТОВ (якорь #reviews) */}
-    <section id="reviews" data-section="reviews">
-      <!-- TODO: Reviews -->
-    </section>
+    <Reviews />
 
     {/* СРАВНЕНИЕ: «самостоятельно» ↔ «с риелтором» */}
-    <section data-section="comparison">
-      <!-- TODO: Comparison -->
-    </section>
+    <Comparison />
 
     {/* ЧАСТЫЕ ВОПРОСЫ (якорь #faq) */}
-    <section id="faq" data-section="faq">
-      <!-- TODO: FAQ -->
-    </section>
+    <FAQ />
 
     {/* ФИНАЛЬНЫЙ ПРИЗЫВ + ФОРМА ЗАЯВКИ (якорь #cta) */}
-    <section id="cta" data-section="final-cta">
-      <!-- TODO: FinalCTA -->
-    </section>
+    <FinalCTA />
   </main>
 
   {/* ПОДВАЛ: контакты, реквизиты, мессенджеры, политика конфиденциальности */}
-  <footer data-section="footer">
-    <!-- TODO: Footer -->
-  </footer>
+  <Footer />
 
   {/* МОБИЛЬНАЯ ЛИПКАЯ ПАНЕЛЬ: быстрый звонок/заявка, скрыта на десктопе */}
   <StickyBar />

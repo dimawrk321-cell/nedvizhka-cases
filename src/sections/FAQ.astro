@@ -1,0 +1,30 @@
+---
+/**
+ * FAQ — светлая секция. 7 вопросов из faq.ts на доступном компоненте Accordion
+ * (aria-expanded/controls, открыт один). Список ограничен по ширине и центрирован.
+ * Ниже — мягкая строка «Не нашли ответ?» с телефоном и ссылкой на форму.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import Accordion from '../components/Accordion.astro';
+import { faq, faqHeading, faqHelp } from '../data/faq';
+import { site } from '../data/site';
+
+const items = faq.map((entry) => ({ title: entry.question, content: entry.answer }));
+---
+
+<section id="faq" data-section="faq" class="section-y">
+  <div class="wrap flex flex-col gap-12">
+    <SectionHeading eyebrow={faqHeading.eyebrow} title={faqHeading.title} align="center" />
+
+    <div class="mx-auto flex w-full max-w-[760px] flex-col gap-8">
+      <Accordion items={items} />
+
+      <p class="flex flex-col items-center justify-center gap-x-2 gap-y-1 text-center sm:flex-row">
+        <span class="text-muted">{faqHelp.question}</span>
+        <a href={site.phoneHref} class="font-medium text-brass hover:underline">{site.phone}</a>
+        <span class="hidden text-stone sm:inline" aria-hidden="true">·</span>
+        <a href="#cta" class="font-medium text-brass hover:underline">{faqHelp.ctaLabel}</a>
+      </p>
+    </div>
+  </div>
+</section>

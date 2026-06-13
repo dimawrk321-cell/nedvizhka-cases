@@ -1,0 +1,58 @@
+---
+/**
+ * Cases — светлая секция. 3 кейса из cases.ts.
+ * Карточка: фото-окно объекта (плейсхолдер, // TODO) + крупная метрика (Prata, brass)
+ * + структура «задача → что сделал → итог». Hover по общему правилу карточек.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import { cases, casesHeading, casesCta, caseFields } from '../data/cases';
+import { Building2 } from 'lucide-static';
+---
+
+<section id="cases" data-section="cases" class="section-y">
+  <div class="wrap flex flex-col gap-12">
+    <SectionHeading eyebrow={casesHeading.eyebrow} title={casesHeading.title} align="center" />
+
+    <div class="grid gap-6 md:grid-cols-3">
+      {
+        cases.map((item) => (
+          <article class="group flex flex-col overflow-hidden rounded-lg border border-stone bg-paper transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md">
+            {/* фото-окно объекта */}
+            <div class="relative aspect-[4/5] overflow-hidden border-b border-stone bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))]">
+              <div class="absolute inset-3 rounded-lg border border-brass/30" />
+              <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-16 [&>svg]:w-16">
+                <span set:html={Building2} aria-hidden="true" />
+              </div>
+              {/* TODO: заменить на <Image> фото объекта */}
+            </div>
+
+            <div class="flex flex-1 flex-col gap-4 p-6">
+              <span class="stat-num text-[34px] leading-none text-brass">{item.metric}</span>
+              <h3 class="text-lg font-semibold text-ink">{item.object}</h3>
+
+              <dl class="flex flex-col gap-3 text-sm">
+                <div class="flex flex-col gap-0.5">
+                  <dt class="text-xs font-medium uppercase tracking-wider text-brass">{caseFields.task}</dt>
+                  <dd class="text-muted">{item.task}</dd>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <dt class="text-xs font-medium uppercase tracking-wider text-brass">{caseFields.actions}</dt>
+                  <dd class="text-ink">{item.actions}</dd>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <dt class="text-xs font-medium uppercase tracking-wider text-brass">{caseFields.result}</dt>
+                  <dd class="font-medium text-ink">{item.result}</dd>
+                </div>
+              </dl>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="flex justify-center">
+      <Button variant="ghost" href="#cta">{casesCta}</Button>
+    </div>
+  </div>
+</section>

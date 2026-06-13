@@ -1,0 +1,116 @@
+---
+/**
+ * Reviews — светлая секция. 5 отзывов из reviews.ts горизонтальной лентой на CSS
+ * scroll-snap (без слайдер-библиотек и автопрокрутки). Управление: стрелки (≥44px,
+ * scrollBy) и точки-индикаторы; лента доступна с клавиатуры (tabindex + aria-label).
+ * Лента уходит за края wrap через отрицательные внешние отступы (-mx).
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import { reviews, reviewsHeading } from '../data/reviews';
+import { ChevronLeft, ChevronRight } from 'lucide-static';
+
+const arrowBtn =
+  'inline-flex h-11 w-11 items-center justify-center rounded-card border border-stone text-ink transition-colors hover:border-brass hover:text-brass [&>svg]:h-5 [&>svg]:w-5';
+---
+
+<section id="reviews" data-section="reviews" data-reviews class="section-y">
+  <div class="wrap flex flex-col gap-8">
+    <div class="flex items-end justify-between gap-6">
+      <SectionHeading eyebrow={reviewsHeading.eyebrow} title={reviewsHeading.title} />
+      <div class="hidden shrink-0 gap-2 sm:flex">
+        <button data-rev-prev type="button" aria-label="Предыдущий отзыв" class={arrowBtn} set:html={ChevronLeft} />
+        <button data-rev-next type="button" aria-label="Следующий отзыв" class={arrowBtn} set:html={ChevronRight} />
+      </div>
+    </div>
+
+    <ul
+      data-rev-track
+      tabindex="0"
+      aria-label="Лента отзывов клиентов"
+      class="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-5 pb-4 lg:-mx-8 lg:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+    >
+      {
+        reviews.map((review) => (
+          <li class="w-[85%] shrink-0 snap-start sm:w-[360px]">
+            <figure class="flex h-full flex-col gap-5 rounded-lg border border-stone bg-paper p-6">
+              <figcaption class="flex items-center gap-3">
+                <span
+                  class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-stone font-sans text-lg font-semibold text-ink"
+                  aria-hidden="true"
+                >
+                  {review.name.trim().charAt(0)}
+                </span>
+                <span class="flex flex-col">
+                  <span class="font-sans font-semibold text-ink">{review.name}</span>
+                  <span class="text-sm text-muted">{review.district}</span>
+                </span>
+              </figcaption>
+              <blockquote class="text-ink/90">{review.text}</blockquote>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex justify-center gap-2 sm:justify-start" role="group" aria-label="Навигация по отзывам">
+      {
+        reviews.map((_, i) => (
+          <button
+            data-rev-dot
+            type="button"
+            aria-label={`Перейти к отзыву ${i + 1}`}
+            class="h-2 w-2 rounded-full bg-stone transition-all aria-[current=true]:w-5 aria-[current=true]:bg-brass"
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('[data-reviews]').forEach((root) => {
+    const track = root.querySelector('[data-rev-track]');
+    if (!(track instanceof HTMLElement)) return;
+
+    const cards = Array.from(track.children).filter((c): c is HTMLElement => c instanceof HTMLElement);
+    const dots = Array.from(root.querySelectorAll('[data-rev-dot]')).filter(
+      (d): d is HTMLElement => d instanceof HTMLElement,
+    );
+    const prev = root.querySelector('[data-rev-prev]');
+    const next = root.querySelector('[data-rev-next]');
+    if (cards.length === 0) return;
+
+    const base = cards[0].offsetLeft;
+    const step = (): number => (cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth);
+
+    if (prev instanceof HTMLElement)
+      prev.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    if (next instanceof HTMLElement)
+      next.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        const card = cards[i];
+        if (card) track.scrollTo({ left: card.offsetLeft - base, behavior: 'smooth' });
+      });
+    });
+
+    const updateActive = () => {
+      const center = track.scrollLeft + track.clientWidth / 2;
+      let active = 0;
+      let min = Infinity;
+      cards.forEach((card, i) => {
+        const mid = card.offsetLeft - base + card.offsetWidth / 2;
+        const dist = Math.abs(mid - center);
+        if (dist < min) {
+          min = dist;
+          active = i;
+        }
+      });
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', i === active ? 'true' : 'false'));
+    };
+
+    track.addEventListener('scroll', () => requestAnimationFrame(updateActive), { passive: true });
+    updateActive();
+  });
+</script>
