@@ -65,5 +65,24 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
     <a class="skip-link" href="#main">Перейти к содержанию</a>
 
     <slot />
+
+    <script>
+      // Ленивая загрузка анимаций: при reduced-motion модуль не грузится вовсе (контент статичен);
+      // иначе — после первого скролла ИЛИ через 1.8с простоя (что раньше), чтобы не бить по LCP.
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced) {
+        let started = false;
+        const start = () => {
+          if (started) return;
+          started = true;
+          window.removeEventListener('scroll', start);
+          import('../scripts/animations.ts')
+            .then((module) => module.initAnimations())
+            .catch(() => {});
+        };
+        window.addEventListener('scroll', start, { once: true, passive: true });
+        window.setTimeout(start, 1800);
+      }
+    </script>
   </body>
 </html>

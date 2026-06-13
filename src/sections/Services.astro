@@ -17,10 +17,11 @@ const icons = [Home, Search, ArrowLeftRight, Landmark, ShieldCheck];
   <div class="wrap flex flex-col gap-12">
     <SectionHeading eyebrow={servicesHeading.eyebrow} title={servicesHeading.title} align="center" />
 
-    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
+    <div data-reveal-group class="grid gap-5 sm:grid-cols-2 lg:grid-cols-6">
       {
         services.map((service, i) => (
           <article
+            data-reveal-item
             class:list={[
               'group flex flex-col gap-4 rounded-lg border border-stone bg-paper p-6 transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md',
               i < 3 && 'lg:col-span-2',

@@ -22,7 +22,7 @@ const columns = [
     <SectionHeading eyebrow={comparisonHeading.eyebrow} title={comparisonHeading.title} align="center" />
 
     {/* Десктоп: таблица */}
-    <table class="hidden w-full border-separate border-spacing-0 lg:table">
+    <table data-reveal class="hidden w-full border-separate border-spacing-0 lg:table">
       <caption class="sr-only">{comparisonHeading.title}</caption>
       <thead>
         <tr>
@@ -64,10 +64,10 @@ const columns = [
     </table>
 
     {/* Мобайл: карточки-стопки */}
-    <div class="flex flex-col gap-5 lg:hidden">
+    <div data-reveal-group class="flex flex-col gap-5 lg:hidden">
       {
         columns.map((col) => (
-          <div class:list={['rounded-lg border p-6', col.highlighted ? 'border-brass bg-brass/5' : 'border-stone bg-paper']}>
+          <div data-reveal-item class:list={['rounded-lg border p-6', col.highlighted ? 'border-brass bg-brass/5' : 'border-stone bg-paper']}>
             <div class="mb-4 flex items-center gap-2">
               <h3 class="text-lg font-semibold text-ink">{col.label}</h3>
               {col.highlighted && (

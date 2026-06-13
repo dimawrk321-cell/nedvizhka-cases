@@ -32,7 +32,27 @@ import Footer from '../sections/Footer.astro';
   {/* ШАПКА: лого, навигация, телефон, основной CTA */}
   <Header />
 
-  <main id="main">
+  <main id="main" class="relative isolate">
+    {/* Чертёжная линия: рисуется по скроллу (JS). За тёмными секциями скрыта (они
+        перекрывают -z-10), сквозь светлые — видна. На мобильных скрыта. */}
+    <svg
+      class="pointer-events-none absolute left-1/2 top-0 -z-10 hidden h-full w-px -translate-x-1/2 opacity-[0.35] lg:block"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <line
+        data-draft-line
+        x1="0.5"
+        y1="0"
+        x2="0.5"
+        y2="100%"
+        pathLength="1"
+        stroke-width="1"
+        vector-effect="non-scaling-stroke"
+        class="stroke-brass"
+      />
+    </svg>
+
     {/* ПЕРВЫЙ ЭКРАН: оффер, ключевое обещание, форма заявки */}
     <Hero />
 

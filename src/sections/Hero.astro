@@ -89,7 +89,7 @@ const trust = stats.slice(0, 3);
           {
             trust.map((stat) => (
               <div class="flex min-w-0 flex-col gap-1 px-3 first:pl-0 sm:px-5">
-                <span class="stat-num text-[20px] text-brass-light sm:text-[26px] lg:text-[30px]">
+                <span data-counter class="stat-num text-[20px] text-brass-light sm:text-[26px] lg:text-[30px]">
                   {stat.value}
                 </span>
                 <span class="text-[12px] text-paper/60 sm:text-[13px]">{stat.label}</span>

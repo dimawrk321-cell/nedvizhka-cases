@@ -14,10 +14,10 @@ import { Building2 } from 'lucide-static';
   <div class="wrap flex flex-col gap-12">
     <SectionHeading eyebrow={casesHeading.eyebrow} title={casesHeading.title} align="center" />
 
-    <div class="grid gap-6 md:grid-cols-3">
+    <div data-reveal-group class="grid gap-6 md:grid-cols-3">
       {
         cases.map((item) => (
-          <article class="group flex flex-col overflow-hidden rounded-lg border border-stone bg-paper transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md">
+          <article data-reveal-item class="group flex flex-col overflow-hidden rounded-lg border border-stone bg-paper transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md">
             {/* фото-окно объекта */}
             <div class="relative aspect-[4/5] overflow-hidden border-b border-stone bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))]">
               <div class="absolute inset-3 rounded-lg border border-brass/30" />
@@ -33,7 +33,7 @@ import { Building2 } from 'lucide-static';
               {/* метрика как акцентный результат; min-h резервирует место под 2 строки → низ карточек ровный */}
               <div class="flex flex-col gap-1">
                 <p class="eyebrow">{caseFields.metric}</p>
-                <span class="stat-num block min-h-[2.2em] text-[34px] leading-[1.1] text-brass">{item.metric}</span>
+                <span data-counter class="stat-num block min-h-[2.2em] text-[34px] leading-[1.1] text-brass">{item.metric}</span>
               </div>
 
               <dl class="flex flex-col gap-3 text-sm">

@@ -16,7 +16,7 @@ const items = faq.map((entry) => ({ title: entry.question, content: entry.answer
   <div class="wrap flex flex-col gap-12">
     <SectionHeading eyebrow={faqHeading.eyebrow} title={faqHeading.title} align="center" />
 
-    <div class="mx-auto flex w-full max-w-[760px] flex-col gap-8">
+    <div data-reveal class="mx-auto flex w-full max-w-[760px] flex-col gap-8">
       <Accordion items={items} />
 
       <p class="flex flex-col items-center justify-center gap-x-2 gap-y-1 text-center sm:flex-row">
