@@ -56,12 +56,12 @@ const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
   </div>
 
   <Checkbox id={`${uid}-consent`} name="consent" required>
-    Согласен с{' '}
+    Принимаю условия{' '}
     <a
       href="/privacy"
       class="underline underline-offset-2 transition-colors hover:text-brass [.surface-dark_&]:hover:text-brass-light"
     >
-      обработкой персональных данных
+      обработки персональных данных
     </a>
   </Checkbox>
 
