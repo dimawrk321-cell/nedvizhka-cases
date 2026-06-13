@@ -1,0 +1,99 @@
+---
+/**
+ * LeadForm — форма заявки для hero и финальной секции.
+ * Поля: имя, телефон (с маской), способ связи, honeypot, согласие на обработку ПД.
+ * variant 'dark' добавляет .surface-dark — все вложенные атомы перекрашиваются сами.
+ * Реальной отправки пока нет: submit перехватывается, показывается inline-подтверждение,
+ * страница не перезагружается. Разметка готова к подключению бэкенда позже.
+ */
+import Input from './Input.astro';
+import PhoneField from './PhoneField.astro';
+import RadioGroup from './RadioGroup.astro';
+import Checkbox from './Checkbox.astro';
+import Button from './Button.astro';
+
+interface Props {
+  variant?: 'light' | 'dark';
+  submitText: string;
+  class?: string;
+}
+
+const { variant = 'light', submitText, class: className = '' } = Astro.props;
+const dark = variant === 'dark';
+---
+
+<form
+  data-lead-form
+  novalidate
+  class:list={['flex flex-col gap-4', dark && 'surface-dark', className]}
+>
+  <Input name="name" label="Имя" required autocomplete="name" placeholder="Как к вам обращаться" />
+
+  <PhoneField />
+
+  <RadioGroup
+    name="contact"
+    legend="Как удобнее связаться"
+    value="call"
+    required
+    options={[
+      { value: 'call', label: 'Звонок' },
+      { value: 'whatsapp', label: 'WhatsApp' },
+      { value: 'telegram', label: 'Telegram' },
+    ]}
+  />
+
+  {/* honeypot: ловушка для ботов — скрыта от пользователей и скринридеров */}
+  <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+    <label>
+      Не заполняйте это поле
+      <input type="text" name="company" tabindex="-1" autocomplete="off" />
+    </label>
+  </div>
+
+  <Checkbox name="consent" required>
+    Согласен с{' '}
+    <a
+      href="/privacy"
+      class="underline underline-offset-2 transition-colors hover:text-brass [.surface-dark_&]:hover:text-brass-light"
+    >
+      обработкой персональных данных
+    </a>
+  </Checkbox>
+
+  <Button type="submit" class="w-full">{submitText}</Button>
+
+  <p
+    data-lead-success
+    hidden
+    role="status"
+    class="rounded-card border border-brass/40 bg-brass/10 px-4 py-3 text-sm text-ink [.surface-dark_&]:text-paper"
+  >
+    Спасибо! Свяжусь с вами в течение часа.
+  </p>
+</form>
+
+<script>
+  document.querySelectorAll('form[data-lead-form]').forEach((form) => {
+    if (!(form instanceof HTMLFormElement)) return;
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      // honeypot заполнен — тихо игнорируем (вероятно, бот)
+      const honeypot = form.querySelector('input[name="company"]');
+      if (honeypot instanceof HTMLInputElement && honeypot.value.trim() !== '') return;
+
+      // нативная валидация (required, маска телефона через pattern)
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      // TODO: отправка на бэкенд (fetch). Пока — только UI-подтверждение.
+      const success = form.querySelector('[data-lead-success]');
+      if (success instanceof HTMLElement) success.hidden = false;
+      form.reset();
+    });
+  });
+</script>

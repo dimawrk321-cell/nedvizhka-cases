@@ -1,0 +1,29 @@
+---
+/**
+ * Badge — небольшая метка (например, регалия или статус).
+ * Опциональная иконка передаётся через именованный слот "icon".
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+const hasIcon = Astro.slots.has('icon');
+---
+
+<span
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-full border border-stone bg-paper px-3 py-1 text-xs font-medium text-muted',
+    '[.surface-dark_&]:border-stone/30 [.surface-dark_&]:bg-transparent [.surface-dark_&]:text-stone',
+    className,
+  ]}
+>
+  {
+    hasIcon && (
+      <span class="inline-flex text-brass [.surface-dark_&]:text-brass-light [&>svg]:h-3.5 [&>svg]:w-3.5" aria-hidden="true">
+        <slot name="icon" />
+      </span>
+    )
+  }
+  <slot />
+</span>

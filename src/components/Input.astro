@@ -1,0 +1,53 @@
+---
+/**
+ * Input — текстовое поле с подписью. Адаптируется под тёмный фон (.surface-dark).
+ * Используется напрямую и как основа для PhoneField.
+ */
+interface Props {
+  name: string;
+  label: string;
+  type?: 'text' | 'tel' | 'email' | 'number' | 'search' | 'url' | 'password';
+  required?: boolean;
+  placeholder?: string;
+  autocomplete?: string;
+  inputmode?: 'text' | 'tel' | 'email' | 'numeric' | 'search';
+  pattern?: string;
+  maxlength?: number;
+  value?: string;
+  id?: string;
+}
+
+const {
+  name,
+  label,
+  type = 'text',
+  required = false,
+  placeholder,
+  autocomplete,
+  inputmode,
+  pattern,
+  maxlength,
+  value,
+  id = name,
+} = Astro.props;
+---
+
+<div class="flex flex-col gap-1.5">
+  <label for={id} class="text-sm font-medium text-ink [.surface-dark_&]:text-paper">
+    {label}
+    {required && <span class="text-brass [.surface-dark_&]:text-brass-light" aria-hidden="true">&nbsp;*</span>}
+  </label>
+  <input
+    id={id}
+    name={name}
+    type={type}
+    required={required}
+    placeholder={placeholder}
+    autocomplete={autocomplete}
+    inputmode={inputmode}
+    pattern={pattern}
+    maxlength={maxlength}
+    value={value}
+    class="min-h-[44px] rounded-card border border-stone bg-paper px-4 py-2.5 text-ink transition-colors placeholder:text-muted/70 focus:border-brass [.surface-dark_&]:border-stone/30 [.surface-dark_&]:bg-pine [.surface-dark_&]:text-paper [.surface-dark_&]:placeholder:text-stone/50"
+  />
+</div>

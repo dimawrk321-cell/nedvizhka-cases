@@ -1,0 +1,49 @@
+import { site } from './site';
+
+export interface ComparisonRow {
+  criterion: string;
+  diy: string;
+  agency: string;
+  mine: string;
+}
+
+/** Заголовки колонок таблицы сравнения */
+export const comparisonColumns = {
+  diy: 'Продавать самому',
+  agency: 'Через агентство',
+  mine: 'Со мной',
+} as const;
+
+export const comparison: ComparisonRow[] = [
+  {
+    criterion: 'Кто занимается продажей',
+    diy: 'Вы сами, в свободное от работы время',
+    agency: 'Агент, у которого 20–30 объектов одновременно',
+    // Лимит объектов — из site.monthlyLimit
+    mine: `Лично я, не больше ${site.monthlyLimit} объектов в месяц`,
+  },
+  {
+    criterion: 'Торг с покупателем',
+    diy: 'Торгуются с вами — и обычно выигрывают',
+    agency: 'Как получится, зависит от загрузки агента',
+    mine: 'Веду переговоры я, опираясь на статистику по дому и району',
+  },
+  {
+    criterion: 'Юридическая проверка',
+    diy: 'На ваш страх и риск',
+    agency: 'Базовая, по регламенту',
+    mine: 'На каждом этапе сделки',
+  },
+  {
+    criterion: 'Средний срок продажи',
+    diy: 'Месяцы без гарантий',
+    agency: 'Как пойдёт',
+    mine: '30–45 дней',
+  },
+  {
+    criterion: 'Мотивация',
+    diy: 'Только ваша',
+    agency: 'Поток сделок, важен объём',
+    mine: 'Процент только с результата',
+  },
+];

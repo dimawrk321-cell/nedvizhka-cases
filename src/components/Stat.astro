@@ -1,0 +1,22 @@
+---
+/**
+ * Stat — крупное число (гарнитура Prata через .stat-num) + подпись.
+ * Цифра — акцентного цвета brass (на тёмном фоне светлее).
+ */
+interface Props {
+  value: string;
+  label: string;
+  class?: string;
+}
+
+const { value, label, class: className = '' } = Astro.props;
+---
+
+<div class:list={['flex flex-col gap-2', className]}>
+  <span
+    class="stat-num text-[clamp(2.5rem,5vw,3.5rem)] text-brass [.surface-dark_&]:text-brass-light"
+  >
+    {value}
+  </span>
+  <span class="text-sm text-muted [.surface-dark_&]:text-stone">{label}</span>
+</div>

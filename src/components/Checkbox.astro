@@ -1,0 +1,33 @@
+---
+/**
+ * Checkbox — кастомный чекбокс на peer-классах, галочка lucide.
+ * Текст метки передаётся слотом (может содержать ссылку).
+ */
+import { Check } from 'lucide-static';
+
+interface Props {
+  name: string;
+  required?: boolean;
+  value?: string;
+  id?: string;
+}
+
+const { name, required = false, value, id = name } = Astro.props;
+---
+
+<label for={id} class="group flex min-h-[44px] cursor-pointer items-start gap-3 py-1 text-sm leading-relaxed">
+  <input
+    id={id}
+    name={name}
+    type="checkbox"
+    required={required}
+    value={value}
+    class="peer sr-only"
+  />
+  <span
+    class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-[6px] border border-stone bg-paper transition-colors peer-checked:border-brass peer-checked:bg-brass peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brass [.surface-dark_&]:border-stone/40 [.surface-dark_&]:bg-pine [&>svg]:h-4 [&>svg]:w-4 [&>svg]:text-ink [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100"
+    set:html={Check}
+    aria-hidden="true"
+  />
+  <span class="text-muted [.surface-dark_&]:text-stone"><slot /></span>
+</label>

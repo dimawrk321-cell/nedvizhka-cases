@@ -1,0 +1,33 @@
+---
+/**
+ * SectionHeading — надзаголовок (eyebrow) + h2 + опциональный подзаголовок.
+ * Подстраивается под тёмные секции через .surface-dark.
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { eyebrow, title, subtitle, align = 'left', class: className = '' } = Astro.props;
+---
+
+<header
+  class:list={[
+    'flex flex-col gap-4',
+    align === 'center' && 'items-center text-center',
+    className,
+  ]}
+>
+  {eyebrow && <p class="eyebrow [.surface-dark_&]:text-brass-light">{eyebrow}</p>}
+  <h2 class="[.surface-dark_&]:text-paper">{title}</h2>
+  {
+    subtitle && (
+      <p class:list={['measure text-lg text-muted [.surface-dark_&]:text-stone', align === 'center' && 'mx-auto']}>
+        {subtitle}
+      </p>
+    )
+  }
+</header>

@@ -1,0 +1,95 @@
+---
+/**
+ * Accordion — список «вопрос → ответ».
+ * Доступность: button + aria-expanded + aria-controls, регион с aria-labelledby.
+ * Анимация раскрытия — через grid-template-rows (0fr ↔ 1fr), с уважением к
+ * prefers-reduced-motion. В пределах группы открыт максимум один пункт.
+ */
+import { ChevronDown } from 'lucide-static';
+
+export interface AccordionItem {
+  title: string;
+  content: string;
+}
+
+interface Props {
+  items: AccordionItem[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+const uid = 'acc-' + crypto.randomUUID().slice(0, 8);
+---
+
+<div
+  data-accordion
+  class:list={[
+    'border-y border-stone divide-y divide-stone [.surface-dark_&]:border-stone/20 [.surface-dark_&]:divide-stone/20',
+    className,
+  ]}
+>
+  {
+    items.map((item, i) => {
+      const headingId = `${uid}-h-${i}`;
+      const panelId = `${uid}-p-${i}`;
+      return (
+        <div>
+          <h3 class="m-0">
+            <button
+              type="button"
+              id={headingId}
+              aria-expanded="false"
+              aria-controls={panelId}
+              class="flex w-full items-center justify-between gap-4 py-5 text-left font-sans text-base font-medium text-ink transition-colors hover:text-brass [.surface-dark_&]:text-paper [.surface-dark_&]:hover:text-brass-light"
+            >
+              <span>{item.title}</span>
+              <span
+                data-acc-chevron
+                class="inline-flex shrink-0 text-brass transition-transform duration-300 ease-out motion-reduce:transition-none [.surface-dark_&]:text-brass-light [&>svg]:h-5 [&>svg]:w-5"
+                set:html={ChevronDown}
+                aria-hidden="true"
+              />
+            </button>
+          </h3>
+          <div
+            id={panelId}
+            role="region"
+            aria-labelledby={headingId}
+            class="grid transition-[grid-template-rows] duration-300 ease-out motion-reduce:transition-none"
+            style="grid-template-rows: 0fr"
+          >
+            <div class="overflow-hidden">
+              <p class="measure pb-5 text-muted [.surface-dark_&]:text-stone">{item.content}</p>
+            </div>
+          </div>
+        </div>
+      );
+    })
+  }
+</div>
+
+<script>
+  function setItem(btn: HTMLButtonElement, open: boolean): void {
+    btn.setAttribute('aria-expanded', String(open));
+    const panelId = btn.getAttribute('aria-controls');
+    if (panelId) {
+      const panel = document.getElementById(panelId);
+      if (panel) panel.style.gridTemplateRows = open ? '1fr' : '0fr';
+    }
+    const chevron = btn.querySelector('[data-acc-chevron]');
+    if (chevron) chevron.classList.toggle('rotate-180', open);
+  }
+
+  document.querySelectorAll('[data-accordion]').forEach((root) => {
+    const buttons = Array.from(root.querySelectorAll('button[aria-controls]')).filter(
+      (b): b is HTMLButtonElement => b instanceof HTMLButtonElement,
+    );
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const isOpen = btn.getAttribute('aria-expanded') === 'true';
+        buttons.forEach((b) => setItem(b, false));
+        setItem(btn, !isOpen);
+      });
+    });
+  });
+</script>
