@@ -1,0 +1,89 @@
+---
+/**
+ * TrustBar — узкая светлая полоса под hero.
+ * Бесшовная CSS-marquee (без JS): трек продублирован, сдвиг на -50% даёт цикл.
+ * Пауза на hover. При prefers-reduced-motion — статичный ряд с переносом строк.
+ */
+const partners = [
+  'Циан',
+  'Авито Недвижимость',
+  'Домклик',
+  'Яндекс Недвижимость',
+  'СберБанк',
+  'ВТБ',
+  'Альфа-Банк',
+];
+---
+
+<section data-section="trust-bar" class="overflow-hidden border-y border-stone bg-paper py-8">
+  <div class="wrap">
+    <p class="eyebrow mb-5 text-center">Работаю со всеми крупными площадками и банками</p>
+  </div>
+
+  <div class="marquee relative flex overflow-hidden">
+    <div class="marquee__group flex w-max">
+      <ul class="marquee__track flex shrink-0 items-center gap-10 pr-10">
+        {
+          partners.map((name) => (
+            <li>
+              <span class="marquee__item font-sans font-semibold text-muted transition-colors hover:text-ink">
+                {name}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="marquee__track flex shrink-0 items-center gap-10 pr-10" aria-hidden="true">
+        {
+          partners.map((name) => (
+            <li>
+              <span class="marquee__item font-sans font-semibold text-muted transition-colors hover:text-ink">
+                {name}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .marquee {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee__group {
+    animation: marquee-scroll 45s linear infinite;
+  }
+  .marquee:hover .marquee__group {
+    animation-play-state: paused;
+  }
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+    .marquee__group {
+      width: 100%;
+      animation: none;
+      flex-wrap: wrap;
+    }
+    .marquee__track {
+      flex-wrap: wrap;
+      gap: 0.75rem 2.5rem;
+    }
+    .marquee__track:last-child {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+/**
+ * Hero — первый экран. Тёмная секция (surface-dark), градиент ink→pine.
+ * Две колонки: слева оффер, справа карточка с формой заявки (видна на первом экране).
+ * Фон — инлайн-SVG схематичного плана квартиры (1px non-scaling, brass, opacity 0.07).
+ * Тексты/контент — только из src/data. Анимаций нет, только CSS-переходы.
+ */
+import { hero } from '../data/hero';
+import { stats } from '../data/stats';
+import LeadForm from '../components/LeadForm.astro';
+import { ArrowRight } from 'lucide-static';
+
+// Трастовая строка: первые три показателя (лет на рынке, сделок, объём)
+const trust = stats.slice(0, 3);
+---
+
+<section
+  id="hero"
+  data-hero
+  data-section="hero"
+  class="relative overflow-hidden bg-[linear-gradient(135deg,var(--color-ink),var(--color-pine))] text-paper"
+>
+  <!-- Фоновая графика: схематичный план квартиры -->
+  <svg
+    class="hero-plan pointer-events-none absolute right-[-12%] top-1/2 w-[680px] max-w-[72%] -translate-y-1/2 fill-none stroke-brass opacity-[0.07]"
+    viewBox="0 0 520 400"
+    preserveAspectRatio="xMidYMid meet"
+    aria-hidden="true"
+  >
+    <g stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Несущие стены -->
+      <path d="M30 30 H490 V370 H30 Z" />
+      <!-- Внутренние перегородки с дверными проёмами -->
+      <path d="M250 30 V150 M250 210 V370" />
+      <path d="M30 180 H110 M170 180 H250" />
+      <path d="M250 200 H360 M420 200 H490" />
+      <!-- Двери (створка + дуга открывания) -->
+      <path d="M250 150 H310" />
+      <path d="M310 150 A60 60 0 0 1 250 210" />
+      <path d="M110 180 V120" />
+      <path d="M110 120 A60 60 0 0 1 170 180" />
+      <path d="M420 200 V260" />
+      <path d="M420 260 A60 60 0 0 1 360 200" />
+      <!-- Окна (двойные линии в стенах) -->
+      <path d="M320 30 H420 M320 24 H420" />
+      <path d="M30 60 V140 M24 60 V140" />
+      <path d="M490 240 V320 M496 240 V320" />
+      <!-- Спальня: кровать -->
+      <rect x="320" y="60" width="130" height="95" rx="4" />
+      <path d="M320 88 H450 M385 88 V155" />
+      <!-- Гостиная: диван и стол -->
+      <rect x="60" y="300" width="150" height="48" rx="10" />
+      <path d="M60 316 H210" />
+      <circle cx="135" cy="262" r="26" />
+      <!-- Кухня: гарнитур, мойка, плита -->
+      <path d="M44 46 H132 V132" />
+      <circle cx="74" cy="76" r="11" />
+      <rect x="150" y="46" width="34" height="34" rx="2" />
+      <!-- Санузел: ванна, раковина, унитаз -->
+      <rect x="408" y="250" width="62" height="100" rx="8" />
+      <circle cx="300" cy="248" r="14" />
+      <rect x="288" y="300" width="34" height="48" rx="8" />
+    </g>
+  </svg>
+
+  <div class="wrap relative flex flex-col justify-center pt-[calc(var(--header-h)+2rem)] pb-20 lg:min-h-[100svh] lg:pb-24">
+    <div class="flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:gap-y-8">
+      <!-- A — оффер (текстовый блок) -->
+      <div class="order-1 flex flex-col gap-5 lg:col-span-7 lg:col-start-1 lg:row-start-1">
+        <p class="eyebrow text-brass-light">{hero.eyebrow}</p>
+        <h1 class="text-paper">{hero.title}</h1>
+        <p class="font-sans text-[20px] leading-snug text-brass-light">{hero.titleNote}</p>
+        <p class="max-w-[56ch] text-lg text-paper/85">{hero.subtitle}</p>
+      </div>
+
+      <!-- B — карточка с формой (главный объект справа) -->
+      <div class="order-2 lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1 lg:self-start">
+        <div class="rounded-xl bg-paper p-7 text-ink shadow-2xl lg:p-8">
+          <p class="font-sans text-[19px] font-semibold text-ink">{hero.formLabel}</p>
+          <p class="mb-5 mt-1 text-[13px] text-muted">Это ни к чему вас не обязывает</p>
+          <LeadForm variant="light" submitText={hero.submitText} idPrefix="hero-lead" />
+          <p class="mt-4 text-[13px] text-muted">Отвечаю в течение часа в рабочее время</p>
+        </div>
+      </div>
+
+      <!-- C — трастовая строка + ссылка на кейсы -->
+      <div class="order-3 flex flex-col gap-6 lg:col-span-7 lg:col-start-1 lg:row-start-2">
+        <div class="flex divide-x divide-brass/30">
+          {
+            trust.map((stat) => (
+              <div class="flex min-w-0 flex-col gap-1 px-3 first:pl-0 sm:px-5">
+                <span class="stat-num text-[20px] text-brass-light sm:text-[26px] lg:text-[30px]">
+                  {stat.value}
+                </span>
+                <span class="text-[12px] text-paper/60 sm:text-[13px]">{stat.label}</span>
+              </div>
+            ))
+          }
+        </div>
+
+        <a
+          href={hero.secondaryLink.href}
+          class="group inline-flex items-center gap-2 self-start font-sans font-medium text-paper transition-colors hover:text-brass-light"
+        >
+          <span class="underline-offset-4 group-hover:underline">{hero.secondaryLink.label}</span>
+          <span
+            class="inline-flex transition-transform group-hover:translate-x-1 [&>svg]:h-[1.1em] [&>svg]:w-[1.1em]"
+            set:html={ArrowRight}
+            aria-hidden="true"
+          />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Линии плана остаются 1px при любом масштабе SVG */
+  .hero-plan :where(path, rect, circle, line) {
+    vector-effect: non-scaling-stroke;
+  }
+</style>

@@ -1,0 +1,59 @@
+---
+/**
+ * StickyBar — мобильная нижняя панель (lg:hidden).
+ * Три действия: Позвонить (tel:), WhatsApp (wa.me), Заявка (#cta, акцент brass).
+ * Появляется плавным translate-y, когда секция hero уходит из вьюпорта
+ * (IntersectionObserver). z ниже мобильного меню. Контакты — из src/data/site.
+ */
+import { site } from '../data/site';
+import { Phone, MessageCircle, ClipboardCheck } from 'lucide-static';
+
+const itemBase =
+  'flex min-h-[56px] flex-col items-center justify-center gap-1 text-[12px] font-medium transition-colors [&>svg]:h-5 [&>svg]:w-5';
+---
+
+<div
+  data-sticky-bar
+  class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-stone bg-paper/95 backdrop-blur transition-transform duration-300 ease-out lg:hidden"
+  style="padding-bottom: env(safe-area-inset-bottom)"
+>
+  <div class="grid grid-cols-3">
+    <a href={site.phoneHref} class:list={[itemBase, 'text-ink hover:text-brass']} aria-label="Позвонить">
+      <span set:html={Phone} aria-hidden="true" />
+      <span>Позвонить</span>
+    </a>
+    <a
+      href={site.whatsappHref}
+      target="_blank"
+      rel="noopener"
+      class:list={[itemBase, 'text-ink hover:text-brass']}
+      aria-label="Написать в WhatsApp"
+    >
+      <span set:html={MessageCircle} aria-hidden="true" />
+      <span>WhatsApp</span>
+    </a>
+    <a href="#cta" class:list={[itemBase, 'bg-brass text-ink']} aria-label="Оставить заявку">
+      <span set:html={ClipboardCheck} aria-hidden="true" />
+      <span>Заявка</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  const bar = document.querySelector('[data-sticky-bar]');
+  const hero = document.querySelector('[data-hero]');
+
+  if (bar instanceof HTMLElement && hero) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // hero виден → панель спрятана; hero ушёл → панель выезжает
+          bar.classList.toggle('translate-y-full', entry.isIntersecting);
+          bar.classList.toggle('translate-y-0', !entry.isIntersecting);
+        });
+      },
+      { threshold: 0 },
+    );
+    observer.observe(hero);
+  }
+</script>

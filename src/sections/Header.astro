@@ -1,0 +1,233 @@
+---
+/**
+ * Header — фиксированная шапка.
+ * Над hero полностью прозрачная (светлый текст, маркер .surface-dark).
+ * После скролла >40px получает класс .is-scrolled: фон paper/90 + blur, текст ink,
+ * нижняя граница stone, чуть компактнее. Переключение — крошечным инлайн-скриптом.
+ * Мобильная: бургер ≥44px → полноэкранный оверлей (ink) с focus-trap, Esc, блок скролла.
+ * Все тексты/контакты — из src/data/site.
+ */
+import { site } from '../data/site';
+import Button from '../components/Button.astro';
+import { Menu, X } from 'lucide-static';
+
+const navLinks = [
+  { label: 'Услуги', href: '#services' },
+  { label: 'Процесс', href: '#process' },
+  { label: 'Кейсы', href: '#cases' },
+  { label: 'Отзывы', href: '#reviews' },
+  { label: 'FAQ', href: '#faq' },
+];
+---
+
+<header data-header class="site-header surface-dark fixed inset-x-0 top-0 z-50">
+  <div class="site-header__bar wrap flex items-center justify-between gap-6">
+    <a href="#main" class="site-header__logo font-display text-[20px] leading-none tracking-tight">
+      {site.name}
+    </a>
+
+    <nav class="hidden items-center gap-7 lg:flex" aria-label="Основная навигация">
+      {
+        navLinks.map((link) => (
+          <a href={link.href} class="site-header__link inline-flex min-h-[44px] items-center font-sans text-[15px] font-medium">
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden items-center gap-5 lg:flex">
+      <a href={site.phoneHref} class="site-header__link inline-flex min-h-[44px] items-center whitespace-nowrap font-sans text-[15px] font-medium">
+        {site.phone}
+      </a>
+      <Button variant="ghost" size="sm" href="#cta" arrow={false}>Бесплатная оценка</Button>
+    </div>
+
+    <button
+      data-burger
+      type="button"
+      class="site-header__burger inline-flex h-11 w-11 items-center justify-center rounded-card lg:hidden [&>svg]:h-6 [&>svg]:w-6"
+      aria-label="Открыть меню"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      set:html={Menu}
+    />
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu surface-dark fixed inset-0 z-50 bg-ink text-paper lg:hidden" aria-hidden="true">
+    <div class="mobile-menu__inner flex h-full flex-col">
+      <div class="wrap flex h-[var(--header-h)] items-center justify-between">
+        <span class="font-display text-[20px] leading-none">{site.name}</span>
+        <button
+          data-menu-close
+          type="button"
+          class="inline-flex h-11 w-11 items-center justify-center rounded-card [&>svg]:h-6 [&>svg]:w-6"
+          aria-label="Закрыть меню"
+          set:html={X}
+        />
+      </div>
+
+      <nav class="wrap flex flex-1 flex-col justify-center gap-7" aria-label="Мобильная навигация">
+        {
+          navLinks.map((link) => (
+            <a href={link.href} class="inline-flex min-h-[44px] items-center font-sans text-[26px] font-medium leading-none transition-colors hover:text-brass-light">
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="wrap flex flex-col gap-4 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+        <a href={site.phoneHref} class="inline-flex min-h-[44px] items-center font-sans text-[20px] font-medium text-brass-light">{site.phone}</a>
+        <Button variant="primary" href="#cta" class="w-full">Получить бесплатную оценку</Button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    color: var(--color-paper);
+    border-bottom: 1px solid transparent;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .site-header__bar {
+    height: var(--header-h);
+    transition: height 0.3s ease;
+  }
+  .site-header.is-scrolled {
+    background-color: color-mix(in srgb, var(--color-paper) 90%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: var(--color-ink);
+    border-bottom-color: var(--color-stone);
+  }
+  .site-header.is-scrolled .site-header__bar {
+    height: 4rem;
+  }
+  .site-header a,
+  .site-header button {
+    color: inherit;
+  }
+  .site-header__link {
+    transition: color 0.2s ease;
+  }
+  .site-header__link:hover {
+    color: var(--color-brass-light);
+  }
+  .site-header.is-scrolled .site-header__link:hover {
+    color: var(--color-brass);
+  }
+
+  /* Полноэкранное мобильное меню */
+  .mobile-menu {
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+  .mobile-menu.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+  .mobile-menu__inner {
+    transform: translateY(-10px);
+    transition: transform 0.3s ease;
+  }
+  .mobile-menu.is-open .mobile-menu__inner {
+    transform: none;
+  }
+</style>
+
+<script>
+  const header = document.querySelector('[data-header]');
+  const burger = document.querySelector('[data-burger]');
+  const menu = document.getElementById('mobile-menu');
+
+  // Состояние шапки при скролле
+  if (header instanceof HTMLElement) {
+    const sync = () => {
+      const scrolled = window.scrollY > 40;
+      header.classList.toggle('is-scrolled', scrolled);
+      header.classList.toggle('surface-dark', !scrolled);
+    };
+    sync();
+    window.addEventListener('scroll', sync, { passive: true });
+  }
+
+  // Мобильное меню: открытие/закрытие, Esc, блокировка скролла body, focus-trap
+  if (burger instanceof HTMLButtonElement && menu instanceof HTMLElement) {
+    const focusable = (): HTMLElement[] =>
+      Array.from(menu.querySelectorAll('a[href], button:not([disabled])')).filter(
+        (el): el is HTMLElement => el instanceof HTMLElement,
+      );
+    let lastFocused: HTMLElement | null = null;
+
+    const openMenu = () => {
+      lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      menu.classList.add('is-open');
+      menu.setAttribute('aria-hidden', 'false');
+      burger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      // Фокус переносим в следующем кадре — элемент должен стать видимым (focusable)
+      requestAnimationFrame(() => {
+        const first = focusable()[0];
+        if (first) first.focus();
+      });
+    };
+
+    const closeMenu = (restoreFocus = true) => {
+      menu.classList.remove('is-open');
+      menu.setAttribute('aria-hidden', 'true');
+      burger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      // Возврат фокуса — только при закрытии по Esc/крестику; при переходе по ссылке
+      // фокус не дёргаем, чтобы он следовал за якорной навигацией
+      if (restoreFocus && lastFocused) lastFocused.focus();
+    };
+
+    burger.addEventListener('click', () => {
+      if (burger.getAttribute('aria-expanded') === 'true') closeMenu();
+      else openMenu();
+    });
+
+    menu.querySelectorAll('[data-menu-close]').forEach((el) => {
+      el.addEventListener('click', () => closeMenu(true));
+    });
+    menu.querySelectorAll('a[href]').forEach((el) => {
+      el.addEventListener('click', () => closeMenu(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (burger.getAttribute('aria-expanded') !== 'true') return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu(true);
+        return;
+      }
+      if (event.key === 'Tab') {
+        const items = focusable();
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        // Фокус ушёл за пределы меню — возвращаем внутрь
+        if (!menu.contains(document.activeElement)) {
+          event.preventDefault();
+          first.focus();
+          return;
+        }
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  }
+</script>

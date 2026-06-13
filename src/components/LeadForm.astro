@@ -16,10 +16,14 @@ interface Props {
   variant?: 'light' | 'dark';
   submitText: string;
   class?: string;
+  /** Префикс id — для уникальности, когда на странице несколько форм */
+  idPrefix?: string;
 }
 
-const { variant = 'light', submitText, class: className = '' } = Astro.props;
+const { variant = 'light', submitText, class: className = '', idPrefix } = Astro.props;
 const dark = variant === 'dark';
+// Уникальный префикс: исключает коллизии id/label-for и групп radio при двух формах
+const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
 ---
 
 <form
@@ -27,12 +31,12 @@ const dark = variant === 'dark';
   novalidate
   class:list={['flex flex-col gap-4', dark && 'surface-dark', className]}
 >
-  <Input name="name" label="Имя" required autocomplete="name" placeholder="Как к вам обращаться" />
+  <Input id={`${uid}-name`} name="name" label="Имя" required autocomplete="name" placeholder="Как к вам обращаться" />
 
-  <PhoneField />
+  <PhoneField id={`${uid}-phone`} />
 
   <RadioGroup
-    name="contact"
+    name={`${uid}-contact`}
     legend="Как удобнее связаться"
     value="call"
     required
@@ -51,7 +55,7 @@ const dark = variant === 'dark';
     </label>
   </div>
 
-  <Checkbox name="consent" required>
+  <Checkbox id={`${uid}-consent`} name="consent" required>
     Согласен с{' '}
     <a
       href="/privacy"
@@ -77,8 +81,17 @@ const dark = variant === 'dark';
   document.querySelectorAll('form[data-lead-form]').forEach((form) => {
     if (!(form instanceof HTMLFormElement)) return;
 
+    const success = form.querySelector('[data-lead-success]');
+    const hideSuccess = () => {
+      if (success instanceof HTMLElement) success.hidden = true;
+    };
+
+    // Прячем подтверждение, как только пользователь снова взаимодействует с формой
+    form.addEventListener('input', hideSuccess);
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      hideSuccess();
 
       // honeypot заполнен — тихо игнорируем (вероятно, бот)
       const honeypot = form.querySelector('input[name="company"]');
@@ -91,7 +104,7 @@ const dark = variant === 'dark';
       }
 
       // TODO: отправка на бэкенд (fetch). Пока — только UI-подтверждение.
-      const success = form.querySelector('[data-lead-success]');
+      // Переход hidden:false после сброса заново анонсирует role="status"
       if (success instanceof HTMLElement) success.hidden = false;
       form.reset();
     });

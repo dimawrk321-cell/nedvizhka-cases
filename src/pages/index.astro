@@ -12,24 +12,22 @@
  * Якоря для навигации: #services, #process, #cases, #reviews, #faq, #cta
  */
 import Layout from '../layouts/Layout.astro';
+import Header from '../sections/Header.astro';
+import Hero from '../sections/Hero.astro';
+import TrustBar from '../sections/TrustBar.astro';
+import StickyBar from '../components/StickyBar.astro';
 ---
 
 <Layout>
   {/* ШАПКА: лого, навигация, телефон, основной CTA */}
-  <header data-section="header">
-    <!-- TODO: Header -->
-  </header>
+  <Header />
 
   <main id="main">
-    {/* ПЕРВЫЙ ЭКРАН: оффер, ключевое обещание, главный CTA */}
-    <section data-section="hero">
-      <!-- TODO: Hero -->
-    </section>
+    {/* ПЕРВЫЙ ЭКРАН: оффер, ключевое обещание, форма заявки */}
+    <Hero />
 
-    {/* ПОЛОСА ДОВЕРИЯ: цифры/факты/гарантии под Hero */}
-    <section data-section="trust-bar">
-      <!-- TODO: TrustBar -->
-    </section>
+    {/* ПОЛОСА ДОВЕРИЯ: площадки и банки под Hero */}
+    <TrustBar />
 
     {/* БОЛИ И РЕШЕНИЯ: проблемы клиента ↔ как риелтор их закрывает */}
     <section data-section="problems-solutions">
@@ -83,7 +81,5 @@ import Layout from '../layouts/Layout.astro';
   </footer>
 
   {/* МОБИЛЬНАЯ ЛИПКАЯ ПАНЕЛЬ: быстрый звонок/заявка, скрыта на десктопе */}
-  <div data-section="sticky-bar" class="lg:hidden">
-    <!-- TODO: StickyBar (моб.) -->
-  </div>
+  <StickyBar />
 </Layout>

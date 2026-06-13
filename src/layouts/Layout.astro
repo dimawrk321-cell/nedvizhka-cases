@@ -46,6 +46,13 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
         <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
       ))
     }
+
+    {/* Высота фиксированной шапки — единый источник для Header и Hero (global.css не трогаем) */}
+    <style is:global>
+      :root {
+        --header-h: 4.5rem;
+      }
+    </style>
   </head>
   <body>
     <!-- Skip-link: скрыт, появляется по фокусу с клавиатуры -->

@@ -23,5 +23,5 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Claude Code runtime locks
-.claude/scheduled_tasks.lock
+# Claude Code local/runtime config (locks, машинно-специфичный launch.json)
+.claude/
