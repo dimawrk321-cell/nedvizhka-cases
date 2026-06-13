@@ -52,6 +52,12 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
       :root {
         --header-h: 4.5rem;
       }
+      /* Ровный вертикальный ритм: между двумя соседними одноцветными (светлыми) секциями
+         без разделителя не дублируем отступ — схлопываем верхний паддинг второй секции.
+         Тёмные «полосы» (Hero/Process/FinalCTA) не помечаются data-bg и сохраняют симметрию. */
+      [data-bg='light'] + [data-bg='light'] {
+        padding-top: 0;
+      }
     </style>
   </head>
   <body>

@@ -14,6 +14,7 @@ export const casesHeading = {
 
 /** Подписи полей кейса */
 export const caseFields = {
+  metric: 'Результат',
   task: 'Задача',
   actions: 'Что сделал',
   result: 'Итог',

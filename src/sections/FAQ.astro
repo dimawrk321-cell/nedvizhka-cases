@@ -12,7 +12,7 @@ import { site } from '../data/site';
 const items = faq.map((entry) => ({ title: entry.question, content: entry.answer }));
 ---
 
-<section id="faq" data-section="faq" class="section-y">
+<section id="faq" data-section="faq" data-bg="light" class="section-y">
   <div class="wrap flex flex-col gap-12">
     <SectionHeading eyebrow={faqHeading.eyebrow} title={faqHeading.title} align="center" />
 

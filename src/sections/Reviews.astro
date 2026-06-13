@@ -13,7 +13,7 @@ const arrowBtn =
   'inline-flex h-11 w-11 items-center justify-center rounded-card border border-stone text-ink transition-colors hover:border-brass hover:text-brass [&>svg]:h-5 [&>svg]:w-5';
 ---
 
-<section id="reviews" data-section="reviews" data-reviews class="section-y">
+<section id="reviews" data-section="reviews" data-reviews data-bg="light" class="section-y">
   <div class="wrap flex flex-col gap-8">
     <div class="flex items-end justify-between gap-6">
       <SectionHeading eyebrow={reviewsHeading.eyebrow} title={reviewsHeading.title} />
@@ -65,9 +65,8 @@ const arrowBtn =
       }
     </div>
   </div>
-</section>
 
-<script>
+  <script>
   document.querySelectorAll('[data-reviews]').forEach((root) => {
     const track = root.querySelector('[data-rev-track]');
     if (!(track instanceof HTMLElement)) return;
@@ -113,4 +112,5 @@ const arrowBtn =
     track.addEventListener('scroll', () => requestAnimationFrame(updateActive), { passive: true });
     updateActive();
   });
-</script>
+  </script>
+</section>
