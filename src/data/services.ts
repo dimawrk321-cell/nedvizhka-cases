@@ -4,6 +4,11 @@ export interface Service {
   result: string;
 }
 
+export const servicesHeading = {
+  eyebrow: 'Услуги',
+  title: 'Чем я могу быть полезен',
+};
+
 export const services: Service[] = [
   {
     title: 'Продажа квартиры',

@@ -5,6 +5,11 @@ export interface ProcessStep {
   description: string;
 }
 
+export const processHeading = {
+  eyebrow: 'Как мы работаем',
+  title: 'Путь сделки — от оценки до ключей',
+};
+
 export const process: ProcessStep[] = [
   {
     period: 'День 1–2',

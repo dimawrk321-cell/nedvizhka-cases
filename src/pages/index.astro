@@ -16,6 +16,10 @@ import Header from '../sections/Header.astro';
 import Hero from '../sections/Hero.astro';
 import TrustBar from '../sections/TrustBar.astro';
 import StickyBar from '../components/StickyBar.astro';
+import ProblemsSolutions from '../sections/ProblemsSolutions.astro';
+import About from '../sections/About.astro';
+import Services from '../sections/Services.astro';
+import Process from '../sections/Process.astro';
 ---
 
 <Layout>
@@ -30,24 +34,16 @@ import StickyBar from '../components/StickyBar.astro';
     <TrustBar />
 
     {/* БОЛИ И РЕШЕНИЯ: проблемы клиента ↔ как риелтор их закрывает */}
-    <section data-section="problems-solutions">
-      <!-- TODO: ProblemsSolutions -->
-    </section>
+    <ProblemsSolutions />
 
     {/* О РИЕЛТОРЕ: опыт, экспертиза, позиционирование, фото */}
-    <section data-section="about">
-      <!-- TODO: About -->
-    </section>
+    <About />
 
     {/* УСЛУГИ (якорь #services) */}
-    <section id="services" data-section="services">
-      <!-- TODO: Services -->
-    </section>
+    <Services />
 
     {/* ПРОЦЕСС РАБОТЫ (якорь #process) */}
-    <section id="process" data-section="process">
-      <!-- TODO: Process -->
-    </section>
+    <Process />
 
     {/* КЕЙСЫ / ПОРТФОЛИО СДЕЛОК (якорь #cases) */}
     <section id="cases" data-section="cases">

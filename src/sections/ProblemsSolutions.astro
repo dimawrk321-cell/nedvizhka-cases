@@ -1,0 +1,52 @@
+---
+/**
+ * ProblemsSolutions — светлая секция. 4 пары «боль → решение» из problems.ts.
+ * Визуальная связь: боль приглушённо (muted, circle-alert) → стрелка-связка (brass)
+ * → решение акцентной карточкой (ink, check). Десктоп: 3 колонки в паре; мобайл: стопкой
+ * со стрелкой вниз. Тексты — из src/data, без GSAP (только CSS-переходы).
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import { problems, problemsHeading } from '../data/problems';
+import { CircleAlert, Check, ArrowRight } from 'lucide-static';
+---
+
+<section data-section="problems-solutions" class="section-y">
+  <div class="wrap flex flex-col gap-12">
+    <SectionHeading eyebrow={problemsHeading.eyebrow} title={problemsHeading.title} align="center" />
+
+    <div class="flex flex-col gap-6">
+      {
+        problems.map((pair) => (
+          <div class="grid items-center gap-4 lg:grid-cols-[1fr_auto_1fr] lg:gap-8">
+            {/* боль — приглушённо */}
+            <div class="flex items-start gap-3">
+              <span
+                class="mt-0.5 inline-flex shrink-0 text-muted [&>svg]:h-5 [&>svg]:w-5"
+                set:html={CircleAlert}
+                aria-hidden="true"
+              />
+              <p class="text-muted">{pair.pain}</p>
+            </div>
+
+            {/* связка: вправо на десктопе, вниз на мобильном */}
+            <span
+              class="inline-flex rotate-90 justify-self-center text-brass lg:rotate-0 [&>svg]:h-6 [&>svg]:w-6"
+              set:html={ArrowRight}
+              aria-hidden="true"
+            />
+
+            {/* решение — акцентная карточка */}
+            <div class="group flex items-start gap-3 rounded-lg border border-stone bg-paper p-5 transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md">
+              <span
+                class="mt-0.5 inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5"
+                set:html={Check}
+                aria-hidden="true"
+              />
+              <p class="text-ink">{pair.solution}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

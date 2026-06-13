@@ -1,0 +1,61 @@
+---
+/**
+ * Process — ТЁМНАЯ секция (surface-dark, градиент ink→pine) для ритма чередования.
+ * 5 шагов из process.ts: горизонтальный таймлайн на десктопе, вертикальный на мобильном.
+ * Номера (Prata, brass-light) — реальная последовательность сделки. Линия brass/30 с узлами.
+ * Контраст текста на тёмном — AA. Форм/Stat/Badge нет.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import { process, processHeading } from '../data/process';
+
+const num = (i: number): string => String(i + 1).padStart(2, '0');
+---
+
+<section
+  id="process"
+  data-section="process"
+  class="section-y surface-dark bg-[linear-gradient(135deg,var(--color-ink),var(--color-pine))] text-paper"
+>
+  <div class="wrap flex flex-col gap-14">
+    <SectionHeading eyebrow={processHeading.eyebrow} title={processHeading.title} align="center" />
+
+    {/* Десктоп: горизонтальный таймлайн */}
+    <ol class="hidden gap-6 lg:grid lg:grid-cols-5">
+      {
+        process.map((step, i) => (
+          <li class="flex flex-col gap-4">
+            <span class="stat-num text-[44px] leading-none text-brass-light" aria-hidden="true">{num(i)}</span>
+            <div class="flex items-center" aria-hidden="true">
+              <span class="h-3 w-3 shrink-0 rounded-full bg-brass-light"></span>
+              {i < process.length - 1 && <span class="ml-1 h-px flex-1 bg-brass/30"></span>}
+            </div>
+            <div class="flex flex-col gap-2">
+              <span class="text-sm font-medium text-brass-light">{step.period}</span>
+              <h3 class="text-lg font-semibold text-paper">{step.title}</h3>
+              <p class="text-sm text-paper/70">{step.description}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+
+    {/* Мобайл: вертикальный таймлайн */}
+    <ol class="flex flex-col lg:hidden">
+      {
+        process.map((step, i) => (
+          <li class="flex gap-5">
+            <div class="flex w-9 shrink-0 flex-col items-center" aria-hidden="true">
+              <span class="stat-num text-[26px] leading-none text-brass-light">{num(i)}</span>
+              {i < process.length - 1 && <span class="mt-3 w-px flex-1 bg-brass/30"></span>}
+            </div>
+            <div class:list={['flex flex-col gap-2', i < process.length - 1 ? 'pb-10' : 'pb-0']}>
+              <span class="text-sm font-medium text-brass-light">{step.period}</span>
+              <h3 class="text-lg font-semibold text-paper">{step.title}</h3>
+              <p class="text-sm text-paper/70">{step.description}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

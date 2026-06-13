@@ -1,0 +1,75 @@
+---
+/**
+ * About — светлая асимметричная секция (фото 5 / текст 7 на десктопе).
+ * Фото — элегантный плейсхолдер (двойная рамка brass, градиент pine→ink, иконка user),
+ * готов под <Image> astro:assets. Текст — eyebrow/h2/3 абзаца/регалии/кнопка из about.ts.
+ * Внизу — SVG-факсимиле подписи (плейсхолдер). Мобайл: текст, затем фото.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import { about } from '../data/about';
+import { site } from '../data/site';
+import { User, Check } from 'lucide-static';
+---
+
+<section data-section="about" class="section-y">
+  <div class="wrap">
+    <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
+      {/* Текст: на мобильном первый, на десктопе справа */}
+      <div class="order-1 flex flex-col gap-6 lg:order-2 lg:col-span-7">
+        <SectionHeading eyebrow={about.eyebrow} title={about.title} />
+
+        <div class="flex flex-col gap-4">
+          {about.paragraphs.map((paragraph) => <p class="measure text-muted">{paragraph}</p>)}
+        </div>
+
+        <ul class="flex flex-col gap-3 border-t border-stone pt-5">
+          {
+            about.credentials.map((credential) => (
+              <li class="flex items-start gap-3">
+                <span
+                  class="mt-0.5 inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5"
+                  set:html={Check}
+                  aria-hidden="true"
+                />
+                <span class="text-ink">{credential}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        {/* Факсимиле подписи — плейсхолдер */}
+        <div class="flex flex-col gap-2">
+          {/* TODO: заменить на реальную подпись */}
+          <svg class="h-14 w-auto fill-none stroke-brass opacity-80" viewBox="0 0 240 70" aria-hidden="true">
+            <path
+              d="M4 48 C 14 18 26 16 24 42 C 22 64 40 62 44 36 C 47 14 60 14 58 42 C 70 32 86 34 92 46 C 80 50 98 54 108 40 C 118 28 132 32 126 50 C 150 30 188 30 232 46"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+          <span class="text-sm text-muted">{site.name} · {site.role}</span>
+        </div>
+
+        <div>
+          <Button variant="ghost" href="#cta">{about.ctaLabel}</Button>
+        </div>
+      </div>
+
+      {/* Фото: на мобильном второй, на десктопе слева */}
+      <div class="order-2 lg:order-1 lg:col-span-5">
+        <div class="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-xl border border-brass/40 bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))] lg:mx-0">
+          {/* внутренняя рамка */}
+          <div class="absolute inset-3 rounded-lg border border-brass/30"></div>
+          {/* иконка-заглушка */}
+          <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-24 [&>svg]:w-24">
+            <span set:html={User} aria-hidden="true" />
+          </div>
+          {/* TODO: заменить на <Image src={...} alt={site.name} /> из astro:assets */}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

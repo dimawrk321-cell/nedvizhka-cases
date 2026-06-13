@@ -2,14 +2,20 @@ import { site } from './site';
 
 export interface About {
   eyebrow: string;
+  /** Заголовок секции (h2) */
+  title: string;
+  /** Имя — для подписи/капшена */
   heading: string;
   paragraphs: string[];
   /** Регалии списком */
   credentials: string[];
+  /** Текст кнопки секции */
+  ctaLabel: string;
 }
 
 export const about: About = {
-  eyebrow: 'О риелторе',
+  eyebrow: 'Обо мне',
+  title: 'Со мной вы получаете меня, а не стажёра',
   heading: site.name,
   paragraphs: [
     // Год начала практики — из site.practiceSince
@@ -23,4 +29,5 @@ export const about: About = {
     'Аккредитация в 14 банках-партнёрах', // TODO: подтвердить число банков
     'Спикер по рынку жилья в деловых СМИ', // TODO: подтвердить
   ],
+  ctaLabel: 'Познакомиться на консультации',
 };

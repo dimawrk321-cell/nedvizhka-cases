@@ -5,6 +5,11 @@ export interface Problem {
   solution: string;
 }
 
+export const problemsHeading = {
+  eyebrow: 'Что обычно идёт не так',
+  title: 'Почему квартиры продаются дольше и дешевле — и как я это меняю',
+};
+
 export const problems: Problem[] = [
   {
     pain: 'Квартира висит в рекламе месяцами',
