@@ -9,6 +9,7 @@ import { site } from '../data/site';
 import { Phone, MessageCircle, Send } from 'lucide-static';
 
 const year = new Date().getFullYear();
+const base = import.meta.env.BASE_URL;
 const linkBase =
   'inline-flex min-h-[44px] items-center gap-2 text-sm text-paper transition-colors hover:text-brass-light [&>svg]:h-4 [&>svg]:w-4';
 const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
@@ -74,7 +75,7 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
 
     <div class="mt-12 flex flex-col gap-3 border-t border-stone/15 pt-6 text-sm text-stone sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} {site.name}</p>
-      <a href="/privacy" class="transition-colors hover:text-brass-light">{footer.privacyLabel}</a>
+      <a href={`${base}privacy/`} class="transition-colors hover:text-brass-light">{footer.privacyLabel}</a>
     </div>
   </div>
 </footer>

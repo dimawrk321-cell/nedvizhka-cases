@@ -26,6 +26,7 @@ interface Props {
 const { variant = 'light', submitText, class: className = '', idPrefix } = Astro.props;
 const dark = variant === 'dark';
 const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
+const base = import.meta.env.BASE_URL;
 ---
 
 <div data-lead-root class:list={[dark && 'surface-dark', className]}>
@@ -65,7 +66,7 @@ const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
     <Checkbox id={`${uid}-consent`} name="consent" required>
       Принимаю условия{' '}
       <a
-        href="/privacy"
+        href={`${base}privacy/`}
         class="underline underline-offset-2 transition-colors hover:text-brass [.surface-dark_&]:hover:text-brass-light"
       >
         обработки персональных данных

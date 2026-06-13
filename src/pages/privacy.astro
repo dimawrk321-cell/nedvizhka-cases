@@ -6,6 +6,8 @@
 import Layout from '../layouts/Layout.astro';
 import { privacy } from '../data/privacy';
 import { Check, ArrowLeft } from 'lucide-static';
+
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title={privacy.title} description="Политика обработки персональных данных по № 152-ФЗ.">
@@ -13,7 +15,7 @@ import { Check, ArrowLeft } from 'lucide-static';
     <div class="wrap">
       <div class="mx-auto flex max-w-[760px] flex-col gap-6">
         <a
-          href="/"
+          href={base}
           class="inline-flex w-fit items-center gap-2 text-sm font-medium text-brass transition-colors hover:underline [&>svg]:h-4 [&>svg]:w-4"
         >
           <span set:html={ArrowLeft} aria-hidden="true" />{privacy.backLabel}

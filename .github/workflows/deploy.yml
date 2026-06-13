@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+on:
+  # Деплой при пуше в main
+  push:
+    branches: [main]
+  # Возможность запустить вручную из вкладки Actions
+  workflow_dispatch:
+
+# Права, необходимые для публикации на GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Публикуем только последнюю версию, отменяя незавершённые запуски
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Публичный URL Cloud Function пробрасывается в сборку из GitHub Secrets.
+      # Задаём на уровне job — так переменная гарантированно видна внутри
+      # composite-экшена withastro/action при вызове `astro build`.
+      PUBLIC_LEAD_ENDPOINT: ${{ secrets.PUBLIC_LEAD_ENDPOINT }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build with Astro
+        uses: withastro/action@v3
+        with:
+          node-version: 20
+          # path: .                # корень проекта (значение по умолчанию)
+          # package-manager: npm   # определяется автоматически по lock-файлу
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

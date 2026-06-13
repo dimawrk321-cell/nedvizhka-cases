@@ -5,8 +5,11 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: заменить на реальный домен перед публикацией (нужен для sitemap и абсолютных URL)
-  site: 'https://example.com',
+  // TODO: заменить USERNAME на ваш логин GitHub (нужен для sitemap и абсолютных URL).
+  // Для проектного сайта GitHub Pages адрес имеет вид https://USERNAME.github.io/REPO/
+  site: 'https://dimawrk321-cell.github.io',
+  // TODO: заменить REPO на имя репозитория GitHub. Слеши с обеих сторон обязательны ('/REPO/').
+  base: '/nedvizhka-cases/',
   output: 'static',
   integrations: [sitemap()],
   vite: {
