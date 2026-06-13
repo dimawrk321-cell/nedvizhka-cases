@@ -13,5 +13,6 @@ export const footer = {
   ],
   whatsappLabel: 'WhatsApp',
   telegramLabel: 'Telegram',
+  maxLabel: 'MAX',
   privacyLabel: 'Политика обработки персональных данных',
 };

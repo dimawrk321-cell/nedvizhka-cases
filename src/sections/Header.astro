@@ -53,8 +53,10 @@ const navLinks = [
       set:html={Menu}
     />
   </div>
+</header>
 
-  <div id="mobile-menu" class="mobile-menu surface-dark fixed inset-0 z-50 bg-ink text-paper lg:hidden" aria-hidden="true">
+{/* Оверлей меню — ВНЕ фиксированной шапки (вложенный position:fixed глючит на мобильных) */}
+<div id="mobile-menu" class="mobile-menu surface-dark fixed inset-0 z-[60] bg-ink text-paper lg:hidden" aria-hidden="true">
     <div class="mobile-menu__inner flex h-full flex-col">
       <div class="wrap flex h-[var(--header-h)] items-center justify-between">
         <span class="font-display text-[20px] leading-none">{site.name}</span>
@@ -83,7 +85,6 @@ const navLinks = [
       </div>
     </div>
   </div>
-</header>
 
 <style>
   .site-header {
@@ -124,6 +125,7 @@ const navLinks = [
 
   /* Полноэкранное мобильное меню */
   .mobile-menu {
+    background-color: var(--color-ink);
     opacity: 0;
     visibility: hidden;
     transition:

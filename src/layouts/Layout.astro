@@ -90,10 +90,29 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
     </script>
 
     <script>
-      // Ленивая загрузка анимаций: при reduced-motion модуль не грузится вовсе (контент статичен);
-      // иначе — после первого скролла ИЛИ через 1.8с простоя (что раньше), чтобы не бить по LCP.
+      // Ленивая загрузка анимаций + страховка видимости контента.
+      // Скрытые состояния ставит только GSAP в рантайме; если модуль не сработал
+      // (reduced-motion, ошибка, 404 чанка, таймаут) — принудительно показываем весь контент.
+      const revealAll = () => {
+        document.querySelectorAll('[data-reveal], [data-reveal-item]').forEach((el) => {
+          if (el instanceof HTMLElement) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            el.style.translate = 'none';
+          }
+        });
+      };
+
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced) {
+      if (prefersReduced) {
+        revealAll();
+      } else {
+        let ready = false;
+        // Если за 2.5с анимации не инициализировались — снимаем возможные скрытые состояния
+        window.setTimeout(() => {
+          if (!ready) revealAll();
+        }, 2500);
+
         let started = false;
         const start = () => {
           if (started) return;
@@ -101,7 +120,12 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
           window.removeEventListener('scroll', start);
           import('../scripts/animations.ts')
             .then((module) => module.initAnimations())
-            .catch(() => {});
+            .then(() => {
+              ready = true;
+            })
+            .catch(() => {
+              revealAll();
+            });
         };
         window.addEventListener('scroll', start, { once: true, passive: true });
         window.setTimeout(start, 1800);

@@ -20,6 +20,8 @@ export interface Site {
   telegramHref: string;
   /** Ссылка на WhatsApp (тот же номер) */
   whatsappHref: string;
+  /** Ссылка на мессенджер MAX */
+  maxLink: string;
   /** Адрес офиса */
   office: string;
   /** ИНН */
@@ -40,6 +42,7 @@ export const site: Site = {
   telegram: '@sokolov_realty', // TODO: реальный Telegram
   telegramHref: 'https://t.me/sokolov_realty', // TODO: реальный Telegram
   whatsappHref: 'https://wa.me/79031234567', // TODO: тот же номер
+  maxLink: 'https://max.ru/ИМЯ_ИЛИ_ID', // TODO: уточнить реальную ссылку/формат MAX
   office: 'Москва, Пресненская наб., 12', // TODO: реальный адрес офиса
   inn: '770100000000', // TODO: реальный ИНН
   practiceSince: 2014,

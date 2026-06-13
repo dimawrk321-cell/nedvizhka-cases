@@ -6,7 +6,7 @@
  */
 import { footer } from '../data/footer';
 import { site } from '../data/site';
-import { Phone, MessageCircle, Send } from 'lucide-static';
+import { Phone, MessageCircle, Send, MessageSquare } from 'lucide-static';
 
 const year = new Date().getFullYear();
 const base = import.meta.env.BASE_URL;
@@ -58,6 +58,11 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
           <li>
             <a href={site.telegramHref} target="_blank" rel="noopener" class={linkBase}>
               <span set:html={Send} aria-hidden="true" />{footer.telegramLabel} {site.telegram}
+            </a>
+          </li>
+          <li>
+            <a href={site.maxLink} target="_blank" rel="noopener" class={linkBase}>
+              <span set:html={MessageSquare} aria-hidden="true" />{footer.maxLabel}
             </a>
           </li>
         </ul>
