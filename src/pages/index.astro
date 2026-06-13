@@ -1,0 +1,89 @@
+---
+/*
+ * Главная страница — СЕМАНТИЧЕСКИЙ КАРКАС (этап 1).
+ * Секции пока пустые: только структура, порядок, id-якоря и комментарии.
+ * Наполнение контентом и подключение компонентов из src/sections — на следующих этапах.
+ *
+ * Порядок секций:
+ *   Header → Hero → TrustBar → ProblemsSolutions → About → Services →
+ *   Process → Cases → Reviews → Comparison → FAQ → FinalCTA → Footer
+ *   (+ мобильный StickyBar)
+ *
+ * Якоря для навигации: #services, #process, #cases, #reviews, #faq, #cta
+ */
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  {/* ШАПКА: лого, навигация, телефон, основной CTA */}
+  <header data-section="header">
+    <!-- TODO: Header -->
+  </header>
+
+  <main id="main">
+    {/* ПЕРВЫЙ ЭКРАН: оффер, ключевое обещание, главный CTA */}
+    <section data-section="hero">
+      <!-- TODO: Hero -->
+    </section>
+
+    {/* ПОЛОСА ДОВЕРИЯ: цифры/факты/гарантии под Hero */}
+    <section data-section="trust-bar">
+      <!-- TODO: TrustBar -->
+    </section>
+
+    {/* БОЛИ И РЕШЕНИЯ: проблемы клиента ↔ как риелтор их закрывает */}
+    <section data-section="problems-solutions">
+      <!-- TODO: ProblemsSolutions -->
+    </section>
+
+    {/* О РИЕЛТОРЕ: опыт, экспертиза, позиционирование, фото */}
+    <section data-section="about">
+      <!-- TODO: About -->
+    </section>
+
+    {/* УСЛУГИ (якорь #services) */}
+    <section id="services" data-section="services">
+      <!-- TODO: Services -->
+    </section>
+
+    {/* ПРОЦЕСС РАБОТЫ (якорь #process) */}
+    <section id="process" data-section="process">
+      <!-- TODO: Process -->
+    </section>
+
+    {/* КЕЙСЫ / ПОРТФОЛИО СДЕЛОК (якорь #cases) */}
+    <section id="cases" data-section="cases">
+      <!-- TODO: Cases -->
+    </section>
+
+    {/* ОТЗЫВЫ КЛИЕНТОВ (якорь #reviews) */}
+    <section id="reviews" data-section="reviews">
+      <!-- TODO: Reviews -->
+    </section>
+
+    {/* СРАВНЕНИЕ: «самостоятельно» ↔ «с риелтором» */}
+    <section data-section="comparison">
+      <!-- TODO: Comparison -->
+    </section>
+
+    {/* ЧАСТЫЕ ВОПРОСЫ (якорь #faq) */}
+    <section id="faq" data-section="faq">
+      <!-- TODO: FAQ -->
+    </section>
+
+    {/* ФИНАЛЬНЫЙ ПРИЗЫВ + ФОРМА ЗАЯВКИ (якорь #cta) */}
+    <section id="cta" data-section="final-cta">
+      <!-- TODO: FinalCTA -->
+    </section>
+  </main>
+
+  {/* ПОДВАЛ: контакты, реквизиты, мессенджеры, политика конфиденциальности */}
+  <footer data-section="footer">
+    <!-- TODO: Footer -->
+  </footer>
+
+  {/* МОБИЛЬНАЯ ЛИПКАЯ ПАНЕЛЬ: быстрый звонок/заявка, скрыта на десктопе */}
+  <div data-section="sticky-bar" class="lg:hidden">
+    <!-- TODO: StickyBar (моб.) -->
+  </div>
+</Layout>

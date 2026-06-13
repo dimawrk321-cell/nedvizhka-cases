@@ -1,0 +1,56 @@
+---
+/* Базовый макет страницы. Подключает дизайн-систему и self-hosted шрифты. */
+import '../styles/global.css';
+
+// Self-hosted шрифты (fontsource) — регистрируют @font-face (font-display: swap уже внутри)
+import '@fontsource/prata/400.css';
+import '@fontsource-variable/onest/wght.css';
+
+// Preload основных woff2-сабсетов (latin + cyrillic) обоих начертаний.
+// ?url отдаёт хэшированный путь к ассету; Vite дедуплицирует его с url() из @font-face.
+import prataLatin from '@fontsource/prata/files/prata-latin-400-normal.woff2?url';
+import prataCyrillic from '@fontsource/prata/files/prata-cyrillic-400-normal.woff2?url';
+import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import onestCyrillic from '@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2?url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  // TODO: задать реальные title/description на этапе наполнения контентом
+  title = 'Плейсхолдер заголовка — частный риелтор, Москва',
+  description = 'Плейсхолдер описания страницы. Заменить на реальный SEO-текст.',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    {
+      preloadFonts.map((href) => (
+        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+      ))
+    }
+  </head>
+  <body>
+    <!-- Skip-link: скрыт, появляется по фокусу с клавиатуры -->
+    <a class="skip-link" href="#main">Перейти к содержанию</a>
+
+    <slot />
+  </body>
+</html>
