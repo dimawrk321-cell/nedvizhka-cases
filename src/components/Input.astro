@@ -13,6 +13,7 @@ interface Props {
   inputmode?: 'text' | 'tel' | 'email' | 'numeric' | 'search';
   pattern?: string;
   maxlength?: number;
+  minlength?: number;
   value?: string;
   id?: string;
 }
@@ -27,6 +28,7 @@ const {
   inputmode,
   pattern,
   maxlength,
+  minlength,
   value,
   id = name,
 } = Astro.props;
@@ -47,7 +49,8 @@ const {
     inputmode={inputmode}
     pattern={pattern}
     maxlength={maxlength}
+    minlength={minlength}
     value={value}
-    class="min-h-[44px] rounded-card border border-stone bg-paper px-4 py-2.5 text-ink transition-colors placeholder:text-muted focus:border-brass [.surface-dark_&]:border-stone/30 [.surface-dark_&]:bg-pine [.surface-dark_&]:text-paper [.surface-dark_&]:placeholder:text-stone"
+    class="min-h-[44px] rounded-card border border-stone bg-paper px-4 py-2.5 text-ink transition-colors placeholder:text-muted focus:border-brass disabled:cursor-not-allowed disabled:opacity-60 [.surface-dark_&]:border-stone/30 [.surface-dark_&]:bg-pine [.surface-dark_&]:text-paper [.surface-dark_&]:placeholder:text-stone"
   />
 </div>

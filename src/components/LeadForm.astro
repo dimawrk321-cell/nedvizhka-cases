@@ -2,15 +2,18 @@
 /**
  * LeadForm — форма заявки для hero и финальной секции.
  * Поля: имя, телефон (с маской), способ связи, honeypot, согласие на обработку ПД.
- * variant 'dark' добавляет .surface-dark — все вложенные атомы перекрашиваются сами.
- * Реальной отправки пока нет: submit перехватывается, показывается inline-подтверждение,
- * страница не перезагружается. Разметка готова к подключению бэкенда позже.
+ * Реальная отправка: fetch POST на PUBLIC_LEAD_ENDPOINT (внешняя Cloud Function → Telegram).
+ * Токен бота на сайт не попадает. Состояния (загрузка/успех/ошибка) — инлайн, без перезагрузки.
+ * Антиспам: honeypot + порог времени; валидация — нативная (required/minlength/pattern).
+ * variant 'dark' добавляет .surface-dark; idPrefix даёт уникальные id при двух формах.
  */
 import Input from './Input.astro';
 import PhoneField from './PhoneField.astro';
 import RadioGroup from './RadioGroup.astro';
 import Checkbox from './Checkbox.astro';
 import Button from './Button.astro';
+import { site } from '../data/site';
+import { Check } from 'lucide-static';
 
 interface Props {
   variant?: 'light' | 'dark';
@@ -22,91 +25,182 @@ interface Props {
 
 const { variant = 'light', submitText, class: className = '', idPrefix } = Astro.props;
 const dark = variant === 'dark';
-// Уникальный префикс: исключает коллизии id/label-for и групп radio при двух формах
 const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
 ---
 
-<form
-  data-lead-form
-  novalidate
-  class:list={['flex flex-col gap-4', dark && 'surface-dark', className]}
->
-  <Input id={`${uid}-name`} name="name" label="Имя" required autocomplete="name" placeholder="Как к вам обращаться" />
+<div data-lead-root class:list={[dark && 'surface-dark', className]}>
+  <form data-lead-form novalidate class="flex flex-col gap-4">
+    <Input
+      id={`${uid}-name`}
+      name="name"
+      label="Имя"
+      required
+      minlength={2}
+      autocomplete="name"
+      placeholder="Как к вам обращаться"
+    />
 
-  <PhoneField id={`${uid}-phone`} />
+    <PhoneField id={`${uid}-phone`} />
 
-  <RadioGroup
-    name={`${uid}-contact`}
-    legend="Как удобнее связаться"
-    value="call"
-    required
-    options={[
-      { value: 'call', label: 'Звонок' },
-      { value: 'whatsapp', label: 'WhatsApp' },
-      { value: 'telegram', label: 'Telegram' },
-    ]}
-  />
+    <RadioGroup
+      name={`${uid}-contact`}
+      legend="Как удобнее связаться"
+      value="call"
+      required
+      options={[
+        { value: 'call', label: 'Звонок' },
+        { value: 'whatsapp', label: 'WhatsApp' },
+        { value: 'telegram', label: 'Telegram' },
+      ]}
+    />
 
-  {/* honeypot: ловушка для ботов — скрыта от пользователей и скринридеров */}
-  <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
-    <label>
-      Не заполняйте это поле
-      <input type="text" name="company" tabindex="-1" autocomplete="off" />
-    </label>
-  </div>
+    {/* honeypot: ловушка для ботов — скрыта от пользователей и скринридеров */}
+    <div class="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+      <label>
+        Не заполняйте это поле
+        <input type="text" name="company" tabindex="-1" autocomplete="off" />
+      </label>
+    </div>
 
-  <Checkbox id={`${uid}-consent`} name="consent" required>
-    Принимаю условия{' '}
-    <a
-      href="/privacy"
-      class="underline underline-offset-2 transition-colors hover:text-brass [.surface-dark_&]:hover:text-brass-light"
-    >
-      обработки персональных данных
-    </a>
-  </Checkbox>
+    <Checkbox id={`${uid}-consent`} name="consent" required>
+      Принимаю условия{' '}
+      <a
+        href="/privacy"
+        class="underline underline-offset-2 transition-colors hover:text-brass [.surface-dark_&]:hover:text-brass-light"
+      >
+        обработки персональных данных
+      </a>
+    </Checkbox>
 
-  <Button type="submit" class="w-full">{submitText}</Button>
+    <Button type="submit" class="w-full">{submitText}</Button>
+  </form>
 
+  {/* Успех: форма прячется, показывается это сообщение */}
   <p
     data-lead-success
     hidden
     role="status"
-    class="rounded-card border border-brass/40 bg-brass/10 px-4 py-3 text-sm text-ink [.surface-dark_&]:text-paper"
+    class="flex items-center gap-2 rounded-card border border-brass/40 bg-brass/10 px-4 py-3 text-sm text-ink [.surface-dark_&]:text-paper"
   >
-    Спасибо! Свяжусь с вами в течение часа.
+    <span
+      class="inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5 [.surface-dark_&]:text-brass-light"
+      set:html={Check}
+      aria-hidden="true"
+    />
+    Спасибо! Свяжусь с вами в течение часа в рабочее время.
   </p>
-</form>
+
+  {/* Ошибка сети/сервера: данные остаются, можно повторить */}
+  <p
+    data-lead-error
+    hidden
+    role="alert"
+    class="rounded-card border border-stone bg-paper px-4 py-3 text-sm text-ink [.surface-dark_&]:border-stone/30 [.surface-dark_&]:bg-pine [.surface-dark_&]:text-paper"
+  >
+    Не удалось отправить. Позвоните мне напрямую:{' '}
+    <a
+      href={site.phoneHref}
+      class="font-medium text-brass underline underline-offset-2 [.surface-dark_&]:text-brass-light"
+    >
+      {site.phone}
+    </a>
+  </p>
+</div>
 
 <script>
-  document.querySelectorAll('form[data-lead-form]').forEach((form) => {
+  const ENDPOINT = import.meta.env.PUBLIC_LEAD_ENDPOINT;
+
+  function getUtm(): Record<string, string> {
+    try {
+      const raw = sessionStorage.getItem('lead_utm');
+      if (!raw) return {};
+      const parsed = JSON.parse(raw) as unknown;
+      return parsed && typeof parsed === 'object' ? (parsed as Record<string, string>) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  document.querySelectorAll('[data-lead-root]').forEach((root) => {
+    const form = root.querySelector('form[data-lead-form]');
     if (!(form instanceof HTMLFormElement)) return;
 
-    const success = form.querySelector('[data-lead-success]');
-    const hideSuccess = () => {
-      if (success instanceof HTMLElement) success.hidden = true;
+    const success = root.querySelector('[data-lead-success]');
+    const errorBox = root.querySelector('[data-lead-error]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const submitHtml = submitBtn instanceof HTMLElement ? submitBtn.innerHTML : '';
+    const renderedAt = Date.now();
+
+    const show = (el: Element | null, visible: boolean) => {
+      if (el instanceof HTMLElement) el.hidden = !visible;
     };
 
-    // Прячем подтверждение, как только пользователь снова взаимодействует с формой
-    form.addEventListener('input', hideSuccess);
+    const setLoading = (loading: boolean) => {
+      form.querySelectorAll('input, button').forEach((c) => {
+        if (c instanceof HTMLInputElement || c instanceof HTMLButtonElement) c.disabled = loading;
+      });
+      if (submitBtn instanceof HTMLElement) {
+        if (loading) submitBtn.textContent = 'Отправляю…';
+        else submitBtn.innerHTML = submitHtml;
+      }
+    };
 
-    form.addEventListener('submit', (event) => {
+    // Имитация успеха без реальной отправки (honeypot / слишком быстрый сабмит)
+    const fakeSuccess = () => {
+      show(errorBox, false);
+      form.hidden = true;
+      show(success, true);
+      form.reset();
+    };
+
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      hideSuccess();
+      show(errorBox, false);
 
-      // honeypot заполнен — тихо игнорируем (вероятно, бот)
+      // honeypot заполнен → вероятно бот: молча имитируем успех
       const honeypot = form.querySelector('input[name="company"]');
-      if (honeypot instanceof HTMLInputElement && honeypot.value.trim() !== '') return;
+      if (honeypot instanceof HTMLInputElement && honeypot.value.trim() !== '') {
+        fakeSuccess();
+        return;
+      }
 
-      // нативная валидация (required, маска телефона через pattern)
+      // Нативная валидация: required + minlength имени + pattern телефона
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
       }
 
-      // TODO: отправка на бэкенд (fetch). Пока — только UI-подтверждение.
-      // Переход hidden:false после сброса заново анонсирует role="status"
-      if (success instanceof HTMLElement) success.hidden = false;
-      form.reset();
+      // Слишком быстрый сабмит (< 3с) → спам: имитируем успех без отправки
+      if (Date.now() - renderedAt < 3000) {
+        fakeSuccess();
+        return;
+      }
+
+      const nameField = form.querySelector('input[name="name"]');
+      const phoneField = form.querySelector('input[name="phone"]');
+      const contactField = form.querySelector('input[type="radio"]:checked');
+      const payload = {
+        name: nameField instanceof HTMLInputElement ? nameField.value.trim() : '',
+        phone: phoneField instanceof HTMLInputElement ? phoneField.value.trim() : '',
+        contactMethod: contactField instanceof HTMLInputElement ? contactField.value : '',
+        page: window.location.href,
+        utm: getUtm(),
+      };
+
+      setLoading(true);
+      try {
+        const response = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error('Request failed');
+        form.hidden = true;
+        show(success, true);
+      } catch {
+        setLoading(false);
+        show(errorBox, true);
+      }
     });
   });
 </script>

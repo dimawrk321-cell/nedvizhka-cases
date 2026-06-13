@@ -67,6 +67,27 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
     <slot />
 
     <script>
+      // UTM-метки: на загрузке любой страницы сохраняем utm_* из query в sessionStorage,
+      // чтобы прикрепить их к заявке при отправке формы.
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+        const utm: Record<string, string> = {};
+        let found = false;
+        keys.forEach((key) => {
+          const value = params.get(key);
+          if (value) {
+            utm[key] = value;
+            found = true;
+          }
+        });
+        if (found) sessionStorage.setItem('lead_utm', JSON.stringify(utm));
+      } catch {
+        /* sessionStorage недоступен — не критично */
+      }
+    </script>
+
+    <script>
       // Ленивая загрузка анимаций: при reduced-motion модуль не грузится вовсе (контент статичен);
       // иначе — после первого скролла ИЛИ через 1.8с простоя (что раньше), чтобы не бить по LCP.
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
