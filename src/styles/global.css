@@ -193,3 +193,37 @@
 .skip-link:focus-visible {
   top: 1rem;
 }
+
+/* -------------------------------------------------------------------------
+   АНИМАЦИИ ПОЯВЛЕНИЯ — гейт на класс `js-ready`
+
+   ПРИНЦИП (важно): контент виден ВСЕГДА. Скрытие включается только когда на
+   <html> есть класс `js-ready` — его ставит синхронный инлайн-скрипт в <head>,
+   то есть лишь при реально работающем JS. Если скрипт не выполнился, упал или
+   отключён — класса нет, правила ниже не применяются, весь контент виден.
+   Это защищает от «невидимых блоков» в проде.
+   ------------------------------------------------------------------------- */
+html.js-ready [data-reveal],
+html.js-ready [data-reveal-item] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+html.js-ready [data-reveal].is-visible,
+html.js-ready [data-reveal-item].is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Уважаем системную настройку: без движения — контент сразу на месте */
+@media (prefers-reduced-motion: reduce) {
+  html.js-ready [data-reveal],
+  html.js-ready [data-reveal-item] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
