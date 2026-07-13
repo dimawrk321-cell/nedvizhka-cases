@@ -1,11 +1,13 @@
 ---
 /**
- * LeadForm — форма заявки для hero и финальной секции.
+ * LeadForm — форма заявки для hero, финальной секции и ипотеки.
  * Поля: имя, телефон (с маской), способ связи, honeypot, согласие на обработку ПД.
  * Реальная отправка: fetch POST на PUBLIC_LEAD_ENDPOINT (внешняя Cloud Function → Telegram).
  * Токен бота на сайт не попадает. Состояния (загрузка/успех/ошибка) — инлайн, без перезагрузки.
  * Антиспам: honeypot + порог времени; валидация — нативная (required/minlength/pattern).
- * variant 'dark' добавляет .surface-dark; idPrefix даёт уникальные id при двух формах.
+ * variant 'dark' добавляет .surface-dark; idPrefix даёт уникальные id при нескольких формах.
+ * formType 'mortgage' + hiddenFields: скрытые поля с параметрами расчёта, которые
+ * заполняет MortgageCalculator; при отправке они уходят в payload.details → в Telegram.
  */
 import Input from './Input.astro';
 import PhoneField from './PhoneField.astro';
@@ -21,15 +23,26 @@ interface Props {
   class?: string;
   /** Префикс id — для уникальности, когда на странице несколько форм */
   idPrefix?: string;
+  /** Тип заявки: 'lead' (обычная) или 'mortgage' (ипотека — с параметрами расчёта) */
+  formType?: 'lead' | 'mortgage';
+  /** Имена скрытых полей (параметры расчёта); значения проставляет внешний скрипт */
+  hiddenFields?: string[];
 }
 
-const { variant = 'light', submitText, class: className = '', idPrefix } = Astro.props;
+const {
+  variant = 'light',
+  submitText,
+  class: className = '',
+  idPrefix,
+  formType = 'lead',
+  hiddenFields = [],
+} = Astro.props;
 const dark = variant === 'dark';
 const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
 const base = import.meta.env.BASE_URL;
 ---
 
-<div data-lead-root class:list={[dark && 'surface-dark', className]}>
+<div data-lead-root data-form-type={formType} class:list={[dark && 'surface-dark', className]}>
   <form data-lead-form novalidate class="flex flex-col gap-4">
     <Input
       id={`${uid}-name`}
@@ -63,6 +76,13 @@ const base = import.meta.env.BASE_URL;
         <input type="text" name="company" tabindex="-1" autocomplete="off" />
       </label>
     </div>
+
+    {/* Скрытые поля — параметры расчёта ипотеки (значения проставляет MortgageCalculator) */}
+    {
+      hiddenFields.map((field) => (
+        <input type="hidden" data-mortgage-field={field} name={field} value="" />
+      ))
+    }
 
     <Checkbox id={`${uid}-consent`} name="consent" required>
       Принимаю условия{' '}
@@ -181,12 +201,27 @@ const base = import.meta.env.BASE_URL;
       const nameField = form.querySelector('input[name="name"]');
       const phoneField = form.querySelector('input[name="phone"]');
       const contactField = form.querySelector('input[type="radio"]:checked');
+
+      // Тип формы и параметры расчёта (для ипотечной заявки)
+      const formType = root.getAttribute('data-form-type') || 'lead';
+      let details: Record<string, string> | undefined;
+      if (formType === 'mortgage') {
+        details = {};
+        root.querySelectorAll('[data-mortgage-field]').forEach((el) => {
+          if (!(el instanceof HTMLInputElement)) return;
+          const key = el.getAttribute('data-mortgage-field');
+          if (key) (details as Record<string, string>)[key] = el.value;
+        });
+      }
+
       const payload = {
         name: nameField instanceof HTMLInputElement ? nameField.value.trim() : '',
         phone: phoneField instanceof HTMLInputElement ? phoneField.value.trim() : '',
         contactMethod: contactField instanceof HTMLInputElement ? contactField.value : '',
         page: window.location.href,
         utm: getUtm(),
+        formType,
+        ...(details ? { details } : {}),
       };
 
       setLoading(true);

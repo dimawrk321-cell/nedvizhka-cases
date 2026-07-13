@@ -1,0 +1,79 @@
+---
+/**
+ * Mortgage — ТЁМНАЯ секция (градиент ink→pine) с ипотечным калькулятором и заявкой.
+ * Тёмная и стоит после «Услуг», чтобы ритм чередовался:
+ *   Услуги(светлая) → Ипотека(тёмная) → Promo(светлая) → Процесс(тёмная).
+ * Калькулятор и форма — СВЕТЛЫЕ карточки (паттерн FinalCTA): surface-dark только на
+ * заголовке и подписи банков, сами карточки светлые — иначе инпуты перекрасятся.
+ * Мобильный порядок (DOM): калькулятор → форма → банки.
+ * Логотипы банков не используем (товарные знаки) — только текстовые названия.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import MortgageCalculator from '../components/MortgageCalculator.astro';
+import LeadForm from '../components/LeadForm.astro';
+import {
+  mortgageHeading,
+  mortgageForm,
+  mortgageBanks,
+  mortgageBanksLabel,
+  mortgageDetailFields,
+} from '../data/mortgage';
+---
+
+<section
+  id="mortgage"
+  data-section="mortgage"
+  class="section-y bg-[linear-gradient(135deg,var(--color-ink),var(--color-pine))] text-paper"
+>
+  <div class="wrap flex flex-col gap-10 lg:gap-14">
+    <div class="surface-dark">
+      <SectionHeading
+        eyebrow={mortgageHeading.eyebrow}
+        title={mortgageHeading.title}
+        subtitle={mortgageHeading.subtitle}
+        align="center"
+      />
+    </div>
+
+    <div class="grid items-start gap-6 lg:grid-cols-2 lg:gap-8">
+      {/* Калькулятор — светлая карточка */}
+      <div class="rounded-xl bg-paper p-6 text-ink shadow-2xl lg:p-8">
+        <MortgageCalculator />
+      </div>
+
+      {/* Заявка на ипотеку — светлая карточка */}
+      <div class="flex flex-col gap-5 rounded-xl bg-paper p-6 text-ink shadow-2xl lg:p-8">
+        <div class="flex flex-col gap-2">
+          <h3 class="text-xl font-semibold text-ink">{mortgageForm.heading}</h3>
+          <p class="text-sm text-muted">{mortgageForm.note}</p>
+        </div>
+        <LeadForm
+          variant="light"
+          formType="mortgage"
+          hiddenFields={mortgageDetailFields}
+          submitText={mortgageForm.submitText}
+          idPrefix="mortgage-lead"
+        />
+      </div>
+    </div>
+
+    {/* Банки-партнёры — текстовые названия (без логотипов) */}
+    {/* TODO: заменить на официальные логотипы, когда получим брендбуки от банков */}
+    <div class="flex flex-col items-center gap-5 border-t border-brass/20 pt-10">
+      <p class="text-xs font-medium uppercase tracking-[0.14em] text-brass-light">
+        {mortgageBanksLabel}
+      </p>
+      <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+        {
+          mortgageBanks.map((name) => (
+            <li>
+              <span class="font-sans text-[15px] font-semibold text-paper/80 transition-colors hover:text-brass-light">
+                {name}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

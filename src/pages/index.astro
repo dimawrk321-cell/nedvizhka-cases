@@ -19,6 +19,7 @@ import StickyBar from '../components/StickyBar.astro';
 import ProblemsSolutions from '../sections/ProblemsSolutions.astro';
 import About from '../sections/About.astro';
 import Services from '../sections/Services.astro';
+import Mortgage from '../sections/Mortgage.astro';
 import Promo from '../sections/Promo.astro';
 import Process from '../sections/Process.astro';
 import Cases from '../sections/Cases.astro';
@@ -49,7 +50,11 @@ import Footer from '../sections/Footer.astro';
     {/* УСЛУГИ (якорь #services) */}
     <Services />
 
-    {/* БАННЕР СКИДКИ: светлая акцентная лента между светлыми «Услугами» и тёмным «Процессом» */}
+    {/* ИПОТЕКА (якорь #mortgage): калькулятор + заявка + банки. Тёмная — для чередования:
+        Услуги(светлая) → Ипотека(тёмная) → Promo(светлая) → Процесс(тёмная) */}
+    <Mortgage />
+
+    {/* БАННЕР СКИДКИ: светлая акцентная лента между светлыми секциями и тёмным «Процессом» */}
     <Promo />
 
     {/* ПРОЦЕСС РАБОТЫ (якорь #process) */}

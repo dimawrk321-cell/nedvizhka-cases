@@ -16,7 +16,28 @@ const CONTACT_LABELS = {
   call: 'Звонок',
   whatsapp: 'WhatsApp',
   telegram: 'Telegram',
+  MAX: 'MAX',
 };
+
+// Заявка на ипотеку: подписи и порядок параметров расчёта из калькулятора.
+const MORTGAGE_DETAIL_LABELS = {
+  price: 'Стоимость',
+  downPayment: 'Первоначальный взнос',
+  creditSum: 'Сумма кредита',
+  term: 'Срок',
+  rate: 'Ставка',
+  paymentType: 'Тип платежа',
+  monthlyPayment: 'Ежемесячный платёж',
+};
+const MORTGAGE_DETAIL_ORDER = [
+  'price',
+  'downPayment',
+  'creditSum',
+  'term',
+  'rate',
+  'paymentType',
+  'monthlyPayment',
+];
 
 function corsHeaders() {
   return {
@@ -75,6 +96,9 @@ module.exports.handler = async function handler(event, context) {
   const page = String(data.page || '').trim();
   const utm = data.utm && typeof data.utm === 'object' ? data.utm : {};
   const honeypot = String(data.company || '').trim();
+  const formType = String(data.formType || 'lead').trim();
+  const isMortgage = formType === 'mortgage';
+  const details = data.details && typeof data.details === 'object' ? data.details : {};
 
   // Honeypot заполнен — притворяемся успехом, но в Telegram не шлём
   if (honeypot) {
@@ -96,7 +120,7 @@ module.exports.handler = async function handler(event, context) {
   const moscowTime = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
 
   const lines = [
-    '🔔 <b>Новая заявка с сайта</b>',
+    isMortgage ? '🏦 <b>Заявка на ипотеку</b>' : '🔔 <b>Новая заявка с сайта</b>',
     '',
     `<b>Имя:</b> ${escapeHtml(name)}`,
     `<b>Телефон:</b> ${escapeHtml(phone)}`,
@@ -104,6 +128,21 @@ module.exports.handler = async function handler(event, context) {
   ];
   if (page) {
     lines.push(`<b>Страница:</b> ${escapeHtml(page)}`);
+  }
+
+  // Блок параметров расчёта — только для ипотечной заявки
+  if (isMortgage) {
+    const detailLines = [];
+    MORTGAGE_DETAIL_ORDER.forEach((key) => {
+      const value = details[key];
+      if (value == null) return;
+      const str = String(value).trim();
+      if (str === '' || str === '—') return;
+      detailLines.push(`• <b>${MORTGAGE_DETAIL_LABELS[key]}:</b> ${escapeHtml(str)}`);
+    });
+    if (detailLines.length > 0) {
+      lines.push('', '<b>Параметры расчёта:</b>', ...detailLines);
+    }
   }
   const utmKeys = Object.keys(utm);
   if (utmKeys.length > 0) {

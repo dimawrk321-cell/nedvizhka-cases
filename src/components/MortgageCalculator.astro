@@ -1,0 +1,417 @@
+---
+/**
+ * MortgageCalculator — ипотечный калькулятор на чистом TS/JS (без библиотек).
+ * Пересчёт мгновенный, без кнопки. Аннуитетные и дифференцированные платежи.
+ * Взнос переключается ₽/%, сумма кредита — вычисляемое поле только для чтения.
+ * Рассчитанные параметры зеркалятся в скрытые поля формы ([data-mortgage-field]) —
+ * их читает LeadForm и отправляет в Telegram, чтобы Дарья видела расчёт клиента.
+ * Все инпуты доступные (label/aria), тач-таргеты ≥44px.
+ */
+import RadioGroup from './RadioGroup.astro';
+import { mortgageDefaults, mortgageBounds } from '../data/mortgage';
+
+const { price, downPaymentPct, termYears, rate } = mortgageDefaults;
+const { termMin, termMax, rateMin, rateMax, rateStep } = mortgageBounds;
+
+const groupInt = (n: number): string => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const initialDown = Math.round((price * downPaymentPct) / 100);
+const initialCredit = price - initialDown;
+
+const inputClass =
+  'min-h-[44px] w-full rounded-card border border-stone bg-paper px-4 py-2.5 text-ink transition-colors placeholder:text-muted focus:border-brass';
+const labelClass = 'text-sm font-medium text-ink';
+---
+
+<div data-mcalc class="flex flex-col gap-5">
+  {/* Стоимость недвижимости */}
+  <div class="flex flex-col gap-1.5">
+    <label for="mc-price" class={labelClass}>Стоимость недвижимости, ₽</label>
+    <input
+      id="mc-price"
+      data-mc-price
+      type="text"
+      inputmode="numeric"
+      autocomplete="off"
+      value={groupInt(price)}
+      class={inputClass}
+    />
+  </div>
+
+  {/* Первоначальный взнос + переключатель ₽/% */}
+  <div class="flex flex-col gap-1.5">
+    <label for="mc-down" class={labelClass}>Первоначальный взнос</label>
+    <div class="flex items-stretch gap-2">
+      <input
+        id="mc-down"
+        data-mc-down
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        value={groupInt(initialDown)}
+        class={`${inputClass} min-w-0 flex-1`}
+      />
+      <div
+        class="inline-flex shrink-0 rounded-card border border-stone p-0.5"
+        role="group"
+        aria-label="Единица первоначального взноса"
+      >
+        <button
+          type="button"
+          data-mc-unit="rub"
+          aria-pressed="true"
+          class="mc-unit inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-[calc(var(--radius-card)-2px)] px-3 text-sm font-semibold text-ink transition-colors"
+        >
+          ₽
+        </button>
+        <button
+          type="button"
+          data-mc-unit="pct"
+          aria-pressed="false"
+          class="mc-unit inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-[calc(var(--radius-card)-2px)] px-3 text-sm font-semibold text-ink transition-colors"
+        >
+          %
+        </button>
+      </div>
+    </div>
+    <p data-mc-down-hint class="text-sm text-muted" aria-live="polite"></p>
+  </div>
+
+  {/* Сумма кредита — вычисляемое поле, только для чтения */}
+  <div class="flex flex-col gap-1.5">
+    <label for="mc-credit" class={labelClass}>Сумма кредита</label>
+    <input
+      id="mc-credit"
+      data-mc-credit
+      type="text"
+      readonly
+      tabindex="-1"
+      aria-readonly="true"
+      value={`${groupInt(initialCredit)} ₽`}
+      class={`${inputClass} bg-stone/10`}
+    />
+  </div>
+
+  {/* Срок кредита — слайдер + числовое поле */}
+  <div class="flex flex-col gap-1.5">
+    <label for="mc-term" class={labelClass}>Срок кредита, лет</label>
+    <div class="flex items-center gap-4">
+      <input
+        type="range"
+        data-mc-term-range
+        min={termMin}
+        max={termMax}
+        step="1"
+        value={termYears}
+        aria-label="Срок кредита в годах, ползунок"
+        class="mc-range h-1.5 flex-1 cursor-pointer accent-brass"
+      />
+      <input
+        id="mc-term"
+        data-mc-term-num
+        type="number"
+        inputmode="numeric"
+        min={termMin}
+        max={termMax}
+        step="1"
+        value={termYears}
+        class={`${inputClass} w-20 shrink-0 text-center`}
+      />
+    </div>
+  </div>
+
+  {/* Процентная ставка */}
+  <div class="flex flex-col gap-1.5">
+    <label for="mc-rate" class={labelClass}>Процентная ставка, % годовых</label>
+    <input
+      id="mc-rate"
+      data-mc-rate
+      type="number"
+      inputmode="decimal"
+      min={rateMin}
+      max={rateMax}
+      step={rateStep}
+      value={rate}
+      class={inputClass}
+    />
+  </div>
+
+  {/* Тип платежей */}
+  <RadioGroup
+    name="mc-ptype"
+    legend="Тип платежей"
+    value="annuity"
+    options={[
+      { value: 'annuity', label: 'Аннуитетные' },
+      { value: 'diff', label: 'Дифференцированные' },
+    ]}
+  />
+
+  {/* Подсказка при некорректных данных */}
+  <p
+    data-mc-error
+    hidden
+    role="alert"
+    class="rounded-card border border-[#d64545]/40 bg-[#d64545]/10 px-4 py-2.5 text-sm text-[#a3312f]"
+  >
+    Первоначальный взнос не может превышать стоимость недвижимости.
+  </p>
+
+  {/* Результат расчёта */}
+  <div class="flex flex-col gap-4 rounded-lg border border-brass/30 bg-brass/5 p-5">
+    <div class="flex flex-col gap-1">
+      <p data-mc-monthly-label class="text-sm text-muted">Ежемесячный платёж</p>
+      <p data-mc-monthly class="stat-num text-[32px] leading-none text-brass sm:text-[40px]">—</p>
+      <p data-mc-monthly-note hidden class="text-sm text-muted"></p>
+    </div>
+    <dl class="flex flex-col gap-2 border-t border-stone/60 pt-4 text-sm">
+      <div class="flex items-center justify-between gap-3">
+        <dt class="text-muted">Сумма кредита</dt>
+        <dd data-mc-out-credit class="font-medium text-ink">—</dd>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <dt class="text-muted">Переплата по процентам</dt>
+        <dd data-mc-out-overpay class="font-medium text-ink">—</dd>
+      </div>
+      <div class="flex items-center justify-between gap-3">
+        <dt class="text-muted">Общая выплата</dt>
+        <dd data-mc-out-total class="font-medium text-ink">—</dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<style>
+  .mc-unit[aria-pressed='true'] {
+    background-color: var(--color-brass);
+    color: var(--color-ink);
+  }
+</style>
+
+<script>
+  function initMortgageCalc(): void {
+    const root = document.querySelector('[data-mcalc]');
+    if (!root) return;
+
+    const priceEl = root.querySelector<HTMLInputElement>('[data-mc-price]');
+    const downEl = root.querySelector<HTMLInputElement>('[data-mc-down]');
+    const downHint = root.querySelector<HTMLElement>('[data-mc-down-hint]');
+    const creditEl = root.querySelector<HTMLInputElement>('[data-mc-credit]');
+    const termRange = root.querySelector<HTMLInputElement>('[data-mc-term-range]');
+    const termNum = root.querySelector<HTMLInputElement>('[data-mc-term-num]');
+    const rateEl = root.querySelector<HTMLInputElement>('[data-mc-rate]');
+    const errorEl = root.querySelector<HTMLElement>('[data-mc-error]');
+    const monthlyLabel = root.querySelector<HTMLElement>('[data-mc-monthly-label]');
+    const monthlyEl = root.querySelector<HTMLElement>('[data-mc-monthly]');
+    const monthlyNote = root.querySelector<HTMLElement>('[data-mc-monthly-note]');
+    const outCredit = root.querySelector<HTMLElement>('[data-mc-out-credit]');
+    const outOverpay = root.querySelector<HTMLElement>('[data-mc-out-overpay]');
+    const outTotal = root.querySelector<HTMLElement>('[data-mc-out-total]');
+
+    if (
+      !priceEl || !downEl || !downHint || !creditEl || !termRange || !termNum ||
+      !rateEl || !errorEl || !monthlyLabel || !monthlyEl || !monthlyNote ||
+      !outCredit || !outOverpay || !outTotal
+    ) {
+      return;
+    }
+
+    let unit: 'rub' | 'pct' = 'rub';
+
+    const digits = (s: string): string => (s || '').replace(/\D/g, '');
+    const toNum = (s: string): number => {
+      const cleaned = String(s || '').replace(/\s/g, '').replace(',', '.').replace(/[^\d.]/g, '');
+      const n = parseFloat(cleaned);
+      return Number.isNaN(n) ? 0 : n;
+    };
+    const group = (n: number): string => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const money = (n: number): string => group(n) + ' ₽';
+    const yearsWord = (n: number): string => {
+      const a = Math.abs(n) % 100;
+      const l = a % 10;
+      if (a > 10 && a < 20) return 'лет';
+      if (l > 1 && l < 5) return 'года';
+      if (l === 1) return 'год';
+      return 'лет';
+    };
+    const pctOf = (part: number, whole: number): number =>
+      whole > 0 ? Math.round((part / whole) * 1000) / 10 : 0;
+
+    const getPrice = (): number => Number(digits(priceEl.value));
+    const getDownRub = (): number => {
+      if (unit === 'pct') return Math.round((getPrice() * toNum(downEl.value)) / 100);
+      return Number(digits(downEl.value));
+    };
+
+    const formatMoneyInput = (el: HTMLInputElement): void => {
+      const start = el.selectionStart ?? el.value.length;
+      const before = el.value.length;
+      const d = digits(el.value);
+      el.value = d ? group(Number(d)) : '';
+      const pos = Math.max(0, start + (el.value.length - before));
+      try {
+        el.setSelectionRange(pos, pos);
+      } catch (_) {
+        /* некоторые типы полей не поддерживают setSelectionRange */
+      }
+    };
+
+    const getType = (): string => {
+      const checked = document.querySelector<HTMLInputElement>('input[name="mc-ptype"]:checked');
+      return checked ? checked.value : 'annuity';
+    };
+
+    const syncHidden = (map: Record<string, string>): void => {
+      Object.keys(map).forEach((key) => {
+        document.querySelectorAll<HTMLInputElement>(`[data-mortgage-field="${key}"]`).forEach((el) => {
+          el.value = map[key];
+        });
+      });
+    };
+
+    const recalc = (): void => {
+      const price = getPrice();
+      const downRub = getDownRub();
+      const years = Math.min(
+        Math.max(parseInt(termNum.value || '0', 10) || 0, Number(termRange.min)),
+        Number(termRange.max),
+      );
+      const rateVal = Math.max(toNum(rateEl.value), 0);
+      const type = getType();
+      const credit = price - downRub;
+
+      // Подсказка по взносу — эквивалент в другой единице
+      if (price > 0) {
+        downHint.textContent =
+          unit === 'rub' ? `${pctOf(downRub, price)}% от стоимости` : `${money(downRub)} от стоимости`;
+      } else {
+        downHint.textContent = '';
+      }
+
+      const overPaid = downRub > price;
+      errorEl.hidden = !overPaid;
+      creditEl.value = credit > 0 ? money(credit) : credit === 0 ? money(0) : '—';
+
+      const baseHidden: Record<string, string> = {
+        price: money(price),
+        downPayment: price > 0 ? `${money(downRub)} (${pctOf(downRub, price)}%)` : money(downRub),
+        creditSum: credit >= 0 ? money(credit) : '—',
+        term: `${years} ${yearsWord(years)}`,
+        rate: rateVal > 0 ? `${rateVal}%` : '—',
+        paymentType: type === 'annuity' ? 'Аннуитетные' : 'Дифференцированные',
+        monthlyPayment: '—',
+      };
+
+      const valid = price > 0 && years > 0 && rateVal > 0 && !overPaid && credit > 0;
+      if (!valid) {
+        monthlyLabel.textContent = 'Ежемесячный платёж';
+        monthlyEl.textContent = '—';
+        monthlyNote.hidden = true;
+        outCredit.textContent = credit > 0 ? money(credit) : credit === 0 ? money(0) : '—';
+        outOverpay.textContent = '—';
+        outTotal.textContent = '—';
+        syncHidden(baseHidden);
+        return;
+      }
+
+      const i = rateVal / 12 / 100;
+      const n = years * 12;
+      const S = credit;
+
+      let mainVal: number;
+      let overpay: number;
+      let total: number;
+      let monthlyHidden: string;
+
+      if (type === 'annuity') {
+        const M = i === 0 ? S / n : (S * (i * Math.pow(1 + i, n))) / (Math.pow(1 + i, n) - 1);
+        total = M * n;
+        overpay = total - S;
+        mainVal = M;
+        monthlyLabel.textContent = 'Ежемесячный платёж';
+        monthlyNote.hidden = true;
+        monthlyNote.textContent = '';
+        monthlyHidden = money(M);
+      } else {
+        const principal = S / n;
+        const first = principal + S * i;
+        const last = principal + principal * i;
+        overpay = (i * S * (n + 1)) / 2;
+        total = S + overpay;
+        mainVal = first;
+        monthlyLabel.textContent = 'Первый платёж';
+        monthlyNote.hidden = false;
+        monthlyNote.textContent = `Последний платёж — ${money(last)}`;
+        monthlyHidden = `${money(first)} → ${money(last)}`;
+      }
+
+      monthlyEl.textContent = money(mainVal);
+      outCredit.textContent = money(S);
+      outOverpay.textContent = money(overpay);
+      outTotal.textContent = money(total);
+
+      syncHidden({ ...baseHidden, monthlyPayment: monthlyHidden });
+    };
+
+    priceEl.addEventListener('input', () => {
+      formatMoneyInput(priceEl);
+      recalc();
+    });
+    downEl.addEventListener('input', () => {
+      if (unit === 'rub') formatMoneyInput(downEl);
+      recalc();
+    });
+    termRange.addEventListener('input', () => {
+      termNum.value = termRange.value;
+      recalc();
+    });
+    termNum.addEventListener('input', () => {
+      termRange.value = termNum.value;
+      recalc();
+    });
+    rateEl.addEventListener('input', recalc);
+    document
+      .querySelectorAll<HTMLInputElement>('input[name="mc-ptype"]')
+      .forEach((el) => el.addEventListener('change', recalc));
+
+    root.querySelectorAll<HTMLButtonElement>('[data-mc-unit]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.getAttribute('data-mc-unit');
+        if ((next !== 'rub' && next !== 'pct') || next === unit) return;
+        const price = getPrice();
+        const downRub = getDownRub();
+        unit = next;
+        root.querySelectorAll<HTMLButtonElement>('[data-mc-unit]').forEach((b) => {
+          b.setAttribute('aria-pressed', String(b.getAttribute('data-mc-unit') === unit));
+        });
+        if (unit === 'pct') {
+          downEl.value = String(pctOf(downRub, price));
+          downEl.setAttribute('inputmode', 'decimal');
+        } else {
+          downEl.value = group(downRub);
+          downEl.setAttribute('inputmode', 'numeric');
+        }
+        recalc();
+      });
+    });
+
+    termNum.addEventListener('blur', () => {
+      let v = parseInt(termNum.value || '0', 10) || 0;
+      v = Math.min(Math.max(v, Number(termRange.min)), Number(termRange.max));
+      termNum.value = String(v);
+      termRange.value = String(v);
+      recalc();
+    });
+    rateEl.addEventListener('blur', () => {
+      let v = toNum(rateEl.value);
+      if (v > 0) {
+        v = Math.min(Math.max(v, Number(rateEl.min)), Number(rateEl.max));
+        rateEl.value = String(v);
+      }
+      recalc();
+    });
+
+    recalc();
+  }
+
+  initMortgageCalc();
+</script>
