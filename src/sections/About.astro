@@ -50,7 +50,7 @@ import { User, Check } from 'lucide-static';
               vector-effect="non-scaling-stroke"
             />
           </svg>
-          <span class="text-sm text-muted">{site.name} · {site.role}</span>
+          <span class="text-sm text-muted">{site.person} · {site.personRole}</span>
         </div>
 
         <div>
@@ -67,7 +67,7 @@ import { User, Check } from 'lucide-static';
           <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-24 [&>svg]:w-24">
             <span set:html={User} aria-hidden="true" />
           </div>
-          {/* TODO: заменить на <Image src={...} alt={site.name} /> из astro:assets */}
+          {/* TODO: заменить на <Image src={...} alt={site.person} /> из astro:assets */}
         </div>
       </div>
     </div>

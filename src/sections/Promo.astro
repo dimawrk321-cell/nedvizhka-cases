@@ -1,0 +1,36 @@
+---
+/**
+ * Promo — компактная акцентная ЛЕНТА (не карточка во весь экран).
+ * СВЕТЛАЯ секция с брасс-акцентом: стоит между светлыми «Услугами» и тёмным
+ * «Процессом», поэтому светлая — чтобы не было двух тёмных секций подряд.
+ * Иконка gift (lucide) + текст из promo.ts + Button на #cta.
+ */
+import Button from '../components/Button.astro';
+import { promo } from '../data/promo';
+import { Gift } from 'lucide-static';
+---
+
+<section data-section="promo" data-bg="light" class="pb-6 lg:pb-10">
+  <div class="wrap">
+    <div
+      data-reveal
+      class="flex flex-col gap-5 rounded-xl border border-brass/40 bg-brass/10 p-6 sm:flex-row sm:items-center sm:gap-7 lg:px-8 lg:py-7"
+    >
+      <span
+        class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-card border border-brass/40 bg-paper text-brass [&>svg]:h-6 [&>svg]:w-6"
+        set:html={Gift}
+        aria-hidden="true"
+      />
+
+      <div class="flex flex-1 flex-col gap-1">
+        <p class="text-lg font-semibold text-ink">{promo.title}</p>
+        <p class="text-muted">{promo.text}</p>
+        <p class="text-sm text-muted">{promo.note}</p>
+      </div>
+
+      <div class="shrink-0">
+        <Button variant="primary" href={promo.ctaHref}>{promo.ctaLabel}</Button>
+      </div>
+    </div>
+  </div>
+</section>

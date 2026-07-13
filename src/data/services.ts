@@ -6,7 +6,7 @@ export interface Service {
 
 export const servicesHeading = {
   eyebrow: 'Услуги',
-  title: 'Чем я могу быть полезен',
+  title: 'Чем я могу быть полезна',
 };
 
 export const services: Service[] = [

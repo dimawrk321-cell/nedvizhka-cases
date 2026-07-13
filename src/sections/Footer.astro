@@ -20,8 +20,8 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
     <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1.2fr]">
       {/* Бренд */}
       <div class="flex flex-col gap-3">
-        <p class="font-display text-[22px] leading-none">{site.name}</p>
-        <p class="text-sm font-medium text-brass-light">{site.role}</p>
+        <p class="font-display text-[22px] leading-none">{site.company}</p>
+        <p class="text-sm font-medium text-brass-light">{site.companyRole}</p>
         <p class="mt-2 max-w-[42ch] text-sm text-stone">{footer.tagline}</p>
       </div>
 
@@ -71,7 +71,7 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
       {/* Реквизиты */}
       <div class="flex flex-col gap-2">
         <p class={titleClass}>{footer.legalTitle}</p>
-        <p class="text-sm text-stone">{site.name}</p>
+        <p class="text-sm text-stone">{site.legalName}</p>
         <p class="text-sm text-stone">ИНН {site.inn}</p>
         <p class="text-sm text-stone">{site.office}</p>
         {/* TODO: ОГРНИП, расчётный счёт и прочие реквизиты оператора */}
@@ -79,7 +79,7 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
     </div>
 
     <div class="mt-12 flex flex-col gap-3 border-t border-stone/15 pt-6 text-sm text-stone sm:flex-row sm:items-center sm:justify-between">
-      <p>© {year} {site.name}</p>
+      <p>© {year} {site.company}</p>
       <a href={`${base}privacy/`} class="transition-colors hover:text-brass-light">{footer.privacyLabel}</a>
     </div>
   </div>

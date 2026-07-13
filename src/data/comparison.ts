@@ -1,5 +1,3 @@
-import { site } from './site';
-
 export interface ComparisonRow {
   criterion: string;
   diy: string;
@@ -25,8 +23,7 @@ export const comparison: ComparisonRow[] = [
     criterion: 'Кто занимается продажей',
     diy: 'Вы сами, в свободное от работы время',
     agency: 'Агент, у которого 20–30 объектов одновременно',
-    // Лимит объектов — из site.monthlyLimit
-    mine: `Лично я, не больше ${site.monthlyLimit} объектов в месяц`,
+    mine: 'Лично я, с полным фокусом на вашей сделке',
   },
   {
     criterion: 'Торг с покупателем',
