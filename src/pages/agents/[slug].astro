@@ -8,10 +8,12 @@
  * history.back() (браузер вернёт позицию скролла на секции агентов), иначе переходим
  * на /#agents. Все ссылки — с учётом BASE_URL (подпапка GitHub Pages).
  */
+import { Picture } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import { agents, agentPage } from '../../data/agents';
 import { User, Check, ArrowLeft } from 'lucide-static';
+import dariaPhoto from '../../assets/daria.jpg';
 
 export function getStaticPaths() {
   return agents.map((agent) => ({
@@ -92,14 +94,34 @@ const pageDescription = agent.summary;
           </div>
         </div>
 
-        {/* Фото: на мобильном второй, на десктопе слева */}
+        {/* Фото: на мобильном второй, на десктопе слева. Дарья — реальное фото
+            (astro:assets, eager/LCP этой страницы), Дмитрий — плейсхолдер */}
         <div class="order-2 lg:order-1 lg:col-span-5">
           <div class="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-xl border border-brass/40 bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))] lg:mx-0">
+            {
+              agent.slug === 'darya-salnikova' && (
+                <Picture
+                  src={dariaPhoto}
+                  formats={['avif', 'webp']}
+                  width={768}
+                  quality={82}
+                  alt={`${agent.name}, риелтор`}
+                  loading="eager"
+                  fetchpriority="high"
+                  class="absolute inset-0 h-full w-full object-cover"
+                />
+              )
+            }
+            {/* внутренняя рамка brass — поверх фото/градиента */}
             <div class="absolute inset-3 rounded-lg border border-brass/30" />
-            <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-24 [&>svg]:w-24">
-              <span set:html={User} aria-hidden="true" />
-            </div>
-            {/* TODO: заменить на <Image src={agent.photo} alt={agent.name} /> из astro:assets */}
+            {
+              agent.slug !== 'darya-salnikova' && (
+                <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-24 [&>svg]:w-24">
+                  <span set:html={User} aria-hidden="true" />
+                </div>
+              )
+            }
+            {/* TODO: фото Дмитрия — заменить плейсхолдер, когда будет фото */}
           </div>
         </div>
       </div>
