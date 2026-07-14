@@ -1,0 +1,52 @@
+---
+/**
+ * Prices — светлая секция «Цены». Список услуг (НЕ карточки): слева название,
+ * справа ставка крупно + минимум мельче (muted). Позиции «без комиссии» — брассом
+ * (сильный оффер). Строки разделены линиями stone. Под таблицей — сноски и кнопка.
+ * Светлая: стоит между светлыми «Услугами» и тёмной «Ипотекой» — двух тёмных подряд нет.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import Button from '../components/Button.astro';
+import { prices, pricesHeading, pricesFootnotes, pricesCta } from '../data/prices';
+---
+
+<section id="prices" data-section="prices" data-bg="light" class="section-y">
+  <div class="wrap flex flex-col gap-12">
+    <SectionHeading eyebrow={pricesHeading.eyebrow} title={pricesHeading.title} align="center" />
+
+    <div class="mx-auto flex w-full max-w-3xl flex-col gap-8">
+      <ul data-reveal-group class="flex flex-col">
+        {
+          prices.map((item, i) => (
+            <li
+              data-reveal-item
+              class:list={[
+                'flex items-start justify-between gap-4 py-5',
+                i > 0 && 'border-t border-stone',
+              ]}
+            >
+              <span class:list={['min-w-0 flex-1 text-base text-ink sm:text-lg', item.free && 'font-semibold']}>
+                {item.service}
+              </span>
+              <span class="flex shrink-0 flex-col items-end text-right">
+                <span class:list={['text-base font-semibold sm:text-lg', item.free ? 'text-brass' : 'text-ink']}>
+                  {item.rate}
+                </span>
+                {item.minimum && <span class="mt-0.5 text-sm text-muted">{item.minimum}</span>}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-1">
+          {pricesFootnotes.map((note) => <p class="text-sm text-muted">{note}</p>)}
+        </div>
+        <div>
+          <Button variant="ghost" href="#cta">{pricesCta}</Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

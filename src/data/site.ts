@@ -33,6 +33,8 @@ export interface Site {
   maxLink: string;
   /** Адрес офиса */
   office: string;
+  /** Ссылка на карту офиса (Яндекс.Карты) — квадратные скобки в URL закодированы */
+  mapHref: string;
   /** ИНН */
   inn: string;
   /** Год начала работы (для расчёта стажа) */
@@ -47,11 +49,14 @@ export const site: Site = {
   legalName: 'Сальникова Дарья Викторовна',
   phone: '+7 (903) 123-45-67', // TODO: реальный телефон Дарьи
   phoneHref: 'tel:+79031234567', // TODO: реальный телефон Дарьи
-  telegram: '@salnikova_realty', // TODO: реальный Telegram Дарьи
-  telegramHref: 'https://t.me/salnikova_realty', // TODO: реальный Telegram Дарьи
+  telegram: '@moneymarketdaria',
+  telegramHref: 'https://t.me/moneymarketdaria',
   whatsappHref: 'https://wa.me/79031234567', // TODO: тот же номер Дарьи
   maxLink: 'https://max.ru/ИМЯ_ИЛИ_ID', // TODO: уточнить реальную ссылку/формат MAX Дарьи
-  office: 'Москва, Пресненская наб., 12', // TODO: реальный адрес офиса
+  office: 'Ленинградский проспект, 26к1, Москва',
+  // Яндекс.Карты: квадратные скобки закодированы (%5B / %5D), иначе href в HTML ломается
+  mapHref:
+    'https://yandex.ru/maps?whatshere%5Bpoint%5D=37.572854225207536,55.78301769778434&whatshere%5Bzoom%5D=17.8&ll=37.572854,55.783018&z=17.8',
   inn: '770100000000', // TODO: реальный ИНН оператора
   practiceSince: 2020, // Дарья в недвижимости с 2020 (отсюда же считается стаж в stats.ts)
 };

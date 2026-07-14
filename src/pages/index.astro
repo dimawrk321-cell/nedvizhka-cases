@@ -5,11 +5,11 @@
  * Наполнение контентом и подключение компонентов из src/sections — на следующих этапах.
  *
  * Порядок секций:
- *   Header → Hero → TrustBar → ProblemsSolutions → Agents → Services →
+ *   Header → Hero → TrustBar → ProblemsSolutions → Agents → Services → Prices →
  *   Mortgage → Promo → Process → Cases → Reviews → FAQ → FinalCTA → Footer
  *   (+ мобильный StickyBar)
  *
- * Якоря для навигации: #agents, #services, #process, #cases, #reviews, #faq, #cta
+ * Якоря для навигации: #agents, #services, #prices, #mortgage, #process, #cases, #reviews, #faq, #cta
  */
 import Layout from '../layouts/Layout.astro';
 import Header from '../sections/Header.astro';
@@ -19,6 +19,7 @@ import StickyBar from '../components/StickyBar.astro';
 import ProblemsSolutions from '../sections/ProblemsSolutions.astro';
 import Agents from '../sections/Agents.astro';
 import Services from '../sections/Services.astro';
+import Prices from '../sections/Prices.astro';
 import Mortgage from '../sections/Mortgage.astro';
 import Promo from '../sections/Promo.astro';
 import Process from '../sections/Process.astro';
@@ -49,8 +50,11 @@ import Footer from '../sections/Footer.astro';
     {/* УСЛУГИ (якорь #services) */}
     <Services />
 
+    {/* ЦЕНЫ (якорь #prices): прозрачные тарифы. Светлая — между светлыми «Услугами» и тёмной «Ипотекой» */}
+    <Prices />
+
     {/* ИПОТЕКА (якорь #mortgage): калькулятор + заявка + банки. Тёмная — для чередования:
-        Услуги(светлая) → Ипотека(тёмная) → Promo(светлая) → Процесс(тёмная) */}
+        Услуги/Цены(светлые) → Ипотека(тёмная) → Promo(светлая) → Процесс(тёмная) */}
     <Mortgage />
 
     {/* БАННЕР СКИДКИ: светлая акцентная лента между светлыми секциями и тёмным «Процессом» */}
