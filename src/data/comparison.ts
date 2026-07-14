@@ -41,7 +41,7 @@ export const comparison: ComparisonRow[] = [
     criterion: 'Средний срок продажи',
     diy: 'Месяцы без гарантий',
     agency: 'Как пойдёт',
-    mine: '30–45 дней',
+    mine: '30 дней',
   },
   {
     criterion: 'Мотивация',
