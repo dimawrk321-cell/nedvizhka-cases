@@ -5,11 +5,11 @@
  * Наполнение контентом и подключение компонентов из src/sections — на следующих этапах.
  *
  * Порядок секций:
- *   Header → Hero → TrustBar → ProblemsSolutions → About → Services →
+ *   Header → Hero → TrustBar → ProblemsSolutions → Agents → Services →
  *   Process → Cases → Reviews → Comparison → FAQ → FinalCTA → Footer
  *   (+ мобильный StickyBar)
  *
- * Якоря для навигации: #services, #process, #cases, #reviews, #faq, #cta
+ * Якоря для навигации: #agents, #services, #process, #cases, #reviews, #faq, #cta
  */
 import Layout from '../layouts/Layout.astro';
 import Header from '../sections/Header.astro';
@@ -17,7 +17,7 @@ import Hero from '../sections/Hero.astro';
 import TrustBar from '../sections/TrustBar.astro';
 import StickyBar from '../components/StickyBar.astro';
 import ProblemsSolutions from '../sections/ProblemsSolutions.astro';
-import About from '../sections/About.astro';
+import Agents from '../sections/Agents.astro';
 import Services from '../sections/Services.astro';
 import Mortgage from '../sections/Mortgage.astro';
 import Promo from '../sections/Promo.astro';
@@ -44,8 +44,8 @@ import Footer from '../sections/Footer.astro';
     {/* БОЛИ И РЕШЕНИЯ: проблемы клиента ↔ как риелтор их закрывает */}
     <ProblemsSolutions />
 
-    {/* О РИЕЛТОРЕ: опыт, экспертиза, позиционирование, фото */}
-    <About />
+    {/* АГЕНТЫ (якорь #agents): кто ведёт сделку — карточки Дарьи и Дмитрия со ссылками на профили */}
+    <Agents />
 
     {/* УСЛУГИ (якорь #services) */}
     <Services />

@@ -1,0 +1,60 @@
+---
+/**
+ * Agents — светлая секция «Агенты» (заменяет прежнюю About).
+ * Две карточки в ряд (на мобильном в столбец): портретный фото-плейсхолдер
+ * (двойная рамка brass, градиент pine→ink), имя, роль, короткое описание и ссылка
+ * «Подробнее» на страницу профиля. Карточка целиком кликабельна (stretched-link),
+ * но в разметке одна доступная ссылка. id="agents" — якорь для стрелки «назад»
+ * со страниц агентов. Ссылки строятся с учётом BASE_URL (подпапка GitHub Pages).
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import { agents, agentsHeading, agentCardCta } from '../data/agents';
+import { User, ArrowRight } from 'lucide-static';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<section id="agents" data-section="agents" data-bg="light" class="section-y">
+  <div class="wrap flex flex-col gap-12">
+    <SectionHeading eyebrow={agentsHeading.eyebrow} title={agentsHeading.title} align="center" />
+
+    <div data-reveal-group class="grid gap-6 sm:grid-cols-2 sm:gap-8">
+      {
+        agents.map((agent) => (
+          <article
+            data-reveal-item
+            class="group relative flex flex-col items-center gap-5 rounded-xl border border-stone bg-paper p-6 text-center transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md lg:p-8"
+          >
+            {/* Портрет — плейсхолдер (двойная рамка brass, градиент pine→ink) */}
+            <div class="relative aspect-[4/5] w-full max-w-[300px] overflow-hidden rounded-lg border border-brass/40 bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))]">
+              <div class="absolute inset-3 rounded-lg border border-brass/30" />
+              <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-20 [&>svg]:w-20">
+                <span set:html={User} aria-hidden="true" />
+              </div>
+              {/* TODO: заменить на <Image src={agent.photo} alt={agent.name} /> из astro:assets */}
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <h3 class="text-xl font-semibold text-ink">{agent.name}</h3>
+              <p class="text-sm font-medium text-brass">{agent.role}</p>
+            </div>
+
+            <p class="text-muted">{agent.summary}</p>
+
+            <a
+              href={`${base}agents/${agent.slug}/`}
+              class="mt-auto inline-flex items-center gap-2 font-medium text-ink transition-colors after:absolute after:inset-0 group-hover:text-brass [&>svg]:h-[1.15em] [&>svg]:w-[1.15em]"
+            >
+              {agentCardCta}
+              <span
+                class="inline-flex shrink-0 transition-transform duration-200 group-hover:translate-x-1"
+                set:html={ArrowRight}
+                aria-hidden="true"
+              />
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
