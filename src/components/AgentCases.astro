@@ -1,24 +1,28 @@
 ---
 /**
- * Cases — светлая секция. 3 кейса из cases.ts.
- * Карточка: фото-окно объекта (плейсхолдер, // TODO) + крупная метрика (Prata, brass)
- * + структура «задача → что сделала → итог». Hover по общему правилу карточек.
+ * AgentCases — блок «Кейсы» в профиле агента. Карточки как в прежней секции Cases:
+ * фото-окно объекта (плейсхолдер), крупная метрика (Prata, brass, с count-up),
+ * структура «задача → что сделала → итог». Кейсы у каждого агента свои (agents.ts);
+ * если список пуст (например у Дмитрия) — блок не рендерится.
  */
-import SectionHeading from '../components/SectionHeading.astro';
-import Button from '../components/Button.astro';
-import { cases, casesHeading, casesCta, caseFields } from '../data/cases';
+import type { CaseStudy } from '../data/cases';
+import { caseFields } from '../data/cases';
 import { Building2 } from 'lucide-static';
+
+interface Props {
+  cases: CaseStudy[];
+}
+const { cases } = Astro.props;
 ---
 
-<section id="cases" data-section="cases" data-bg="light" class="section-y">
-  <div class="wrap flex flex-col gap-12">
-    <SectionHeading eyebrow={casesHeading.eyebrow} title={casesHeading.title} align="center" />
-
-    <div data-reveal-group class="grid gap-6 md:grid-cols-3">
-      {
-        cases.map((item) => (
-          <article data-reveal-item class="group flex flex-col overflow-hidden rounded-lg border border-stone bg-paper transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md">
-            {/* фото-окно объекта */}
+{
+  cases.length > 0 && (
+    <div class="flex flex-col gap-6 border-t border-stone pt-10">
+      <h2 class="text-2xl">Кейсы</h2>
+      <div class="grid gap-6 md:grid-cols-3">
+        {cases.map((item) => (
+          <article class="group flex flex-col overflow-hidden rounded-lg border border-stone bg-paper transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md">
+            {/* фото-окно объекта — плейсхолдер */}
             <div class="relative aspect-[4/5] overflow-hidden border-b border-stone bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))]">
               <div class="absolute inset-3 rounded-lg border border-brass/30" />
               <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-16 [&>svg]:w-16">
@@ -30,10 +34,12 @@ import { Building2 } from 'lucide-static';
             <div class="flex flex-1 flex-col gap-4 p-6">
               <h3 class="text-lg font-semibold text-ink">{item.object}</h3>
 
-              {/* метрика как акцентный результат; min-h резервирует место под 2 строки → низ карточек ровный */}
+              {/* метрика как акцентный результат; min-h резервирует место под 2 строки */}
               <div class="flex flex-col gap-1">
                 <p class="eyebrow">{caseFields.metric}</p>
-                <span data-counter class="stat-num block min-h-[2.2em] text-[34px] leading-[1.1] text-brass">{item.metric}</span>
+                <span data-counter class="stat-num block min-h-[2.2em] text-[34px] leading-[1.1] text-brass">
+                  {item.metric}
+                </span>
               </div>
 
               <dl class="flex flex-col gap-3 text-sm">
@@ -52,12 +58,8 @@ import { Building2 } from 'lucide-static';
               </dl>
             </div>
           </article>
-        ))
-      }
+        ))}
+      </div>
     </div>
-
-    <div class="flex justify-center">
-      <Button variant="ghost" href="#cta">{casesCta}</Button>
-    </div>
-  </div>
-</section>
+  )
+}

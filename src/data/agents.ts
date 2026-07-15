@@ -3,10 +3,11 @@
  * на главной и для страниц профилей (/agents/<slug>/).
  * Дарья Сальникова и Дмитрий Соколов — риелторы агентства «Первый город», равны по статусу.
  * Имя «Дмитрий Соколов» существует ТОЛЬКО здесь.
- * Услуги переехали с главной в профили: у Дарьи — набор из services.ts, у Дмитрия — свой.
+ * Услуги и кейсы переехали с главной в профили: у Дарьи — из services.ts / cases.ts, у Дмитрия — свои.
  */
 import { site } from './site';
 import { services as daryaServices, type Service } from './services';
+import { cases as daryaCases, type CaseStudy } from './cases';
 
 export interface Agent {
   /** Часть URL: /agents/<slug>/ */
@@ -26,6 +27,8 @@ export interface Agent {
   photo: string | null;
   /** Услуги агента — карточки в профиле */
   services: Service[];
+  /** Кейсы агента — карточки в профиле (сделки агента) */
+  cases: CaseStudy[];
 }
 
 export const agentsHeading = {
@@ -63,6 +66,8 @@ export const agents: Agent[] = [
     photo: null, // фото — src/assets/daria.jpg, подключено в компонентах через astro:assets
     // Услуги Дарьи — тот самый набор, что был на главной (жилая недвижимость)
     services: daryaServices,
+    // Кейсы Дарьи — те самые три, что были на главной
+    cases: daryaCases,
   },
   {
     slug: 'dmitriy-sokolov',
@@ -104,5 +109,7 @@ export const agents: Agent[] = [
         icon: 'key',
       },
     ],
+    // TODO: добавить реальные кейсы Дмитрия — пока пусто, блок в профиле не показывается
+    cases: [],
   },
 ];

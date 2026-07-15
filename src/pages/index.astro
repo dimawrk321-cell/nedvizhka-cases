@@ -6,11 +6,11 @@
  *
  * Порядок секций:
  *   Header → Hero → TrustBar → ProblemsSolutions → Agents → Prices →
- *   Promo → Process → Cases → Reviews → FAQ → FinalCTA → Footer
+ *   Promo → Process → Reviews → FAQ → FinalCTA → Footer
  *   (+ мобильный StickyBar)
- *   Услуги — в профилях агентов (/agents/<slug>/); Ипотека — на отдельной странице (/mortgage/).
+ *   Услуги и кейсы — в профилях агентов (/agents/<slug>/); Ипотека — на отдельной странице (/mortgage/).
  *
- * Якоря для навигации: #agents, #prices, #process, #cases, #reviews, #faq, #cta
+ * Якоря для навигации: #agents, #prices, #process, #reviews, #faq, #cta
  */
 import Layout from '../layouts/Layout.astro';
 import Header from '../sections/Header.astro';
@@ -22,7 +22,6 @@ import Agents from '../sections/Agents.astro';
 import Prices from '../sections/Prices.astro';
 import Promo from '../sections/Promo.astro';
 import Process from '../sections/Process.astro';
-import Cases from '../sections/Cases.astro';
 import Reviews from '../sections/Reviews.astro';
 import FAQ from '../sections/FAQ.astro';
 import FinalCTA from '../sections/FinalCTA.astro';
@@ -54,9 +53,6 @@ import Footer from '../sections/Footer.astro';
 
     {/* ПРОЦЕСС РАБОТЫ (якорь #process) */}
     <Process />
-
-    {/* КЕЙСЫ / ПОРТФОЛИО СДЕЛОК (якорь #cases) */}
-    <Cases />
 
     {/* ОТЗЫВЫ КЛИЕНТОВ (якорь #reviews) */}
     <Reviews />

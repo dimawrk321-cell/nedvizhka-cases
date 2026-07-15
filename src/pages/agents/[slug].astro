@@ -13,6 +13,7 @@ import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import { agents, agentPage } from '../../data/agents';
 import AgentServices from '../../components/AgentServices.astro';
+import AgentCases from '../../components/AgentCases.astro';
 import { User, Check, ArrowLeft } from 'lucide-static';
 import dariaPhoto from '../../assets/daria.jpg';
 
@@ -125,6 +126,9 @@ const pageDescription = agent.summary;
 
       {/* Услуги агента — переехали с главной; у каждого агента свой набор (agents.ts) */}
       <AgentServices services={agent.services} />
+
+      {/* Кейсы агента — переехали с главной; у Дарьи её сделки, у Дмитрия пока пусто */}
+      <AgentCases cases={agent.cases} />
 
       <div>
         <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
