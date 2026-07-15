@@ -1,0 +1,42 @@
+---
+/**
+ * MortgageTypes — СВЕТЛАЯ секция «Виды ипотеки» под калькулятором на странице /mortgage/.
+ * Идёт после тёмной секции Mortgage, поэтому помечена data-bg="light" (чередование фонов:
+ * тёмная → светлая, двух тёмных подряд нет). Карточки — как в «Услугах» (бордер stone,
+ * hover brass, иконка в квадрате). Раскладка flex-wrap + justify-center: 1 колонка на
+ * мобильном, 2 на планшете, 3 на десктопе; неполный ряд из 5 карточек центрируется — «сироты» нет.
+ */
+import SectionHeading from '../components/SectionHeading.astro';
+import { mortgageTypes, mortgageTypesHeading } from '../data/mortgage';
+import { Users, Home, Globe, Briefcase, ShieldCheck } from 'lucide-static';
+
+const iconMap: Record<string, string> = {
+  users: Users,
+  home: Home,
+  globe: Globe,
+  briefcase: Briefcase,
+  'shield-check': ShieldCheck,
+};
+---
+
+<section data-section="mortgage-types" data-bg="light" class="section-y">
+  <div class="wrap flex flex-col gap-12">
+    <SectionHeading eyebrow={mortgageTypesHeading.eyebrow} title={mortgageTypesHeading.title} align="center" />
+
+    <div class="flex flex-wrap justify-center gap-5">
+      {
+        mortgageTypes.map((type) => (
+          <article class="group flex w-full flex-col gap-4 rounded-lg border border-stone bg-paper p-6 transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md sm:w-[calc(50%-0.625rem)] lg:w-[calc(33.33%-0.834rem)]">
+            <span
+              class="inline-flex h-12 w-12 items-center justify-center rounded-card border border-stone text-brass transition-colors group-hover:border-brass [&>svg]:h-6 [&>svg]:w-6"
+              set:html={iconMap[type.icon] ?? Home}
+              aria-hidden="true"
+            />
+            <h3 class="text-lg font-semibold text-ink">{type.title}</h3>
+            <p class="text-muted">{type.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

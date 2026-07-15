@@ -9,6 +9,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import Mortgage from '../sections/Mortgage.astro';
+import MortgageTypes from '../sections/MortgageTypes.astro';
 import { mortgageHeading } from '../data/mortgage';
 import { ArrowLeft } from 'lucide-static';
 
@@ -31,6 +32,9 @@ const pageDescription = mortgageHeading.subtitle;
     </div>
 
     <Mortgage />
+
+    {/* Виды ипотеки — светлая секция под калькулятором (data-bg=light, ритм: тёмная→светлая) */}
+    <MortgageTypes />
   </main>
 
   <script>
