@@ -10,6 +10,7 @@ import { site } from './site';
 import { services as daryaServices, type Service } from './services';
 import { cases as daryaCases, type CaseStudy } from './cases';
 import { reviews as daryaReviews, type Review } from './reviews';
+import { certificates as daryaCerts, type Certificate } from './certs';
 
 export interface Agent {
   /** Часть URL: /agents/<slug>/ */
@@ -33,6 +34,8 @@ export interface Agent {
   cases: CaseStudy[];
   /** Отзывы агента — лента в профиле */
   reviews: Review[];
+  /** Сертификаты и дипломы — галерея с лайтбоксом внизу профиля */
+  certificates: Certificate[];
 }
 
 export const agentsHeading = {
@@ -74,6 +77,8 @@ export const agents: Agent[] = [
     cases: daryaCases,
     // Отзывы Дарьи — реальные, из reviews.ts
     reviews: daryaReviews,
+    // Сертификаты и дипломы Дарьи — сканы из src/assets/certs (certs.ts)
+    certificates: daryaCerts,
   },
   {
     slug: 'dmitriy-sokolov',
@@ -119,5 +124,7 @@ export const agents: Agent[] = [
     cases: [],
     // TODO: добавить отзывы Дмитрия — пока пусто, блок в профиле не показывается
     reviews: [],
+    // TODO: добавить сертификаты Дмитрия — пока пусто, блок в профиле не показывается
+    certificates: [],
   },
 ];

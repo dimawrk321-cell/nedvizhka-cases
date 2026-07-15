@@ -15,6 +15,7 @@ import { agents, agentPage } from '../../data/agents';
 import AgentServices from '../../components/AgentServices.astro';
 import AgentCases from '../../components/AgentCases.astro';
 import AgentReviews from '../../components/AgentReviews.astro';
+import AgentCertificates from '../../components/AgentCertificates.astro';
 import { User, Check, ArrowLeft } from 'lucide-static';
 import dariaPhoto from '../../assets/daria.jpg';
 
@@ -133,6 +134,9 @@ const pageDescription = agent.summary;
 
       {/* Отзывы агента — переехали с главной; у Дарьи реальные, у Дмитрия пока пусто */}
       <AgentReviews reviews={agent.reviews} />
+
+      {/* Сертификаты и дипломы — самый низ профиля; галерея с лайтбоксом (у Дарьи, у Дмитрия пусто) */}
+      <AgentCertificates certificates={agent.certificates} />
 
       <div>
         <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>

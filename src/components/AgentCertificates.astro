@@ -1,0 +1,199 @@
+---
+/**
+ * AgentCertificates — блок «Сертификаты и дипломы» внизу профиля агента.
+ * Сетка миниатюр (astro:assets <Picture>, avif/webp, lazy) → по клику полноразмерный
+ * скан в лайтбоксе (object-contain, документы не обрезаются). Лайтбокс — чистый JS:
+ * закрытие по фону/крестику/Esc, перелистывание стрелками и ←/→, блокировка скролла
+ * body, focus-trap, aria-modal. Если список пуст (например у Дмитрия) — блок не рендерится.
+ * Большие версии для лайтбокса готовит getImage() (webp полного размера).
+ */
+import { Picture, getImage } from 'astro:assets';
+import type { Certificate } from '../data/certs';
+import { certsHeading } from '../data/certs';
+import { X, ChevronLeft, ChevronRight } from 'lucide-static';
+
+interface Props {
+  certificates: Certificate[];
+}
+const { certificates } = Astro.props;
+
+/** Видимая подпись: «Название, год» (год необязателен) */
+const caption = (c: Certificate): string => (c.year ? `${c.title}, ${c.year}` : c.title);
+/** Осмысленный alt: «Сертификат: Название, год» */
+const altText = (c: Certificate): string => `Сертификат: ${caption(c)}`;
+
+// Полноразмерные webp-версии для лайтбокса (оптимизированы, без апскейла).
+const lightboxImages = await Promise.all(
+  certificates.map((c) => getImage({ src: c.image, format: 'webp', quality: 82 })),
+);
+
+const navBtn =
+  'absolute top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-paper/30 bg-ink/40 text-paper backdrop-blur transition-colors hover:border-brass hover:text-brass [&>svg]:h-6 [&>svg]:w-6';
+---
+
+{
+  certificates.length > 0 && (
+    <div class="flex flex-col gap-8 border-t border-stone pt-10">
+      <div class="flex flex-col gap-2">
+        <p class="eyebrow">{certsHeading.eyebrow}</p>
+        <h2 class="text-2xl">{certsHeading.title}</h2>
+      </div>
+
+      <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {certificates.map((cert, i) => (
+          <li>
+            <button
+              type="button"
+              data-cert-open
+              data-cert-index={i}
+              data-cert-src={lightboxImages[i].src}
+              data-cert-alt={altText(cert)}
+              data-cert-caption={caption(cert)}
+              aria-label={`Открыть в полном размере: ${altText(cert)}`}
+              class="group flex w-full cursor-pointer flex-col gap-3 rounded-card text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+            >
+              <span class="block aspect-[4/3] overflow-hidden rounded-card border border-stone bg-paper p-3 transition-all duration-200 group-hover:-translate-y-1 group-hover:border-brass group-hover:shadow-lg group-hover:shadow-ink/10">
+                <Picture
+                  src={cert.image}
+                  formats={['avif', 'webp']}
+                  widths={[300, 600]}
+                  sizes="(min-width: 1024px) 22vw, (min-width: 640px) 45vw, 90vw"
+                  alt={altText(cert)}
+                  loading="lazy"
+                  class="h-full w-full object-contain"
+                />
+              </span>
+              <span class="flex flex-col gap-0.5">
+                <span class="text-sm font-medium text-ink">{cert.title}</span>
+                {cert.year && <span class="text-xs text-muted">{cert.year}</span>}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {/* Лайтбокс: полноразмерный скан поверх всего (z-[100] — выше меню z-60) */}
+      <div
+        data-cert-lightbox
+        class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-8"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Просмотр сертификата"
+      >
+        <div data-cert-backdrop class="absolute inset-0 bg-ink/90 backdrop-blur-sm" />
+
+        <button
+          data-cert-close
+          type="button"
+          aria-label="Закрыть"
+          class="absolute right-4 top-4 z-20 inline-flex h-11 w-11 items-center justify-center rounded-full border border-paper/30 bg-ink/40 text-paper backdrop-blur transition-colors hover:border-brass hover:text-brass [&>svg]:h-5 [&>svg]:w-5"
+          set:html={X}
+        />
+
+        <button data-cert-prev type="button" aria-label="Предыдущий сертификат" class={`${navBtn} left-2 sm:left-4`} set:html={ChevronLeft} />
+        <button data-cert-next type="button" aria-label="Следующий сертификат" class={`${navBtn} right-2 sm:right-4`} set:html={ChevronRight} />
+
+        <figure class="relative z-[1] m-0 flex max-h-full max-w-5xl flex-col items-center gap-4">
+          <img
+            data-cert-img
+            src=""
+            alt=""
+            class="max-h-[80vh] w-auto max-w-full rounded-lg object-contain shadow-2xl"
+          />
+          <figcaption data-cert-figcaption class="text-center text-sm text-paper/80" />
+        </figure>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  const lightbox = document.querySelector('[data-cert-lightbox]');
+  if (lightbox instanceof HTMLElement) {
+    const triggers = Array.from(document.querySelectorAll('[data-cert-open]')).filter(
+      (t): t is HTMLElement => t instanceof HTMLElement,
+    );
+    const imgEl = lightbox.querySelector('[data-cert-img]');
+    const figcap = lightbox.querySelector('[data-cert-figcaption]');
+    const closeBtn = lightbox.querySelector('[data-cert-close]');
+    const prevBtn = lightbox.querySelector('[data-cert-prev]');
+    const nextBtn = lightbox.querySelector('[data-cert-next]');
+
+    if (
+      imgEl instanceof HTMLImageElement &&
+      figcap instanceof HTMLElement &&
+      closeBtn instanceof HTMLElement &&
+      triggers.length > 0
+    ) {
+      let index = 0;
+      let lastFocused: Element | null = null;
+
+      const render = () => {
+        const t = triggers[index];
+        imgEl.src = t.dataset.certSrc ?? '';
+        imgEl.alt = t.dataset.certAlt ?? '';
+        figcap.textContent = t.dataset.certCaption ?? '';
+      };
+
+      const open = (i: number) => {
+        index = i;
+        lastFocused = document.activeElement;
+        render();
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      };
+
+      const close = () => {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = '';
+        imgEl.src = '';
+        if (lastFocused instanceof HTMLElement) lastFocused.focus();
+      };
+
+      const go = (delta: number) => {
+        index = (index + delta + triggers.length) % triggers.length;
+        render();
+      };
+
+      triggers.forEach((t, i) => t.addEventListener('click', () => open(i)));
+      closeBtn.addEventListener('click', close);
+      if (prevBtn instanceof HTMLElement) prevBtn.addEventListener('click', () => go(-1));
+      if (nextBtn instanceof HTMLElement) nextBtn.addEventListener('click', () => go(1));
+
+      // Клик по затемнённому фону закрывает; клик по картинке/стрелкам — нет.
+      lightbox.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target instanceof Element && target.closest('[data-cert-backdrop]')) close();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (lightbox.classList.contains('hidden')) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          close();
+        } else if (event.key === 'ArrowLeft') {
+          go(-1);
+        } else if (event.key === 'ArrowRight') {
+          go(1);
+        } else if (event.key === 'Tab') {
+          // Простой focus-trap среди управляющих кнопок лайтбокса.
+          const focusables = [closeBtn, prevBtn, nextBtn].filter(
+            (el): el is HTMLElement => el instanceof HTMLElement,
+          );
+          const first = focusables[0];
+          const last = focusables[focusables.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
+      });
+    }
+  }
+</script>
