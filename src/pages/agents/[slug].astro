@@ -17,6 +17,7 @@ import AgentCases from '../../components/AgentCases.astro';
 import AgentReviews from '../../components/AgentReviews.astro';
 import AgentCertificates from '../../components/AgentCertificates.astro';
 import AgentHelp from '../../components/AgentHelp.astro';
+import AgentBanks from '../../components/AgentBanks.astro';
 import AgentContacts from '../../components/AgentContacts.astro';
 import AgentLeadForm from '../../components/AgentLeadForm.astro';
 import { User, Check, ArrowLeft } from 'lucide-static';
@@ -131,6 +132,9 @@ const pageDescription = agent.summary;
 
       {/* Чем могу помочь — блок компетенций под био (у Дарьи заполнен, у Дмитрия пусто) */}
       <AgentHelp help={agent.help} />
+
+      {/* Банки-партнёры — сплошным текстом, продолжает тему брокера (у Дарьи; у Дмитрия пусто) */}
+      <AgentBanks banks={agent.banks} />
 
       {/* Услуги агента — переехали с главной; у каждого агента свой набор (agents.ts) */}
       <AgentServices services={agent.services} />

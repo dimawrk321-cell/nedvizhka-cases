@@ -1,0 +1,25 @@
+---
+/**
+ * AgentBanks — упоминание банков-партнёров СПЛОШНЫМ ТЕКСТОМ (без логотипов, чипов и
+ * рамок — только названия через запятую в одном абзаце). Продолжает тему брокера
+ * рядом с блоком «Чем могу помочь». Названия банков выделены плотнее (font-medium)
+ * и цветом ink, чтобы читались в потоке текста. Ширина ≤65ch (measure). Пусто → не рендерится.
+ */
+import type { BanksBlock } from '../data/agents';
+
+interface Props {
+  banks: BanksBlock | null;
+}
+const { banks } = Astro.props;
+---
+
+{
+  banks && (
+    <p class="measure text-muted">
+      {banks.intro}{' '}
+      {banks.list.map((bank, i) => (
+        <Fragment>{i > 0 ? ', ' : ''}<span class="font-medium text-ink">{bank}</span></Fragment>
+      ))}. {banks.outro}
+    </p>
+  )
+}
