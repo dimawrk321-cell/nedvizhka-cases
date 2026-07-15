@@ -11,10 +11,11 @@ import { site } from '../data/site';
 import Button from '../components/Button.astro';
 import { Menu, X } from 'lucide-static';
 
-// Секции «Ипотека» (#mortgage) и «Агенты» (#agents) уже существуют — якоря живые.
+const base = import.meta.env.BASE_URL;
+// «Ипотека» ведёт на отдельную страницу /mortgage/ (с BASE_URL); остальные — якоря секций.
 const navLinks = [
   { label: 'Цены', href: '#prices' },
-  { label: 'Ипотека', href: '#mortgage' },
+  { label: 'Ипотека', href: `${base}mortgage/` },
   { label: 'Агенты', href: '#agents' },
   { label: 'Кейсы', href: '#cases' },
   { label: 'FAQ', href: '#faq' },

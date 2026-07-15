@@ -17,8 +17,10 @@ const groupInt = (n: number): string => String(Math.round(n)).replace(/\B(?=(\d{
 const initialDown = Math.round((price * downPaymentPct) / 100);
 const initialCredit = price - initialDown;
 
+// Базовый класс инпута БЕЗ ширины — ширину задаём отдельно, чтобы w-full не конфликтовал
+// с фиксированной w-20 у поля срока (из-за чего оно раздувалось и ломало карточку).
 const inputClass =
-  'min-h-[44px] w-full rounded-card border border-stone bg-paper px-4 py-2.5 text-ink transition-colors placeholder:text-muted focus:border-brass';
+  'min-h-[44px] rounded-card border border-stone bg-paper px-4 py-2.5 text-ink transition-colors placeholder:text-muted focus:border-brass';
 const labelClass = 'text-sm font-medium text-ink';
 ---
 
@@ -33,7 +35,7 @@ const labelClass = 'text-sm font-medium text-ink';
       inputmode="numeric"
       autocomplete="off"
       value={groupInt(price)}
-      class={inputClass}
+      class={`${inputClass} w-full`}
     />
   </div>
 
@@ -87,7 +89,7 @@ const labelClass = 'text-sm font-medium text-ink';
       tabindex="-1"
       aria-readonly="true"
       value={`${groupInt(initialCredit)} ₽`}
-      class={`${inputClass} bg-stone/10`}
+      class={`${inputClass} w-full bg-stone/10`}
     />
   </div>
 
@@ -103,7 +105,7 @@ const labelClass = 'text-sm font-medium text-ink';
         step="1"
         value={termYears}
         aria-label="Срок кредита в годах, ползунок"
-        class="mc-range h-1.5 flex-1 cursor-pointer accent-brass"
+        class="mc-range h-1.5 min-w-0 flex-1 cursor-pointer accent-brass"
       />
       <input
         id="mc-term"
@@ -131,7 +133,7 @@ const labelClass = 'text-sm font-medium text-ink';
       max={rateMax}
       step={rateStep}
       value={rate}
-      class={inputClass}
+      class={`${inputClass} w-full`}
     />
   </div>
 
