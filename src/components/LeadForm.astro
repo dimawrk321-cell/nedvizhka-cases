@@ -27,6 +27,8 @@ interface Props {
   formType?: 'lead' | 'mortgage';
   /** Имена скрытых полей (параметры расчёта); значения проставляет внешний скрипт */
   hiddenFields?: string[];
+  /** Имя агента — если задано, уходит в payload.agent (заявка именно к этому агенту) */
+  agentName?: string;
 }
 
 const {
@@ -36,13 +38,14 @@ const {
   idPrefix,
   formType = 'lead',
   hiddenFields = [],
+  agentName,
 } = Astro.props;
 const dark = variant === 'dark';
 const uid = idPrefix ?? 'lead-' + crypto.randomUUID().slice(0, 8);
 const base = import.meta.env.BASE_URL;
 ---
 
-<div data-lead-root data-form-type={formType} class:list={[dark && 'surface-dark', className]}>
+<div data-lead-root data-form-type={formType} data-agent={agentName} class:list={[dark && 'surface-dark', className]}>
   <form data-lead-form novalidate class="flex flex-col gap-4">
     <Input
       id={`${uid}-name`}
@@ -204,6 +207,8 @@ const base = import.meta.env.BASE_URL;
 
       // Тип формы и параметры расчёта (для ипотечной заявки)
       const formType = root.getAttribute('data-form-type') || 'lead';
+      // Имя агента (если форма привязана к конкретному агенту) — уйдёт в payload.agent
+      const agent = (root.getAttribute('data-agent') || '').trim();
       let details: Record<string, string> | undefined;
       if (formType === 'mortgage') {
         details = {};
@@ -221,6 +226,7 @@ const base = import.meta.env.BASE_URL;
         page: window.location.href,
         utm: getUtm(),
         formType,
+        ...(agent ? { agent } : {}),
         ...(details ? { details } : {}),
       };
 

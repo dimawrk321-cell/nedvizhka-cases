@@ -18,6 +18,7 @@ import AgentReviews from '../../components/AgentReviews.astro';
 import AgentCertificates from '../../components/AgentCertificates.astro';
 import AgentHelp from '../../components/AgentHelp.astro';
 import AgentContacts from '../../components/AgentContacts.astro';
+import AgentLeadForm from '../../components/AgentLeadForm.astro';
 import { User, Check, ArrowLeft } from 'lucide-static';
 import dariaPhoto from '../../assets/daria.jpg';
 
@@ -146,9 +147,23 @@ const pageDescription = agent.summary;
       {/* Контакты — общие контакты компании (site.ts); показываем у основного контакта (Дарьи) */}
       {agent.slug === 'darya-salnikova' && <AgentContacts />}
 
-      <div>
-        <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
-      </div>
+      {/* Заявка: у Дарьи — форма записи именно к ней (payload.agent);
+          у остальных — кнопка на общую форму главной (#cta) */}
+      {
+        agent.slug === 'darya-salnikova' ? (
+          <AgentLeadForm
+            agentName={agent.name}
+            heading="Оставьте заявку Дарье"
+            subheading="Отвечу лично в течение часа в рабочее время"
+            submitText="Записаться к Дарье"
+            idPrefix="agent-darya-lead"
+          />
+        ) : (
+          <div>
+            <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
+          </div>
+        )
+      }
     </div>
   </main>
 

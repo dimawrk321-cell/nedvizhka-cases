@@ -1,0 +1,35 @@
+---
+/**
+ * AgentLeadForm — блок формы записи к конкретному агенту в его профиле.
+ * Переиспользует общий LeadForm (variant light, поля не тёмные), но с уникальным
+ * idPrefix и признаком агента: agentName уходит в payload.agent → в Telegram видно,
+ * к кому запись. Карточка на светлом фоне профиля выделена рамкой brass, чтобы форма
+ * была заметна, но не спорила с блоками услуги→кейсы→отзывы→сертификаты выше.
+ */
+import LeadForm from './LeadForm.astro';
+
+interface Props {
+  /** Полное имя агента — уходит в заявку (payload.agent) */
+  agentName: string;
+  /** Заголовок над формой */
+  heading: string;
+  /** Подзаголовок (женский род, от первого лица) */
+  subheading: string;
+  /** Текст кнопки отправки */
+  submitText: string;
+  /** Уникальный префикс id полей — не должен конфликтовать с другими формами */
+  idPrefix: string;
+}
+const { agentName, heading, subheading, submitText, idPrefix } = Astro.props;
+---
+
+<div class="rounded-xl border border-brass/40 bg-paper p-6 shadow-sm lg:p-8">
+  <p class="font-sans text-[19px] font-semibold text-ink">{heading}</p>
+  <p class="mb-5 mt-1 text-sm text-muted">{subheading}</p>
+  <LeadForm
+    variant="light"
+    idPrefix={idPrefix}
+    submitText={submitText}
+    agentName={agentName}
+  />
+</div>

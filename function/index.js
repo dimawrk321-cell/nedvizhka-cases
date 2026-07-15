@@ -96,6 +96,7 @@ module.exports.handler = async function handler(event, context) {
   const page = String(data.page || '').trim();
   const utm = data.utm && typeof data.utm === 'object' ? data.utm : {};
   const honeypot = String(data.company || '').trim();
+  const agent = String(data.agent || '').trim();
   const formType = String(data.formType || 'lead').trim();
   const isMortgage = formType === 'mortgage';
   const details = data.details && typeof data.details === 'object' ? data.details : {};
@@ -119,13 +120,19 @@ module.exports.handler = async function handler(event, context) {
 
   const moscowTime = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
 
-  const lines = [
+  const lines = [];
+  // Если заявка привязана к агенту — показываем это первой строкой, чтобы сразу
+  // было видно, к кому запись. Без agent (общие/старые/ипотечные заявки) — как раньше.
+  if (agent) {
+    lines.push(`👤 <b>Заявка к агенту:</b> ${escapeHtml(agent)}`);
+  }
+  lines.push(
     isMortgage ? '🏦 <b>Заявка на ипотеку</b>' : '🔔 <b>Новая заявка с сайта</b>',
     '',
     `<b>Имя:</b> ${escapeHtml(name)}`,
     `<b>Телефон:</b> ${escapeHtml(phone)}`,
     `<b>Способ связи:</b> ${escapeHtml(CONTACT_LABELS[contactMethod] || contactMethod || '—')}`,
-  ];
+  );
   if (page) {
     lines.push(`<b>Страница:</b> ${escapeHtml(page)}`);
   }
