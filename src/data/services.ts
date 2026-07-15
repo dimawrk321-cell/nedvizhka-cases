@@ -1,3 +1,5 @@
+import { partnerBanks } from './banks';
+
 export interface Service {
   title: string;
   /** Результат для клиента */
@@ -33,8 +35,7 @@ export const services: Service[] = [
   },
   {
     title: 'Ипотека',
-    result:
-      'Работаю с 15 банками-партнёрами: подаю заявку и веду до одобрения — обычно ответ приходит за 3–5 дней.',
+    result: `Работаю с ${partnerBanks.length} банками-партнёрами: подаю заявку и веду до одобрения — обычно ответ приходит за 3–5 дней.`,
     icon: 'landmark',
   },
   {

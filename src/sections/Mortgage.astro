@@ -64,17 +64,19 @@ import {
       <p class="text-xs font-medium uppercase tracking-[0.14em] text-brass-light">
         {mortgageBanksLabel}
       </p>
-      <ul class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+      {/* 14 названий одним центрированным перечнем с точками-разделителями: названия
+          перетекают инлайном и переносятся как текст, поэтому ложатся ровно и не
+          разъезжаются на длинных именах. Логотипы не используем (товарные знаки). */}
+      <p class="max-w-2xl text-center font-sans text-[15px] leading-relaxed">
         {
-          mortgageBanks.map((name) => (
-            <li>
-              <span class="font-sans text-[15px] font-semibold text-paper/80 transition-colors hover:text-brass-light">
-                {name}
-              </span>
-            </li>
+          mortgageBanks.map((name, i) => (
+            <Fragment>
+              <span class="font-semibold text-paper/80 transition-colors hover:text-brass-light">{name}</span>
+              {i < mortgageBanks.length - 1 && <span aria-hidden="true" class="px-1.5 text-brass/40">·</span>}
+            </Fragment>
           ))
         }
-      </ul>
+      </p>
     </div>
   </div>
 </section>
