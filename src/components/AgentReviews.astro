@@ -1,37 +1,40 @@
 ---
 /**
- * Reviews — светлая секция. 5 отзывов из reviews.ts горизонтальной лентой на CSS
- * scroll-snap (без слайдер-библиотек и автопрокрутки). Управление: стрелки (≥44px,
- * scrollBy) и точки-индикаторы; лента доступна с клавиатуры (tabindex + aria-label).
- * Лента уходит за края wrap через отрицательные внешние отступы (-mx).
+ * AgentReviews — блок «Отзывы» в профиле агента: та же горизонтальная лента на CSS
+ * scroll-snap со стрелками и точками-индикаторами, что была в секции Reviews на главной.
+ * Отзывы у каждого агента свои (agents.ts); если список пуст (например у Дмитрия) —
+ * блок не рендерится. Аватар — инициал имени на фоне stone, под именем — дата отзыва.
  */
-import SectionHeading from '../components/SectionHeading.astro';
-import { reviews, reviewsHeading } from '../data/reviews';
+import type { Review } from '../data/reviews';
 import { ChevronLeft, ChevronRight } from 'lucide-static';
+
+interface Props {
+  reviews: Review[];
+}
+const { reviews } = Astro.props;
 
 const arrowBtn =
   'inline-flex h-11 w-11 items-center justify-center rounded-card border border-stone text-ink transition-colors hover:border-brass hover:text-brass [&>svg]:h-5 [&>svg]:w-5';
 ---
 
-<section id="reviews" data-section="reviews" data-reviews data-bg="light" class="section-y">
-  <div class="wrap flex flex-col gap-8">
-    <div class="flex items-end justify-between gap-6">
-      <SectionHeading eyebrow={reviewsHeading.eyebrow} title={reviewsHeading.title} />
-      <div class="hidden shrink-0 gap-2 sm:flex">
-        <button data-rev-prev type="button" aria-label="Предыдущий отзыв" class={arrowBtn} set:html={ChevronLeft} />
-        <button data-rev-next type="button" aria-label="Следующий отзыв" class={arrowBtn} set:html={ChevronRight} />
+{
+  reviews.length > 0 && (
+    <div data-reviews class="flex flex-col gap-6 border-t border-stone pt-10">
+      <div class="flex items-end justify-between gap-6">
+        <h2 class="text-2xl">Отзывы</h2>
+        <div class="hidden shrink-0 gap-2 sm:flex">
+          <button data-rev-prev type="button" aria-label="Предыдущий отзыв" class={arrowBtn} set:html={ChevronLeft} />
+          <button data-rev-next type="button" aria-label="Следующий отзыв" class={arrowBtn} set:html={ChevronRight} />
+        </div>
       </div>
-    </div>
 
-    <ul
-      data-rev-track
-      data-reveal
-      tabindex="0"
-      aria-label="Лента отзывов клиентов"
-      class="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-5 pb-4 lg:-mx-8 lg:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    >
-      {
-        reviews.map((review) => (
+      <ul
+        data-rev-track
+        tabindex="0"
+        aria-label="Лента отзывов клиентов"
+        class="-mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-5 pb-4 lg:-mx-8 lg:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {reviews.map((review) => (
           <li class="w-[85%] shrink-0 snap-start sm:w-[360px]">
             <figure class="flex h-full flex-col gap-5 rounded-lg border border-stone bg-paper p-6">
               <figcaption class="flex items-center gap-3">
@@ -43,31 +46,30 @@ const arrowBtn =
                 </span>
                 <span class="flex flex-col">
                   <span class="font-sans font-semibold text-ink">{review.name}</span>
-                  <span class="text-sm text-muted">{review.district}</span>
+                  <span class="text-sm text-muted">{review.date}</span>
                 </span>
               </figcaption>
               <blockquote class="text-ink/90">{review.text}</blockquote>
             </figure>
           </li>
-        ))
-      }
-    </ul>
+        ))}
+      </ul>
 
-    <div class="flex justify-center gap-2 sm:justify-start" role="group" aria-label="Навигация по отзывам">
-      {
-        reviews.map((_, i) => (
+      <div class="flex justify-center gap-2 sm:justify-start" role="group" aria-label="Навигация по отзывам">
+        {reviews.map((_, i) => (
           <button
             data-rev-dot
             type="button"
             aria-label={`Перейти к отзыву ${i + 1}`}
             class="h-2 w-2 rounded-full bg-stone transition-all aria-[current=true]:w-5 aria-[current=true]:bg-brass"
           />
-        ))
-      }
+        ))}
+      </div>
     </div>
-  </div>
+  )
+}
 
-  <script>
+<script>
   document.querySelectorAll('[data-reviews]').forEach((root) => {
     const track = root.querySelector('[data-rev-track]');
     if (!(track instanceof HTMLElement)) return;
@@ -113,5 +115,4 @@ const arrowBtn =
     track.addEventListener('scroll', () => requestAnimationFrame(updateActive), { passive: true });
     updateActive();
   });
-  </script>
-</section>
+</script>

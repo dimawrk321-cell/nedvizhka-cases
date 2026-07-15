@@ -7,7 +7,6 @@ export const footer = {
   legalTitle: 'Реквизиты',
   nav: [
     { label: 'Процесс', href: '#process' },
-    { label: 'Отзывы', href: '#reviews' },
     { label: 'FAQ', href: '#faq' },
   ],
   whatsappLabel: 'WhatsApp',
