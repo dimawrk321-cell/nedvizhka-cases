@@ -12,6 +12,7 @@ import { Picture } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import { agents, agentPage } from '../../data/agents';
+import AgentServices from '../../components/AgentServices.astro';
 import { User, Check, ArrowLeft } from 'lucide-static';
 import dariaPhoto from '../../assets/daria.jpg';
 
@@ -88,10 +89,6 @@ const pageDescription = agent.summary;
             </svg>
             <span class="text-sm text-muted">{agent.name} · {agent.role}</span>
           </div>
-
-          <div>
-            <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
-          </div>
         </div>
 
         {/* Фото: на мобильном второй, на десктопе слева. Дарья — реальное фото
@@ -124,6 +121,13 @@ const pageDescription = agent.summary;
             {/* TODO: фото Дмитрия — заменить плейсхолдер, когда будет фото */}
           </div>
         </div>
+      </div>
+
+      {/* Услуги агента — переехали с главной; у каждого агента свой набор (agents.ts) */}
+      <AgentServices services={agent.services} />
+
+      <div>
+        <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
       </div>
     </div>
   </main>

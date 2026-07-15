@@ -6,7 +6,6 @@ export const footer = {
   contactsTitle: 'Контакты',
   legalTitle: 'Реквизиты',
   nav: [
-    { label: 'Услуги', href: '#services' },
     { label: 'Процесс', href: '#process' },
     { label: 'Кейсы', href: '#cases' },
     { label: 'Отзывы', href: '#reviews' },
