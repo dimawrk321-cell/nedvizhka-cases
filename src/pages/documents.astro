@@ -1,0 +1,159 @@
+---
+/**
+ * /documents/ — «Шаблоны документов»: типовые .docx для скачивания, сгруппированные
+ * по категориям (данные — src/data/documents.ts). Файлы лежат в public/documents/,
+ * ссылка строится как `${BASE_URL}documents/<file>` с атрибутом download (файл
+ * скачивается, а не открывается). Углубление из шапки: вверху стрелка «На главную»
+ * (history.back(), если реферер с этого же сайта, иначе переход на / с учётом BASE_URL).
+ * Поиск по названию — чистый JS, фильтрует строки и скрывает пустые категории.
+ */
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import { documentsHeading, documentCategories } from '../data/documents';
+import { ArrowLeft, FileText, Download, Search } from 'lucide-static';
+
+const base = import.meta.env.BASE_URL;
+const pageTitle = 'Шаблоны документов для сделок с недвижимостью — Первый город';
+const pageDescription = documentsHeading.subtitle;
+const totalDocs = documentCategories.reduce((sum, category) => sum + category.items.length, 0);
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <main id="main">
+    {/* Стрелка «На главную» — восстанавливает позицию скролла, если пришли с сайта */}
+    <div class="wrap py-6">
+      <a
+        href={base}
+        data-back-link
+        class="inline-flex w-fit items-center gap-2 text-sm font-medium text-brass transition-colors hover:underline [&>svg]:h-4 [&>svg]:w-4"
+      >
+        <span set:html={ArrowLeft} aria-hidden="true" />На главную
+      </a>
+    </div>
+
+    <div class="wrap flex flex-col gap-12 pb-24 pt-2 lg:pb-32">
+      {/* Заголовок страницы */}
+      <header class="flex flex-col gap-4">
+        <p class="eyebrow text-brass">{documentsHeading.eyebrow}</p>
+        <h2>{documentsHeading.title}</h2>
+        <p class="text-lg text-muted">{documentsHeading.subtitle}</p>
+      </header>
+
+      {/* Поиск по названию — фильтрует список в реальном времени */}
+      <div class="max-w-xl">
+        <label class="relative block">
+          <span class="sr-only">Поиск по названию документа</span>
+          <span
+            class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted [&>svg]:h-5 [&>svg]:w-5"
+            set:html={Search}
+            aria-hidden="true"
+          />
+          <input
+            data-doc-search
+            type="search"
+            placeholder={`Поиск среди ${totalDocs} документов…`}
+            autocomplete="off"
+            aria-label="Поиск по названию документа"
+            class="min-h-[44px] w-full rounded-card border border-stone bg-paper py-2 pl-12 pr-4 text-ink placeholder:text-muted focus:border-brass focus:outline-none focus:ring-2 focus:ring-brass/30"
+          />
+        </label>
+        <p data-doc-empty hidden role="status" class="mt-3 text-sm text-muted">
+          Ничего не найдено. Попробуйте другой запрос.
+        </p>
+      </div>
+
+      {/* Категории со списками документов */}
+      <div class="flex flex-col gap-10">
+        {
+          documentCategories.map((category) => (
+            <section data-doc-category aria-labelledby={`cat-${category.id}`} class="flex flex-col gap-4">
+              <h3 id={`cat-${category.id}`} class="text-xl">
+                {category.title}
+              </h3>
+              <ul class="flex max-w-3xl flex-col divide-y divide-stone overflow-hidden rounded-card border border-stone">
+                {category.items.map((item) => (
+                  <li data-doc-item data-doc-title={item.title.toLowerCase()}>
+                    <a
+                      href={`${base}documents/${item.file}`}
+                      download
+                      class="group flex min-h-[56px] items-center gap-4 px-4 py-3 transition-colors hover:bg-stone/10"
+                    >
+                      <span
+                        class="inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5"
+                        set:html={FileText}
+                        aria-hidden="true"
+                      />
+                      <span class="min-w-0 flex-1 text-ink">{item.title}</span>
+                      <span class="inline-flex shrink-0 items-center gap-2 text-sm font-medium text-muted transition-colors group-hover:text-brass [&>svg]:h-4 [&>svg]:w-4">
+                        <span class="hidden sm:inline">Скачать .docx</span>
+                        <span set:html={Download} aria-hidden="true" />
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+
+      {/* Сноска-дисклеймер + призыв к действию */}
+      <div class="flex flex-col gap-5 border-t border-stone pt-8">
+        <p class="text-sm text-muted">
+          Это типовые формы — перед подписанием рекомендуем сверить условия с вашим агентом.
+        </p>
+        <div>
+          <Button href={`${base}#cta`}>Нужна помощь с документами?</Button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Стрелка «На главную»: если пришли с этого же сайта — history.back()
+    // (браузер вернёт позицию скролла); иначе срабатывает href на / (с BASE_URL).
+    const backLink = document.querySelector('[data-back-link]');
+    if (backLink instanceof HTMLAnchorElement) {
+      backLink.addEventListener('click', (event) => {
+        if (
+          document.referrer &&
+          document.referrer.includes(window.location.host) &&
+          window.history.length > 1
+        ) {
+          event.preventDefault();
+          window.history.back();
+        }
+      });
+    }
+
+    // Живой поиск: фильтрует строки по названию, прячет пустые категории,
+    // показывает сообщение, если ничего не найдено. Без библиотек.
+    const search = document.querySelector('[data-doc-search]');
+    const empty = document.querySelector('[data-doc-empty]');
+    const categories = Array.from(document.querySelectorAll('[data-doc-category]')).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+
+    if (search instanceof HTMLInputElement) {
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLowerCase();
+        let anyVisible = false;
+
+        categories.forEach((category) => {
+          let categoryHasMatch = false;
+          category.querySelectorAll('[data-doc-item]').forEach((item) => {
+            if (!(item instanceof HTMLElement)) return;
+            const title = item.getAttribute('data-doc-title') || '';
+            const match = query === '' || title.includes(query);
+            item.hidden = !match;
+            if (match) categoryHasMatch = true;
+          });
+          category.hidden = !categoryHasMatch;
+          if (categoryHasMatch) anyVisible = true;
+        });
+
+        if (empty instanceof HTMLElement) empty.hidden = anyVisible;
+      });
+    }
+  </script>
+</Layout>
