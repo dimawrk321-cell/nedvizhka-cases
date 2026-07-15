@@ -1,0 +1,43 @@
+---
+/**
+ * AgentContacts — блок «Контакты» в профиле агента. Общие контакты компании из site.ts
+ * (Дарья — основной контакт): телефон (tel:), WhatsApp (wa.me), Telegram (t.me), MAX.
+ * Иконки lucide как в футере. Каждая ссылка — chip с min-h-[44px] (touch-target ≥44px),
+ * мессенджеры открываются в новой вкладке (rel=noopener).
+ */
+import { site } from '../data/site';
+import { Phone, MessageCircle, Send, MessageSquare } from 'lucide-static';
+
+const chip =
+  'inline-flex min-h-[44px] items-center gap-2 rounded-card border border-stone px-4 text-ink transition-colors hover:border-brass hover:text-brass [&>svg]:h-5 [&>svg]:w-5';
+---
+
+<div class="flex flex-col gap-6 border-t border-stone pt-10">
+  <div class="flex flex-col gap-2">
+    <h2 class="text-2xl">Контакты</h2>
+    <p class="text-muted">Свяжитесь со мной удобным способом:</p>
+  </div>
+
+  <ul class="flex flex-wrap gap-3">
+    <li>
+      <a href={site.phoneHref} class={chip}>
+        <span set:html={Phone} aria-hidden="true" />{site.phone}
+      </a>
+    </li>
+    <li>
+      <a href={site.whatsappHref} target="_blank" rel="noopener" class={chip} aria-label="WhatsApp">
+        <span set:html={MessageCircle} aria-hidden="true" />WhatsApp
+      </a>
+    </li>
+    <li>
+      <a href={site.telegramHref} target="_blank" rel="noopener" class={chip}>
+        <span set:html={Send} aria-hidden="true" />Telegram {site.telegram}
+      </a>
+    </li>
+    <li>
+      <a href={site.maxLink} target="_blank" rel="noopener" class={chip} aria-label="MAX">
+        <span set:html={MessageSquare} aria-hidden="true" />MAX
+      </a>
+    </li>
+  </ul>
+</div>

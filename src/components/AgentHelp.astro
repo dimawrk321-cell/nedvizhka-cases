@@ -1,0 +1,40 @@
+---
+/**
+ * AgentHelp — блок «Чем могу помочь» под био агента: вводная строка от первого лица,
+ * список компетенций с галочками (lucide Check, brass — как регалии) и завершающая
+ * строка. Ширина текста ограничена 65ch (базовое правило p + utility measure на списке).
+ * Если help не задан (например у Дмитрия) — блок не рендерится.
+ */
+import type { HelpBlock } from '../data/agents';
+import { Check } from 'lucide-static';
+
+interface Props {
+  help: HelpBlock | null;
+}
+const { help } = Astro.props;
+---
+
+{
+  help && (
+    <div class="flex flex-col gap-6 border-t border-stone pt-10">
+      <h2 class="text-2xl">Чем могу помочь</h2>
+
+      <p class="text-muted">{help.intro}</p>
+
+      <ul class="measure flex flex-col gap-3">
+        {help.items.map((item) => (
+          <li class="flex items-start gap-3">
+            <span
+              class="mt-0.5 inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5"
+              set:html={Check}
+              aria-hidden="true"
+            />
+            <span class="text-ink">{item}</span>
+          </li>
+        ))}
+      </ul>
+
+      <p class="text-muted">{help.outro}</p>
+    </div>
+  )
+}

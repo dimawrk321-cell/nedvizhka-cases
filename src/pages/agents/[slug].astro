@@ -16,6 +16,8 @@ import AgentServices from '../../components/AgentServices.astro';
 import AgentCases from '../../components/AgentCases.astro';
 import AgentReviews from '../../components/AgentReviews.astro';
 import AgentCertificates from '../../components/AgentCertificates.astro';
+import AgentHelp from '../../components/AgentHelp.astro';
+import AgentContacts from '../../components/AgentContacts.astro';
 import { User, Check, ArrowLeft } from 'lucide-static';
 import dariaPhoto from '../../assets/daria.jpg';
 
@@ -126,6 +128,9 @@ const pageDescription = agent.summary;
         </div>
       </div>
 
+      {/* Чем могу помочь — блок компетенций под био (у Дарьи заполнен, у Дмитрия пусто) */}
+      <AgentHelp help={agent.help} />
+
       {/* Услуги агента — переехали с главной; у каждого агента свой набор (agents.ts) */}
       <AgentServices services={agent.services} />
 
@@ -137,6 +142,9 @@ const pageDescription = agent.summary;
 
       {/* Сертификаты и дипломы — самый низ профиля; галерея с лайтбоксом (у Дарьи, у Дмитрия пусто) */}
       <AgentCertificates certificates={agent.certificates} />
+
+      {/* Контакты — общие контакты компании (site.ts); показываем у основного контакта (Дарьи) */}
+      {agent.slug === 'darya-salnikova' && <AgentContacts />}
 
       <div>
         <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
