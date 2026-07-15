@@ -1,0 +1,90 @@
+---
+/**
+ * ScrollTop — плавающая кнопка «наверх» (иконка домика). Подключается ОДИН РАЗ
+ * в Layout → работает на всех страницах (index, privacy, профили агентов).
+ * Появляется после прокрутки примерно на один экран; плавно (opacity + translate-y).
+ * Скролл слушаем passive-обработчиком, троттлим через requestAnimationFrame.
+ *
+ * Позиционирование и z-index согласованы с мобильной панелью StickyBar и меню:
+ *  - на мобильных приподнята НАД StickyBar (панель 56px + safe-area), справа 16px;
+ *  - на десктопе (lg) StickyBar скрыт → кнопка в самом углу (24px);
+ *  - z-index 40: выше контента, но ниже меню-оверлея (z-60) — при открытом меню
+ *    кнопку перекрывает оверлей и она не торчит поверх него.
+ */
+import { Home } from 'lucide-static';
+---
+
+<button
+  data-scroll-top
+  type="button"
+  aria-label="Наверх"
+  class="scroll-top inline-flex h-12 w-12 items-center justify-center rounded-full bg-brass text-ink shadow-lg hover:shadow-xl hover:brightness-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass [&>svg]:h-6 [&>svg]:w-6"
+  set:html={Home}
+/>
+
+<style>
+  .scroll-top {
+    position: fixed;
+    right: 1rem; /* 16px от края экрана на мобильном */
+    /* приподнята над мобильным StickyBar (~56px) + запас + вырез экрана */
+    bottom: calc(env(safe-area-inset-bottom) + 4.5rem);
+    z-index: 40;
+    /* скрыта до появления; visibility убирает кнопку из таб-порядка, пока не видна */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.75rem);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease,
+      visibility 0.25s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+  }
+
+  .scroll-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  @media (min-width: 1024px) {
+    .scroll-top {
+      right: 1.5rem; /* 24px */
+      bottom: 1.5rem; /* на десктопе StickyBar скрыт */
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-top {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-scroll-top]');
+
+  if (btn) {
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      // показываем, когда пролистано примерно на высоту одного экрана
+      btn.classList.toggle('is-visible', window.scrollY > window.innerHeight);
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update(); // начальное состояние (например, при перезагрузке на середине страницы)
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+    });
+  }
+</script>

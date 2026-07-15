@@ -6,6 +6,8 @@ import '../styles/global.css';
 import '@fontsource/prata/400.css';
 import '@fontsource-variable/onest/wght.css';
 
+import ScrollTop from '../components/ScrollTop.astro';
+
 // Preload основных woff2-сабсетов (latin + cyrillic) обоих начертаний.
 // ?url отдаёт хэшированный путь к ассету; Vite дедуплицирует его с url() из @font-face.
 import prataLatin from '@fontsource/prata/files/prata-latin-400-normal.woff2?url';
@@ -82,6 +84,9 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
     <a class="skip-link" href="#main">Перейти к содержанию</a>
 
     <slot />
+
+    {/* Плавающая кнопка «наверх» — одна на все страницы */}
+    <ScrollTop />
 
     <script>
       // UTM-метки: на загрузке любой страницы сохраняем utm_* из query в sessionStorage,
