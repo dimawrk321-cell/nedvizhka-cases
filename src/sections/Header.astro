@@ -12,9 +12,10 @@ import Button from '../components/Button.astro';
 import { Menu, X } from 'lucide-static';
 
 const base = import.meta.env.BASE_URL;
-// «Ипотека» и «Документы» ведут на отдельные страницы (с BASE_URL); остальные — якоря секций.
+// «Объявления», «Ипотека», «Документы» ведут на отдельные страницы (с BASE_URL); остальные — якоря.
 const navLinks = [
   { label: 'Цены', href: '#prices' },
+  { label: 'Объявления', href: `${base}listings/` },
   { label: 'Ипотека', href: `${base}mortgage/` },
   { label: 'Документы', href: `${base}documents/` },
   { label: 'Агенты', href: '#agents' },
@@ -28,7 +29,7 @@ const navLinks = [
       {site.company}
     </a>
 
-    <nav class="hidden items-center gap-7 lg:flex" aria-label="Основная навигация">
+    <nav class="hidden items-center gap-6 lg:flex" aria-label="Основная навигация">
       {
         navLinks.map((link) => (
           <a href={link.href} class="site-header__link inline-flex min-h-[44px] items-center font-sans text-[15px] font-medium">

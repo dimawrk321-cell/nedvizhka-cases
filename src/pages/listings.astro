@@ -1,0 +1,115 @@
+---
+/**
+ * /listings/ — «Актуальные объявления»: каталог объектов агентства (данные — listings.ts).
+ * Углубление из шапки: вверху стрелка «На главную» (history.back(), если реферер с этого же
+ * сайта, иначе переход на / с учётом BASE_URL). Фильтр по категориям — чистый JS: табы
+ * переключают видимость карточек по data-category; активный таб выделен brass. Все 18
+ * объектов на одной странице, сетка растёт вниз.
+ */
+import Layout from '../layouts/Layout.astro';
+import ListingCard from '../components/ListingCard.astro';
+import { listingCategories, listings } from '../data/listings';
+import { ArrowLeft } from 'lucide-static';
+
+const base = import.meta.env.BASE_URL;
+const pageTitle = 'Актуальные объявления — Первый город';
+const pageDescription =
+  'Объекты недвижимости агентства «Первый город» в продаже и аренде: квартиры, загородные дома, участки, коммерция и гаражи.';
+// TODO: уточнить формулировку подзаголовка (актуальность списка)
+const subtitle =
+  'Квартиры, загородные дома, участки, коммерция и гаражи в продаже и аренде. Список актуален на текущий момент — статус и детали объекта уточняйте у агента.';
+
+const tabClass =
+  'inline-flex min-h-[40px] items-center rounded-card border border-stone px-4 text-sm font-medium text-ink transition-colors hover:border-brass aria-selected:border-brass aria-selected:bg-brass aria-selected:text-ink';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <main id="main">
+    {/* Стрелка «На главную» — восстанавливает позицию скролла, если пришли с сайта */}
+    <div class="wrap py-6">
+      <a
+        href={base}
+        data-back-link
+        class="inline-flex w-fit items-center gap-2 text-sm font-medium text-brass transition-colors hover:underline [&>svg]:h-4 [&>svg]:w-4"
+      >
+        <span set:html={ArrowLeft} aria-hidden="true" />На главную
+      </a>
+    </div>
+
+    <div class="wrap flex flex-col gap-10 pb-24 pt-2 lg:pb-32">
+      {/* Заголовок страницы */}
+      <header class="flex flex-col gap-4">
+        <p class="eyebrow text-brass">Объекты</p>
+        <h2>Актуальные объявления</h2>
+        <p class="text-lg text-muted">{subtitle}</p>
+      </header>
+
+      {/* Фильтр по категориям — «Все» + 6 категорий */}
+      <div role="tablist" aria-label="Фильтр объектов по категориям" class="flex flex-wrap gap-2">
+        <button type="button" data-filter="all" aria-selected="true" class={tabClass}>Все</button>
+        {
+          listingCategories.map((category) => (
+            <button type="button" data-filter={category.id} aria-selected="false" class={tabClass}>
+              {category.title}
+            </button>
+          ))
+        }
+      </div>
+
+      {/* Сетка карточек: 3 в ряд десктоп, 2 планшет, 1 мобайл */}
+      <div data-listings-grid class="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {listings.map((listing) => <ListingCard listing={listing} />)}
+      </div>
+
+      {/* Пустое состояние — на случай фильтра без объектов */}
+      <p data-listings-empty hidden role="status" class="text-muted">
+        В этой категории пока нет объектов.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    // Стрелка «На главную»: если пришли с этого же сайта — history.back() (вернёт позицию
+    // скролла); иначе срабатывает href на / (с BASE_URL).
+    const backLink = document.querySelector('[data-back-link]');
+    if (backLink instanceof HTMLAnchorElement) {
+      backLink.addEventListener('click', (event) => {
+        if (
+          document.referrer &&
+          document.referrer.includes(window.location.host) &&
+          window.history.length > 1
+        ) {
+          event.preventDefault();
+          window.history.back();
+        }
+      });
+    }
+
+    // Фильтр по категориям: табы переключают видимость карточек по data-category. Без библиотек.
+    const tabs = Array.from(document.querySelectorAll('[data-filter]')).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+    const cards = Array.from(document.querySelectorAll('[data-listings-grid] [data-category]')).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
+    const empty = document.querySelector('[data-listings-empty]');
+
+    if (tabs.length > 0 && cards.length > 0) {
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const filter = tab.getAttribute('data-filter') || 'all';
+          tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+
+          let visible = 0;
+          cards.forEach((card) => {
+            const match = filter === 'all' || card.getAttribute('data-category') === filter;
+            card.hidden = !match;
+            if (match) visible += 1;
+          });
+
+          if (empty instanceof HTMLElement) empty.hidden = visible > 0;
+        });
+      });
+    }
+  </script>
+</Layout>
