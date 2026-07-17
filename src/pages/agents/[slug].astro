@@ -20,7 +20,8 @@ import AgentHelp from '../../components/AgentHelp.astro';
 import AgentBanks from '../../components/AgentBanks.astro';
 import AgentContacts from '../../components/AgentContacts.astro';
 import AgentLeadForm from '../../components/AgentLeadForm.astro';
-import { User, Check, ArrowLeft } from 'lucide-static';
+import BackLink from '../../components/BackLink.astro';
+import { User, Check } from 'lucide-static';
 import dariaPhoto from '../../assets/daria.jpg';
 
 export function getStaticPaths() {
@@ -58,14 +59,8 @@ const agentOg = OG_BY_AGENT[agent.slug];
 >
   <main id="main" class="section-y">
     <div class="wrap flex flex-col gap-10">
-      {/* Стрелка «назад» — восстанавливает позицию скролла на секции агентов */}
-      <a
-        href={`${base}#agents`}
-        data-back-link
-        class="inline-flex w-fit items-center gap-2 text-sm font-medium text-brass transition-colors hover:underline [&>svg]:h-4 [&>svg]:w-4"
-      >
-        <span set:html={ArrowLeft} aria-hidden="true" />{agentPage.backLabel}
-      </a>
+      {/* Кнопка «назад» — восстанавливает позицию скролла на секции агентов */}
+      <BackLink href={`${base}#agents`} label={agentPage.backLabel} />
 
       <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
         {/* Текст: на мобильном первый, на десктопе справа */}
@@ -190,22 +185,4 @@ const agentOg = OG_BY_AGENT[agent.slug];
       }
     </div>
   </main>
-
-  <script>
-    // Стрелка «К агентам»: если пришли с этого же сайта — history.back() (браузер
-    // вернёт позицию скролла на секции агентов); иначе срабатывает href на /#agents.
-    const backLink = document.querySelector('[data-back-link]');
-    if (backLink instanceof HTMLAnchorElement) {
-      backLink.addEventListener('click', (event) => {
-        if (
-          document.referrer &&
-          document.referrer.includes(window.location.host) &&
-          window.history.length > 1
-        ) {
-          event.preventDefault();
-          window.history.back();
-        }
-      });
-    }
-  </script>
 </Layout>

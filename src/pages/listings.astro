@@ -8,8 +8,8 @@
  */
 import Layout from '../layouts/Layout.astro';
 import ListingCard from '../components/ListingCard.astro';
+import BackLink from '../components/BackLink.astro';
 import { listingCategories, listings } from '../data/listings';
-import { ArrowLeft } from 'lucide-static';
 
 const base = import.meta.env.BASE_URL;
 const pageTitle = 'Актуальные объявления — Первый город';
@@ -25,15 +25,9 @@ const tabClass =
 
 <Layout title={pageTitle} description={pageDescription}>
   <main id="main">
-    {/* Стрелка «На главную» — восстанавливает позицию скролла, если пришли с сайта */}
+    {/* Кнопка «На главную» */}
     <div class="wrap py-6">
-      <a
-        href={base}
-        data-back-link
-        class="inline-flex w-fit items-center gap-2 text-sm font-medium text-brass transition-colors hover:underline [&>svg]:h-4 [&>svg]:w-4"
-      >
-        <span set:html={ArrowLeft} aria-hidden="true" />На главную
-      </a>
+      <BackLink href={base} label="На главную" />
     </div>
 
     <div class="wrap flex flex-col gap-10 pb-24 pt-2 lg:pb-32">
@@ -69,22 +63,6 @@ const tabClass =
   </main>
 
   <script>
-    // Стрелка «На главную»: если пришли с этого же сайта — history.back() (вернёт позицию
-    // скролла); иначе срабатывает href на / (с BASE_URL).
-    const backLink = document.querySelector('[data-back-link]');
-    if (backLink instanceof HTMLAnchorElement) {
-      backLink.addEventListener('click', (event) => {
-        if (
-          document.referrer &&
-          document.referrer.includes(window.location.host) &&
-          window.history.length > 1
-        ) {
-          event.preventDefault();
-          window.history.back();
-        }
-      });
-    }
-
     // Фильтр по категориям: табы переключают видимость карточек по data-category. Без библиотек.
     const tabs = Array.from(document.querySelectorAll('[data-filter]')).filter(
       (el): el is HTMLElement => el instanceof HTMLElement,

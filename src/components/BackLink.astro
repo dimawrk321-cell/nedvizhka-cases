@@ -1,0 +1,49 @@
+---
+/**
+ * BackLink — заметная кнопка «назад» вверху внутренних страниц (профили, ипотека,
+ * объявления, объекты, документы). Пропсы href и label. Оформление — аккуратная пилюля:
+ * обводка stone, текст ink (Onest 500), стрелка arrow-left brass чуть крупнее; на hover
+ * обводка и текст → brass, стрелка сдвигается влево (микроанимация «назад»), transition 200ms.
+ * focus-visible — brass-ring; touch-target ≥44px. На тёмном фоне (.surface-dark) —
+ * светлый вариант обводки/текста. Логика: если пришли с этого же сайта → history.back()
+ * (браузер вернёт позицию скролла и состояние предыдущей страницы), иначе переход по href.
+ */
+import { ArrowLeft } from 'lucide-static';
+
+interface Props {
+  href: string;
+  label: string;
+}
+const { href, label } = Astro.props;
+---
+
+<a
+  href={href}
+  data-back-link
+  class="group inline-flex min-h-[44px] w-fit items-center gap-2 rounded-card border border-stone px-4 py-2 font-sans text-sm font-medium text-ink transition-colors duration-200 hover:border-brass hover:text-brass focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-paper [.surface-dark_&]:border-stone/40 [.surface-dark_&]:text-paper [.surface-dark_&]:hover:border-brass-light [.surface-dark_&]:hover:text-brass-light [.surface-dark_&]:focus-visible:ring-offset-ink"
+>
+  <span
+    class="inline-flex shrink-0 text-brass transition-transform duration-200 group-hover:-translate-x-1 [&>svg]:h-[18px] [&>svg]:w-[18px] [.surface-dark_&]:text-brass-light"
+    set:html={ArrowLeft}
+    aria-hidden="true"
+  />
+  {label}
+</a>
+
+<script>
+  // Если пришли с этого же сайта — history.back() (браузер вернёт позицию скролла и
+  // состояние предыдущей страницы, напр. активный фильтр в объявлениях); иначе href.
+  document.querySelectorAll('[data-back-link]').forEach((backLink) => {
+    if (!(backLink instanceof HTMLAnchorElement)) return;
+    backLink.addEventListener('click', (event) => {
+      if (
+        document.referrer &&
+        document.referrer.includes(window.location.host) &&
+        window.history.length > 1
+      ) {
+        event.preventDefault();
+        window.history.back();
+      }
+    });
+  });
+</script>
