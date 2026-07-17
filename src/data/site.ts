@@ -45,8 +45,8 @@ export const site: Site = {
   person: 'Дарья Сальникова',
   personRole: 'Риелтор',
   legalName: 'Сальникова Дарья Викторовна',
-  phone: '+7 (903) 123-45-67', // TODO: реальный телефон Дарьи
-  phoneHref: 'tel:+79031234567', // TODO: реальный телефон Дарьи
+  phone: '+7 (902) 940-78-18',
+  phoneHref: 'tel:+79029407818',
   telegram: '@moneymarketdaria',
   telegramHref: 'https://t.me/moneymarketdaria',
   maxLink: 'https://max.ru/ИМЯ_ИЛИ_ID', // TODO: уточнить реальную ссылку/формат MAX Дарьи
