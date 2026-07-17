@@ -34,9 +34,28 @@ const { agent } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const pageTitle = `${agent.name} — ${agent.role} · Первый город`;
 const pageDescription = agent.summary;
+
+// OG-превью профиля: у Дарьи — её фото (public/og/og-daria.jpg 1200×630), у Дмитрия — пока
+// дефолтный логотип (фото нет). Заголовки — в требуемом формате; описание — из summary.
+const OG_BY_AGENT: Record<string, { image?: string; title: string }> = {
+  'darya-salnikova': {
+    image: `${base}og/og-daria.jpg`,
+    title: 'Дарья Сальникова — риелтор, ипотечный и страховой брокер · Первый город',
+  },
+  'dmitriy-sokolov': {
+    title: 'Дмитрий Соколов — риелтор-юрист · Первый город',
+  },
+};
+const agentOg = OG_BY_AGENT[agent.slug];
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  ogTitle={agentOg?.title}
+  ogDescription={agent.summary}
+  ogImage={agentOg?.image}
+>
   <main id="main" class="section-y">
     <div class="wrap flex flex-col gap-10">
       {/* Стрелка «назад» — восстанавливает позицию скролла на секции агентов */}
