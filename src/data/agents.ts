@@ -40,6 +40,14 @@ export interface AgentPhone {
   whatsappHref?: string;
 }
 
+/** Telegram агента для блока контактов профиля (свой у каждого агента). */
+export interface AgentTelegram {
+  /** Хендл, напр. «@DmitryKazennov» */
+  handle: string;
+  /** Ссылка, напр. «https://t.me/DmitryKazennov» */
+  href: string;
+}
+
 /** Тексты формы заявки в профиле агента (переиспользует общий компонент LeadForm). */
 export interface LeadFormCopy {
   /** Заголовок над формой */
@@ -74,6 +82,8 @@ export interface Agent {
   photo: string | null;
   /** Личный телефон агента для блока контактов профиля; null — берётся общий из site.ts */
   phone: AgentPhone | null;
+  /** Личный Telegram агента для блока контактов профиля; null — не показывается */
+  telegram: AgentTelegram | null;
   /** Форма заявки в профиле (переиспользует LeadForm); null — формы нет */
   leadForm: LeadFormCopy | null;
   /** Услуги агента — карточки в профиле */
@@ -146,6 +156,8 @@ export const agents: Agent[] = [
       href: 'tel:+79173982403',
       whatsappHref: 'https://wa.me/79173982403',
     },
+    // Telegram Дарьи — значение из site.ts (используется и в футере), чтобы не дублировать
+    telegram: { handle: site.telegram, href: site.telegramHref },
     // Форма заявки к Дарье — agentName уходит в payload.agent (видно в Telegram)
     leadForm: {
       heading: 'Оставьте заявку Дарье',
@@ -185,12 +197,14 @@ export const agents: Agent[] = [
     // TODO: банки-партнёры Дмитрия — пока пусто, блок не показывается
     banks: null,
     photo: null, // TODO: фото Дмитрия
-    // Личный номер Дмитрия — только в блоке контактов его профиля (пока единственный способ связи)
+    // Личный номер Дмитрия — только в блоке контактов его профиля
     phone: {
       display: '+7 (902) 940-78-18',
       href: 'tel:+79029407818',
     },
-    // TODO: Telegram / WhatsApp / MAX Дмитрия — добавить, когда уточнит (сейчас в контактах только телефон)
+    // Личный Telegram Дмитрия
+    telegram: { handle: '@DmitryKazennov', href: 'https://t.me/DmitryKazennov' },
+    // TODO: WhatsApp / MAX Дмитрия — добавить, когда уточнит
     // TODO: уточнить реальные услуги Дмитрия — пока плейсхолдеры
     services: [
       {

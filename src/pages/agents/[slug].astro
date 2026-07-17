@@ -148,9 +148,9 @@ const pageDescription = agent.summary;
       {/* Сертификаты и дипломы — самый низ профиля; галерея с лайтбоксом (у Дарьи, у Дмитрия пусто) */}
       <AgentCertificates certificates={agent.certificates} />
 
-      {/* Контакты — личный телефон агента; общие мессенджеры (Telegram/MAX из site.ts)
-          пока только у основного контакта (Дарьи), у Дмитрия — только его телефон */}
-      {agent.phone && <AgentContacts phone={agent.phone} showMessengers={agent.slug === 'darya-salnikova'} />}
+      {/* Контакты — личный телефон и Telegram агента (свои у каждого); общий MAX из site.ts
+          пока только у основного контакта (Дарьи) */}
+      {agent.phone && <AgentContacts phone={agent.phone} telegram={agent.telegram} showMax={agent.slug === 'darya-salnikova'} />}
 
       {/* Заявка к агенту: форма записи именно к нему (agentName → payload.agent, видно в Telegram);
           если формы нет — кнопка на общую форму главной (#cta) */}
