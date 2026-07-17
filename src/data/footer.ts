@@ -9,7 +9,6 @@ export const footer = {
     { label: 'Процесс', href: '#process' },
     { label: 'FAQ', href: '#faq' },
   ],
-  whatsappLabel: 'WhatsApp',
   telegramLabel: 'Telegram',
   maxLabel: 'MAX',
   privacyLabel: 'Политика обработки персональных данных',

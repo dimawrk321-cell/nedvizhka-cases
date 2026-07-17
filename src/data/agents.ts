@@ -36,8 +36,6 @@ export interface AgentPhone {
   display: string;
   /** Ссылка tel:, напр. «tel:+79173982403» */
   href: string;
-  /** Ссылка WhatsApp на тот же номер (в контактах профиля сейчас не показывается) */
-  whatsappHref?: string;
 }
 
 /** Telegram агента для блока контактов профиля (свой у каждого агента). */
@@ -154,7 +152,6 @@ export const agents: Agent[] = [
     phone: {
       display: '+7 (917) 398-24-03',
       href: 'tel:+79173982403',
-      whatsappHref: 'https://wa.me/79173982403',
     },
     // Telegram Дарьи — значение из site.ts (используется и в футере), чтобы не дублировать
     telegram: { handle: site.telegram, href: site.telegramHref },
@@ -204,7 +201,7 @@ export const agents: Agent[] = [
     },
     // Личный Telegram Дмитрия
     telegram: { handle: '@DmitryKazennov', href: 'https://t.me/DmitryKazennov' },
-    // TODO: WhatsApp / MAX Дмитрия — добавить, когда уточнит
+    // TODO: MAX Дмитрия — добавить, когда уточнит
     // TODO: уточнить реальные услуги Дмитрия — пока плейсхолдеры
     services: [
       {

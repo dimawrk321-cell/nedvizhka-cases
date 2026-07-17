@@ -6,7 +6,7 @@
  */
 import { footer } from '../data/footer';
 import { site } from '../data/site';
-import { Phone, MessageCircle, Send, MessageSquare, MapPin } from 'lucide-static';
+import { Phone, Send, MessageSquare, MapPin } from 'lucide-static';
 
 const year = new Date().getFullYear();
 const base = import.meta.env.BASE_URL;
@@ -50,11 +50,6 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
           <li>
             <a href={site.phoneHref} class={linkBase}>
               <span set:html={Phone} aria-hidden="true" />{site.phone}
-            </a>
-          </li>
-          <li>
-            <a href={site.whatsappHref} target="_blank" rel="noopener" class={linkBase}>
-              <span set:html={MessageCircle} aria-hidden="true" />{footer.whatsappLabel}
             </a>
           </li>
           <li>

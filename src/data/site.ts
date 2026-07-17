@@ -27,8 +27,6 @@ export interface Site {
   telegram: string;
   /** Ссылка на Telegram */
   telegramHref: string;
-  /** Ссылка на WhatsApp (тот же номер) */
-  whatsappHref: string;
   /** Ссылка на мессенджер MAX */
   maxLink: string;
   /** Адрес офиса */
@@ -51,7 +49,6 @@ export const site: Site = {
   phoneHref: 'tel:+79031234567', // TODO: реальный телефон Дарьи
   telegram: '@moneymarketdaria',
   telegramHref: 'https://t.me/moneymarketdaria',
-  whatsappHref: 'https://wa.me/79031234567', // TODO: тот же номер Дарьи
   maxLink: 'https://max.ru/ИМЯ_ИЛИ_ID', // TODO: уточнить реальную ссылку/формат MAX Дарьи
   office: 'Ленинградский проспект, 26к1, Москва',
   // Яндекс.Карты: квадратные скобки закодированы (%5B / %5D), иначе href в HTML ломается
