@@ -149,7 +149,7 @@ const pageDescription = agent.summary;
       <AgentCertificates certificates={agent.certificates} />
 
       {/* Контакты — общие контакты компании (site.ts); показываем у основного контакта (Дарьи) */}
-      {agent.slug === 'darya-salnikova' && <AgentContacts />}
+      {agent.slug === 'darya-salnikova' && <AgentContacts phone={agent.phone} />}
 
       {/* Заявка: у Дарьи — форма записи именно к ней (payload.agent);
           у остальных — кнопка на общую форму главной (#cta) */}

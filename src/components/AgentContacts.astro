@@ -1,12 +1,25 @@
 ---
 /**
- * AgentContacts — блок «Контакты» в профиле агента. Общие контакты компании из site.ts
- * (Дарья — основной контакт): телефон (tel:), WhatsApp (wa.me), Telegram (t.me), MAX.
- * Иконки lucide как в футере. Каждая ссылка — chip с min-h-[44px] (touch-target ≥44px),
- * мессенджеры открываются в новой вкладке (rel=noopener).
+ * AgentContacts — блок «Контакты» в профиле агента. Telegram и MAX — общие из site.ts.
+ * Телефон и WhatsApp: если у агента задан личный номер (phone), берём его; иначе — общий
+ * из site.ts. Так у Дарьи в профиле показывается её личный номер, а шапка/футер/формы
+ * остаются на общем номере site.ts. Иконки lucide как в футере; каждая ссылка — chip
+ * с min-h-[44px] (touch-target ≥44px); мессенджеры открываются в новой вкладке (rel=noopener).
  */
 import { site } from '../data/site';
+import type { AgentPhone } from '../data/agents';
 import { Phone, MessageCircle, Send, MessageSquare } from 'lucide-static';
+
+interface Props {
+  /** Личный номер агента; null — используется общий из site.ts */
+  phone?: AgentPhone | null;
+}
+const { phone } = Astro.props;
+
+// Телефон и WhatsApp — из личного номера агента, при отсутствии откат на общий site.ts
+const phoneDisplay = phone?.display ?? site.phone;
+const phoneHref = phone?.href ?? site.phoneHref;
+const whatsappHref = phone?.whatsappHref ?? site.whatsappHref;
 
 const chip =
   'inline-flex min-h-[44px] items-center gap-2 rounded-card border border-stone px-4 text-ink transition-colors hover:border-brass hover:text-brass [&>svg]:h-5 [&>svg]:w-5';
@@ -20,12 +33,12 @@ const chip =
 
   <ul class="flex flex-wrap gap-3">
     <li>
-      <a href={site.phoneHref} class={chip}>
-        <span set:html={Phone} aria-hidden="true" />{site.phone}
+      <a href={phoneHref} class={chip}>
+        <span set:html={Phone} aria-hidden="true" />{phoneDisplay}
       </a>
     </li>
     <li>
-      <a href={site.whatsappHref} target="_blank" rel="noopener" class={chip} aria-label="WhatsApp">
+      <a href={whatsappHref} target="_blank" rel="noopener" class={chip} aria-label="WhatsApp">
         <span set:html={MessageCircle} aria-hidden="true" />WhatsApp
       </a>
     </li>

@@ -25,8 +25,8 @@ export const certsHeading = {
 };
 
 export const certificates: Certificate[] = [
+  { image: certMetrclub, title: 'Диплом партнёра ипотечного агрегатора Metr.Club' },
   { image: certNovostroyki, title: 'Школа по новостройкам и ипотеке', year: '2024' },
   { image: certReso, title: 'РЕСО-Гарантия — курс страхового агента', year: '2021' },
   { image: certVtb, title: 'ВТБ24 — обучение по продуктам банка', year: '2012' },
-  { image: certMetrclub, title: 'Диплом партнёра ипотечного агрегатора Metr.Club' },
 ];
