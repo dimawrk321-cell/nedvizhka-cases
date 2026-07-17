@@ -1,11 +1,11 @@
 ---
 /**
- * AgentContacts — блок «Контакты» в профиле агента. Telegram и MAX — общие из site.ts.
- * Телефон: если у агента задан личный номер (phone), берём его; иначе — общий из site.ts.
- * Так у Дарьи в профиле показывается её личный номер, а шапка/футер/формы остаются на общем
- * номере site.ts. WhatsApp в контактах профиля не показываем. Иконки lucide как в футере;
- * каждая ссылка — chip с min-h-[44px] (touch-target ≥44px); мессенджеры открываются в новой
- * вкладке (rel=noopener).
+ * AgentContacts — блок «Контакты» в профиле агента.
+ * Телефон: берём личный номер агента (phone), иначе откат на общий из site.ts.
+ * Мессенджеры (Telegram/MAX из site.ts) показываем только когда showMessengers=true —
+ * пока это основной контакт (Дарья); у Дмитрия сейчас только телефон (свои мессенджеры позже).
+ * WhatsApp в контактах профиля не показываем. Иконки lucide как в футере; каждая ссылка —
+ * chip с min-h-[44px] (touch-target ≥44px); мессенджеры открываются в новой вкладке (rel=noopener).
  */
 import { site } from '../data/site';
 import type { AgentPhone } from '../data/agents';
@@ -14,8 +14,10 @@ import { Phone, Send, MessageSquare } from 'lucide-static';
 interface Props {
   /** Личный номер агента; null — используется общий из site.ts */
   phone?: AgentPhone | null;
+  /** Показывать общие мессенджеры (Telegram/MAX из site.ts); по умолчанию — только телефон */
+  showMessengers?: boolean;
 }
-const { phone } = Astro.props;
+const { phone, showMessengers = false } = Astro.props;
 
 // Телефон — из личного номера агента, при отсутствии откат на общий site.ts
 const phoneDisplay = phone?.display ?? site.phone;
@@ -37,15 +39,21 @@ const chip =
         <span set:html={Phone} aria-hidden="true" />{phoneDisplay}
       </a>
     </li>
-    <li>
-      <a href={site.telegramHref} target="_blank" rel="noopener" class={chip}>
-        <span set:html={Send} aria-hidden="true" />Telegram {site.telegram}
-      </a>
-    </li>
-    <li>
-      <a href={site.maxLink} target="_blank" rel="noopener" class={chip} aria-label="MAX">
-        <span set:html={MessageSquare} aria-hidden="true" />MAX
-      </a>
-    </li>
+    {
+      showMessengers && (
+        <>
+          <li>
+            <a href={site.telegramHref} target="_blank" rel="noopener" class={chip}>
+              <span set:html={Send} aria-hidden="true" />Telegram {site.telegram}
+            </a>
+          </li>
+          <li>
+            <a href={site.maxLink} target="_blank" rel="noopener" class={chip} aria-label="MAX">
+              <span set:html={MessageSquare} aria-hidden="true" />MAX
+            </a>
+          </li>
+        </>
+      )
+    }
   </ul>
 </div>

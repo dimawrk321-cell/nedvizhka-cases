@@ -148,19 +148,20 @@ const pageDescription = agent.summary;
       {/* Сертификаты и дипломы — самый низ профиля; галерея с лайтбоксом (у Дарьи, у Дмитрия пусто) */}
       <AgentCertificates certificates={agent.certificates} />
 
-      {/* Контакты — общие контакты компании (site.ts); показываем у основного контакта (Дарьи) */}
-      {agent.slug === 'darya-salnikova' && <AgentContacts phone={agent.phone} />}
+      {/* Контакты — личный телефон агента; общие мессенджеры (Telegram/MAX из site.ts)
+          пока только у основного контакта (Дарьи), у Дмитрия — только его телефон */}
+      {agent.phone && <AgentContacts phone={agent.phone} showMessengers={agent.slug === 'darya-salnikova'} />}
 
-      {/* Заявка: у Дарьи — форма записи именно к ней (payload.agent);
-          у остальных — кнопка на общую форму главной (#cta) */}
+      {/* Заявка к агенту: форма записи именно к нему (agentName → payload.agent, видно в Telegram);
+          если формы нет — кнопка на общую форму главной (#cta) */}
       {
-        agent.slug === 'darya-salnikova' ? (
+        agent.leadForm ? (
           <AgentLeadForm
             agentName={agent.name}
-            heading="Оставьте заявку Дарье"
-            subheading="Отвечу лично в течение часа в рабочее время"
-            submitText="Записаться к Дарье"
-            idPrefix="agent-darya-lead"
+            heading={agent.leadForm.heading}
+            subheading={agent.leadForm.subheading}
+            submitText={agent.leadForm.submitText}
+            idPrefix={agent.leadForm.idPrefix}
           />
         ) : (
           <div>
