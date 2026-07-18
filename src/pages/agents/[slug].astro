@@ -13,7 +13,6 @@ import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import { agents, agentPage } from '../../data/agents';
 import AgentServices from '../../components/AgentServices.astro';
-import AgentCases from '../../components/AgentCases.astro';
 import AgentReviews from '../../components/AgentReviews.astro';
 import AgentCertificates from '../../components/AgentCertificates.astro';
 import AgentHelp from '../../components/AgentHelp.astro';
@@ -153,8 +152,8 @@ const agentOg = OG_BY_AGENT[agent.slug];
       {/* Услуги агента — переехали с главной; у каждого агента свой набор (agents.ts) */}
       <AgentServices services={agent.services} />
 
-      {/* Кейсы агента — переехали с главной; у Дарьи её сделки, у Дмитрия пока пусто */}
-      <AgentCases cases={agent.cases} />
+      {/* Блок «Кейсы» временно не выводим (по решению заказчика). Данные сохранены в
+          cases.ts / agent.cases и AgentCases.astro — на случай возврата. */}
 
       {/* Отзывы агента — переехали с главной; у Дарьи реальные, у Дмитрия пока пусто */}
       <AgentReviews reviews={agent.reviews} />
