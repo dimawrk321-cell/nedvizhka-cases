@@ -41,7 +41,7 @@ export interface Site {
 
 export const site: Site = {
   company: 'Первый город',
-  companyRole: 'Агентство недвижимости в Москве и области',
+  companyRole: 'Агентство недвижимости в Москве и Московской области',
   person: 'Дарья Сальникова',
   personRole: 'Риелтор',
   legalName: 'Сальникова Дарья Викторовна',
