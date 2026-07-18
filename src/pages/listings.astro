@@ -1,26 +1,33 @@
 ---
 /**
- * /listings/ — «Актуальные объявления»: каталог объектов агентства (данные — listings.ts).
- * Углубление из шапки: вверху стрелка «На главную» (history.back(), если реферер с этого же
- * сайта, иначе переход на / с учётом BASE_URL). Фильтр по категориям — чистый JS: табы
- * переключают видимость карточек по data-category; активный таб выделен brass. Все 18
- * объектов на одной странице, сетка растёт вниз.
+ * /listings/ — «Объявления»: страница-перекрёсток. Каталог объектов на сайте больше не
+ * ведём — все актуальные предложения агентства публикуются на Авито и Циан. Здесь две
+ * крупные карточки-ссылки на площадки. Логотипы/бренд-цвета площадок не используем
+ * (товарные знаки) — только текст в нашей палитре (brass/ink/stone/paper).
  */
 import Layout from '../layouts/Layout.astro';
-import ListingCard from '../components/ListingCard.astro';
 import BackLink from '../components/BackLink.astro';
-import { listingCategories, listings } from '../data/listings';
+import Button from '../components/Button.astro';
+import { Building2, ArrowUpRight } from 'lucide-static';
 
 const base = import.meta.env.BASE_URL;
-const pageTitle = 'Актуальные объявления — Первый город';
+const pageTitle = 'Объявления — Первый город';
 const pageDescription =
-  'Объекты недвижимости агентства «Первый город» в продаже и аренде: квартиры, загородные дома, участки, коммерция и гаражи.';
-// TODO: уточнить формулировку подзаголовка (актуальность списка)
-const subtitle =
-  'Квартиры, загородные дома, участки, коммерция и гаражи в продаже и аренде. Список актуален на текущий момент — статус и детали объекта уточняйте у агента.';
+  'Объекты агентства «Первый город» — квартиры, дома и участки — опубликованы на Авито и Циан. Актуальные предложения с фото и ценами.';
 
-const tabClass =
-  'inline-flex min-h-[40px] items-center rounded-card border border-stone px-4 text-sm font-medium text-ink transition-colors hover:border-brass aria-selected:border-brass aria-selected:bg-brass aria-selected:text-ink';
+const platforms = [
+  {
+    name: 'Авито',
+    caption: 'Все объекты агентства',
+    // context-параметр в исходной ссылке временный — не включаем
+    href: 'https://www.avito.ru/brands/i194417548/items/all/kvartiry',
+  },
+  {
+    name: 'Циан',
+    caption: 'Актуальные предложения',
+    href: 'https://www.cian.ru/company/66328155',
+  },
+];
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -30,64 +37,55 @@ const tabClass =
       <BackLink href={base} label="На главную" />
     </div>
 
-    <div class="wrap flex flex-col gap-10 pb-24 pt-2 lg:pb-32">
+    <div class="wrap flex flex-col gap-12 pb-24 pt-2 lg:pb-32">
       {/* Заголовок страницы */}
       <header class="flex flex-col gap-4">
-        <p class="eyebrow text-brass">Объекты</p>
-        <h2>Актуальные объявления</h2>
-        <p class="text-lg text-muted">{subtitle}</p>
+        <p class="eyebrow text-brass">Объявления</p>
+        <h2>Наши объекты на площадках</h2>
+        <p class="text-lg text-muted">
+          Все актуальные предложения агентства опубликованы на Авито и Циан. Переходите, чтобы
+          посмотреть квартиры, дома и участки с фото и ценами.
+        </p>
       </header>
 
-      {/* Фильтр по категориям — «Все» + 6 категорий */}
-      <div role="tablist" aria-label="Фильтр объектов по категориям" class="flex flex-wrap gap-2">
-        <button type="button" data-filter="all" aria-selected="true" class={tabClass}>Все</button>
+      {/* Две крупные карточки-ссылки на площадки: 50/50 на десктопе, столбцом на мобильном */}
+      <div class="grid gap-6 sm:grid-cols-2 sm:gap-8">
         {
-          listingCategories.map((category) => (
-            <button type="button" data-filter={category.id} aria-selected="false" class={tabClass}>
-              {category.title}
-            </button>
+          platforms.map((platform) => (
+            <a
+              href={platform.href}
+              target="_blank"
+              rel="noopener"
+              class="group flex flex-col gap-8 rounded-xl border border-stone bg-paper p-8 transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-paper lg:p-10"
+            >
+              <div class="flex items-start justify-between">
+                <span
+                  class="inline-flex h-12 w-12 items-center justify-center rounded-card border border-stone text-brass transition-colors group-hover:border-brass [&>svg]:h-6 [&>svg]:w-6"
+                  set:html={Building2}
+                  aria-hidden="true"
+                />
+                <span
+                  class="inline-flex text-muted transition-all duration-200 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-brass [&>svg]:h-6 [&>svg]:w-6"
+                  set:html={ArrowUpRight}
+                  aria-hidden="true"
+                />
+              </div>
+              <div class="flex flex-col gap-1">
+                <span class="font-display text-3xl leading-none text-ink lg:text-4xl">{platform.name}</span>
+                <span class="text-muted">{platform.caption}</span>
+              </div>
+            </a>
           ))
         }
       </div>
 
-      {/* Сетка карточек: 3 в ряд десктоп, 2 планшет, 1 мобайл */}
-      <div data-listings-grid class="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {listings.map((listing) => <ListingCard listing={listing} />)}
+      {/* Мягкий призыв — на случай, если на площадках не нашлось подходящего */}
+      <div class="flex flex-col gap-4 border-t border-stone pt-8">
+        <p class="text-muted">Не нашли подходящий вариант? Оставьте заявку — подберём под ваш запрос.</p>
+        <div>
+          <Button variant="ghost" href={`${base}#cta`}>Оставить заявку</Button>
+        </div>
       </div>
-
-      {/* Пустое состояние — на случай фильтра без объектов */}
-      <p data-listings-empty hidden role="status" class="text-muted">
-        В этой категории пока нет объектов.
-      </p>
     </div>
   </main>
-
-  <script>
-    // Фильтр по категориям: табы переключают видимость карточек по data-category. Без библиотек.
-    const tabs = Array.from(document.querySelectorAll('[data-filter]')).filter(
-      (el): el is HTMLElement => el instanceof HTMLElement,
-    );
-    const cards = Array.from(document.querySelectorAll('[data-listings-grid] [data-category]')).filter(
-      (el): el is HTMLElement => el instanceof HTMLElement,
-    );
-    const empty = document.querySelector('[data-listings-empty]');
-
-    if (tabs.length > 0 && cards.length > 0) {
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const filter = tab.getAttribute('data-filter') || 'all';
-          tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
-
-          let visible = 0;
-          cards.forEach((card) => {
-            const match = filter === 'all' || card.getAttribute('data-category') === filter;
-            card.hidden = !match;
-            if (match) visible += 1;
-          });
-
-          if (empty instanceof HTMLElement) empty.hidden = visible > 0;
-        });
-      });
-    }
-  </script>
 </Layout>
