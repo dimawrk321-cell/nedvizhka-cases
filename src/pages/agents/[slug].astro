@@ -42,8 +42,8 @@ const OG_BY_AGENT: Record<string, { image?: string; title: string }> = {
     image: `${base}og/og-daria.jpg`,
     title: 'Дарья Сальникова — риелтор, ипотечный и страховой брокер · Первый город',
   },
-  'dmitriy-sokolov': {
-    title: 'Дмитрий Соколов — риелтор-юрист · Первый город',
+  'dmitriy-kazennov': {
+    title: 'Дмитрий Казеннов — риелтор-юрист · Первый город',
   },
 };
 const agentOg = OG_BY_AGENT[agent.slug];
@@ -180,6 +180,15 @@ const agentOg = OG_BY_AGENT[agent.slug];
           <div>
             <Button variant="ghost" href={`${base}#cta`}>{agentPage.ctaLabel}</Button>
           </div>
+        )
+      }
+
+      {/* Реквизиты агента — мелким текстом, юр. информация (не акцент) */}
+      {
+        agent.requisites && (
+          <p class="text-xs text-muted">
+            {agent.requisites.legalName} · ИНН {agent.requisites.inn}
+          </p>
         )
       }
     </div>
