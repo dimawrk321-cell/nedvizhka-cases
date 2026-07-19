@@ -80,6 +80,29 @@ const titleClass = 'text-xs font-medium uppercase tracking-wider text-stone/70';
       </div>
     </div>
 
+    {/* Карта офиса — справа снизу на десктопе, на всю ширину внизу на мобильном.
+        iframe адаптивный (w-full, фикс. высота, loading=lazy), контейнер обрезает по скруглению */}
+    <div class="mt-12 flex flex-col gap-3 lg:ml-auto lg:mt-10 lg:max-w-[420px]">
+      <p class={titleClass}>Наш офис</p>
+      <p class="text-sm text-stone">{site.office}</p>
+      <div class="overflow-hidden rounded-card border border-brass/25">
+        <iframe
+          src="https://yandex.ru/map-widget/v1/?um=constructor%3A8e1ce7fe18bf206d60de47e7310238ff59a7e630e4caf62f6ef80d788619a137&source=constructor"
+          title="Карта офиса — Ленинградский проспект, 26к1, Москва"
+          loading="lazy"
+          class="block h-[200px] w-full border-0 lg:h-[240px]"
+        ></iframe>
+      </div>
+      <a
+        href="https://yandex.ru/maps/?text=Москва%2C%20Ленинградский%20проспект%2C%2026к1"
+        target="_blank"
+        rel="noopener"
+        class={linkBase}
+      >
+        <span set:html={MapPin} aria-hidden="true" />Открыть в Яндекс.Картах
+      </a>
+    </div>
+
     <div class="mt-12 flex flex-col gap-3 border-t border-stone/15 pt-6 text-sm text-stone sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} {site.company}</p>
       <a href={`${base}privacy/`} class="transition-colors hover:text-brass-light">{footer.privacyLabel}</a>
