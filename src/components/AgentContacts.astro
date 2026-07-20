@@ -3,7 +3,7 @@
  * AgentContacts — блок «Контакты» в профиле агента.
  * Телефон: берём личный номер агента (phone), иначе откат на общий из site.ts.
  * Telegram — свой у каждого агента (проп telegram); показывается, если задан.
- * MAX — общий из site.ts, показываем только когда showMax=true (пока у основного контакта, Дарьи).
+ * MAX — свой у каждого агента (проп maxHref); показывается, если задан.
  * Иконки lucide как в футере; каждая ссылка — chip с min-h-[44px] (touch-target ≥44px);
  * мессенджеры открываются в новой вкладке (rel=noopener).
  */
@@ -16,10 +16,10 @@ interface Props {
   phone?: AgentPhone | null;
   /** Личный Telegram агента; null — не показывается */
   telegram?: AgentTelegram | null;
-  /** Показывать общий MAX из site.ts; по умолчанию — не показываем */
-  showMax?: boolean;
+  /** Ссылка MAX агента; null — не показывается */
+  maxHref?: string | null;
 }
-const { phone, telegram, showMax = false } = Astro.props;
+const { phone, telegram, maxHref } = Astro.props;
 
 // Телефон — из личного номера агента, при отсутствии откат на общий site.ts
 const phoneDisplay = phone?.display ?? site.phone;
@@ -51,9 +51,9 @@ const chip =
       )
     }
     {
-      showMax && (
+      maxHref && (
         <li>
-          <a href={site.maxLink} target="_blank" rel="noopener" class={chip} aria-label="MAX">
+          <a href={maxHref} target="_blank" rel="noopener" class={chip} aria-label="MAX">
             <span set:html={MessageSquare} aria-hidden="true" />MAX
           </a>
         </li>

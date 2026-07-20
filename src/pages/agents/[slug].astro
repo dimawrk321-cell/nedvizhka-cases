@@ -21,7 +21,9 @@ import AgentContacts from '../../components/AgentContacts.astro';
 import AgentLeadForm from '../../components/AgentLeadForm.astro';
 import BackLink from '../../components/BackLink.astro';
 import { User, Check } from 'lucide-static';
+import type { ImageMetadata } from 'astro';
 import dariaPhoto from '../../assets/daria.jpg';
+import starikovPhoto from '../../assets/starikov.jpg';
 
 export function getStaticPaths() {
   return agents.map((agent) => ({
@@ -45,8 +47,19 @@ const OG_BY_AGENT: Record<string, { image?: string; title: string }> = {
   'dmitriy-kazennov': {
     title: 'Дмитрий Казеннов — риелтор-юрист · Первый город',
   },
+  'anatoliy-starikov': {
+    image: `${base}og/og-starikov.jpg`,
+    title: 'Анатолий Стариков — специалист по недвижимости · Первый город',
+  },
 };
 const agentOg = OG_BY_AGENT[agent.slug];
+
+// Фото агента (astro:assets) по slug; у кого фото нет — плейсхолдер (иконка User)
+const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
+  'darya-salnikova': dariaPhoto,
+  'anatoliy-starikov': starikovPhoto,
+};
+const agentPhoto = PHOTO_BY_SLUG[agent.slug];
 ---
 
 <Layout
@@ -80,20 +93,22 @@ const agentOg = OG_BY_AGENT[agent.slug];
             {agent.bio.map((paragraph) => <p class="measure text-muted">{paragraph}</p>)}
           </div>
 
-          <ul class="flex flex-col gap-3 border-t border-stone pt-5">
-            {
-              agent.credentials.map((credential) => (
-                <li class="flex items-start gap-3">
-                  <span
-                    class="mt-0.5 inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5"
-                    set:html={Check}
-                    aria-hidden="true"
-                  />
-                  <span class="text-ink">{credential}</span>
-                </li>
-              ))
-            }
-          </ul>
+          {
+            agent.credentials.length > 0 && (
+              <ul class="flex flex-col gap-3 border-t border-stone pt-5">
+                {agent.credentials.map((credential) => (
+                  <li class="flex items-start gap-3">
+                    <span
+                      class="mt-0.5 inline-flex shrink-0 text-brass [&>svg]:h-5 [&>svg]:w-5"
+                      set:html={Check}
+                      aria-hidden="true"
+                    />
+                    <span class="text-ink">{credential}</span>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
 
           {/* Факсимиле подписи — плейсхолдер */}
           <div class="flex flex-col gap-2">
@@ -116,13 +131,13 @@ const agentOg = OG_BY_AGENT[agent.slug];
         <div class="order-2 lg:order-1 lg:col-span-5">
           <div class="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-xl border border-brass/40 bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))] lg:mx-0">
             {
-              agent.slug === 'darya-salnikova' && (
+              agentPhoto && (
                 <Picture
-                  src={dariaPhoto}
+                  src={agentPhoto}
                   formats={['avif', 'webp']}
                   width={768}
                   quality={82}
-                  alt={`${agent.name}, риелтор`}
+                  alt={`${agent.name}, ${agent.role}`}
                   loading="eager"
                   fetchpriority="high"
                   class="absolute inset-0 h-full w-full object-cover"
@@ -132,7 +147,7 @@ const agentOg = OG_BY_AGENT[agent.slug];
             {/* внутренняя рамка brass — поверх фото/градиента */}
             <div class="absolute inset-3 rounded-lg border border-brass/30" />
             {
-              agent.slug !== 'darya-salnikova' && (
+              !agentPhoto && (
                 <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-24 [&>svg]:w-24">
                   <span set:html={User} aria-hidden="true" />
                 </div>
@@ -145,6 +160,23 @@ const agentOg = OG_BY_AGENT[agent.slug];
 
       {/* Чем могу помочь — блок компетенций под био (у Дарьи заполнен, у Дмитрия пусто) */}
       <AgentHelp help={agent.help} />
+
+      {/* Результаты в цифрах — достижения агента (у кого заданы; цифры-акценты brass) */}
+      {
+        agent.achievements && agent.achievements.length > 0 && (
+          <div class="flex flex-col gap-6 border-t border-stone pt-10">
+            <h2 class="text-2xl">Результаты в цифрах</h2>
+            <div class="grid gap-6 sm:grid-cols-3">
+              {agent.achievements.map((stat) => (
+                <div class="flex flex-col gap-1">
+                  <span class="stat-num text-[32px] leading-none text-brass sm:text-[40px]">{stat.value}</span>
+                  <span class="text-sm text-muted">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      }
 
       {/* Банки-партнёры — сплошным текстом, продолжает тему брокера (у Дарьи; у Дмитрия пусто) */}
       <AgentBanks banks={agent.banks} />
@@ -161,9 +193,8 @@ const agentOg = OG_BY_AGENT[agent.slug];
       {/* Сертификаты и дипломы — самый низ профиля; галерея с лайтбоксом (у Дарьи, у Дмитрия пусто) */}
       <AgentCertificates certificates={agent.certificates} />
 
-      {/* Контакты — личный телефон и Telegram агента (свои у каждого); общий MAX из site.ts
-          пока только у основного контакта (Дарьи) */}
-      {agent.phone && <AgentContacts phone={agent.phone} telegram={agent.telegram} showMax={agent.slug === 'darya-salnikova'} />}
+      {/* Контакты — личные телефон, Telegram и MAX агента (свои у каждого; из agents.ts) */}
+      {agent.phone && <AgentContacts phone={agent.phone} telegram={agent.telegram} maxHref={agent.maxHref} />}
 
       {/* Заявка к агенту: форма записи именно к нему (agentName → payload.agent, видно в Telegram);
           если формы нет — кнопка на общую форму главной (#cta) */}

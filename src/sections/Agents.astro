@@ -8,35 +8,42 @@
  * со страниц агентов. Ссылки строятся с учётом BASE_URL (подпапка GitHub Pages).
  */
 import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import { agents, agentsHeading, agentCardCta } from '../data/agents';
 import { User, ArrowRight } from 'lucide-static';
 import dariaPhoto from '../assets/daria.jpg';
+import starikovPhoto from '../assets/starikov.jpg';
 
 const base = import.meta.env.BASE_URL;
+// Фото агента (astro:assets) по slug; у кого фото нет — плейсхолдер (иконка User)
+const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
+  'darya-salnikova': dariaPhoto,
+  'anatoliy-starikov': starikovPhoto,
+};
 ---
 
 <section id="agents" data-section="agents" data-bg="light" class="section-y">
   <div class="wrap flex flex-col gap-12">
     <SectionHeading eyebrow={agentsHeading.eyebrow} title={agentsHeading.title} align="center" />
 
-    <div data-reveal-group class="grid gap-6 sm:grid-cols-2 sm:gap-8">
+    <div data-reveal-group class="grid gap-6 sm:grid-cols-3 sm:gap-8">
       {
         agents.map((agent) => (
           <article
             data-reveal-item
             class="group relative flex flex-col items-center gap-5 rounded-xl border border-stone bg-paper p-6 text-center transition duration-200 hover:-translate-y-1 hover:border-brass hover:shadow-md lg:p-8"
           >
-            {/* Портрет: Дарья — реальное фото (astro:assets), Дмитрий — плейсхолдер */}
+            {/* Портрет: реальное фото (astro:assets) или плейсхолдер, если фото нет */}
             <div class="relative aspect-[4/5] w-full max-w-[300px] overflow-hidden rounded-lg border border-brass/40 bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))]">
               {
-                agent.slug === 'darya-salnikova' && (
+                PHOTO_BY_SLUG[agent.slug] && (
                   <Picture
-                    src={dariaPhoto}
+                    src={PHOTO_BY_SLUG[agent.slug]}
                     formats={['avif', 'webp']}
                     width={768}
                     quality={82}
-                    alt={`${agent.name}, риелтор`}
+                    alt={`${agent.name}, ${agent.role}`}
                     loading="lazy"
                     class="absolute inset-0 h-full w-full object-cover"
                   />
@@ -45,7 +52,7 @@ const base = import.meta.env.BASE_URL;
               {/* внутренняя рамка brass — поверх фото/градиента */}
               <div class="absolute inset-3 rounded-lg border border-brass/30" />
               {
-                agent.slug !== 'darya-salnikova' && (
+                !PHOTO_BY_SLUG[agent.slug] && (
                   <div class="absolute inset-0 grid place-items-center text-paper opacity-20 [&>svg]:h-20 [&>svg]:w-20">
                     <span set:html={User} aria-hidden="true" />
                   </div>
