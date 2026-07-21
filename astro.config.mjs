@@ -5,11 +5,11 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: заменить USERNAME на ваш логин GitHub (нужен для sitemap и абсолютных URL).
-  // Для проектного сайта GitHub Pages адрес имеет вид https://USERNAME.github.io/REPO/
-  site: 'https://dimawrk321-cell.github.io',
-  // TODO: заменить REPO на имя репозитория GitHub. Слеши с обеих сторон обязательны ('/REPO/').
-  base: '/nedvizhka-cases/',
+  // Собственный домен pervyigorod.ru — сайт в КОРНЕ (не в подпапке GitHub Pages).
+  // site нужен для sitemap, canonical и абсолютных og-URL; base '/' — корень домена.
+  // Привязка домена — файлом public/CNAME (копируется в dist при сборке).
+  site: 'https://pervyigorod.ru',
+  base: '/',
   output: 'static',
   integrations: [sitemap()],
   vite: {
