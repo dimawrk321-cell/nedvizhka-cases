@@ -49,7 +49,7 @@ export const site: Site = {
   phoneHref: 'tel:+79029407818',
   telegram: '@moneymarketdaria',
   telegramHref: 'https://t.me/moneymarketdaria',
-  maxLink: 'https://max.ru/u/105368908',
+  maxLink: 'https://max.ru/u/f9LHodD0cOJy5-5xuVhTUtK3edW-2BIw6gX4IW--mxP17Ww52oP5ZIRR0CU',
   office: 'Ленинградский проспект, 26к1, Москва',
   // Яндекс.Карты: квадратные скобки закодированы (%5B / %5D), иначе href в HTML ломается
   mapHref:
