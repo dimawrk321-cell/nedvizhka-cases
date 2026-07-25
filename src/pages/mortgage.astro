@@ -10,12 +10,12 @@
 import Layout from '../layouts/Layout.astro';
 import Mortgage from '../sections/Mortgage.astro';
 import MortgageTypes from '../sections/MortgageTypes.astro';
-import { mortgageHeading } from '../data/mortgage';
 import BackLink from '../components/BackLink.astro';
 
 const base = import.meta.env.BASE_URL;
-const pageTitle = 'Ипотека: калькулятор и заявка — Первый город';
-const pageDescription = mortgageHeading.subtitle;
+const pageTitle = 'Ипотечный калькулятор и подбор ипотеки | Первый город';
+const pageDescription =
+  'Ипотечный калькулятор: посчитайте ежемесячный платёж по своим цифрам. Подберём банк и программу ипотеки — семейная, льготная, на вторичку и новостройки — и поможем с документами.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>

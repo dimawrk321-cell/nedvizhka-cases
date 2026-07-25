@@ -27,9 +27,9 @@ interface Props {
 }
 
 const {
-  // TODO: задать реальные title/description на этапе наполнения контентом
-  title = 'Плейсхолдер заголовка — частный риелтор, Москва',
-  description = 'Плейсхолдер описания страницы. Заменить на реальный SEO-текст.',
+  // Общесайтовые дефолты (= идентичность главной). Любая страница может передать свои.
+  title = 'Первый город — агентство недвижимости в Москве и области',
+  description = 'Продажа, покупка и аренда недвижимости в Москве и области. Ипотека, страхование и сопровождение сделок. За каждым клиентом — личный агент от оценки до ключей.',
   ogTitle,
   ogDescription,
   ogImage,
@@ -43,11 +43,10 @@ const preloadFonts = [prataLatin, prataCyrillic, onestLatin, onestCyrillic];
 // OG/Twitter превью. Дефолт для всего сайта — логотип компании; страница может передать свои
 // ogTitle/ogDescription/ogImage. og:image и og:url — АБСОЛЮТНЫЕ URL (соцсети требуют полный
 // адрес с доменом) — собираем из Astro.site (astro.config) + путь с base.
-const ogTitleFinal = ogTitle ?? 'Первый город — агентство недвижимости в Москве';
-const ogDescriptionFinal =
-  ogDescription ??
-  // TODO: уточнить формулировку описания сайта
-  'Продажа, покупка и аренда недвижимости в Москве и Московской области. Ипотека, страхование, сопровождение сделок';
+// og:title / og:description по умолчанию повторяют title / description страницы —
+// так превью при шеринге всегда согласовано с заголовком вкладки без ручного дублирования.
+const ogTitleFinal = ogTitle ?? title;
+const ogDescriptionFinal = ogDescription ?? description;
 const ogImageUrl = new URL(ogImage ?? `${base}og/og-default.png`, Astro.site).href;
 ---
 

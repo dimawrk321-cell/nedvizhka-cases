@@ -14,8 +14,9 @@ import { documentsHeading, documentCategories } from '../data/documents';
 import { FileText, Download, Search } from 'lucide-static';
 
 const base = import.meta.env.BASE_URL;
-const pageTitle = 'Шаблоны документов для сделок с недвижимостью — Первый город';
-const pageDescription = documentsHeading.subtitle;
+const pageTitle = 'Шаблоны документов для сделок | Первый город';
+const pageDescription =
+  'Бесплатные шаблоны договоров, актов и расписок для сделок с недвижимостью. Готовые типовые формы — скачайте и сверьте условия со своим агентом перед подписанием.';
 const totalDocs = documentCategories.reduce((sum, category) => sum + category.items.length, 0);
 ---
 

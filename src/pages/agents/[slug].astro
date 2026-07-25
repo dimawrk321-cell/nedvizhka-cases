@@ -35,27 +35,35 @@ export function getStaticPaths() {
 
 const { agent } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const pageTitle = `${agent.name} — ${agent.role} · Первый город`;
-const pageDescription = agent.summary;
-
-// OG-превью профиля: у каждого агента — его фото, вписанное в 1200×630 на фирменном фоне
-// (public/og/og-<agent>.jpg, генерит scripts/gen-og-agents.mjs). Заголовки — в требуемом
-// формате; описание — из summary.
-const OG_BY_AGENT: Record<string, { image?: string; title: string }> = {
+// SEO профиля: title (вкладка/поиск), description и OG-картинка — на каждого агента.
+// og:title / og:description Layout возьмёт из title / description (согласованы автоматически).
+// OG-фото (public/og/og-<agent>.jpg 1200×630) генерит scripts/gen-og-agents.mjs.
+const SEO_BY_AGENT: Record<string, { title: string; description: string; ogImage?: string }> = {
   'darya-salnikova': {
-    image: `${base}og/og-daria.jpg`,
-    title: 'Дарья Сальникова — риелтор, ипотечный и страховой брокер · Первый город',
+    title: 'Дарья Сальникова — риелтор, ипотечный брокер | Первый город',
+    description:
+      'Риелтор и ипотечный брокер в «Первом городе». Жилая недвижимость Москвы и области: вторичка, новостройки, альтернативные сделки и ипотека — от оценки до передачи ключей.',
+    ogImage: `${base}og/og-daria.jpg`,
   },
   'dmitriy-kazennov': {
-    image: `${base}og/og-dmitriy.jpg`,
-    title: 'Дмитрий Казеннов — руководитель компании, юрист · Первый город',
+    title: 'Дмитрий Казеннов — руководитель, юрист | Первый город',
+    description:
+      'Руководитель агентства «Первый город», юрист. Загородная и коммерческая недвижимость, юридическая проверка объектов и сопровождение сделок в Москве и области.',
+    ogImage: `${base}og/og-dmitriy.jpg`,
   },
   'anatoliy-starikov': {
-    image: `${base}og/og-starikov.jpg`,
-    title: 'Анатолий Стариков — специалист по недвижимости · Первый город',
+    title: 'Анатолий Стариков — специалист по недвижимости | Первый город',
+    description:
+      'Специалист по недвижимости с юридическим уклоном в «Первом городе»: проверка чистоты объектов, снятие обременений и сопровождение сложных сделок в Москве и области.',
+    ogImage: `${base}og/og-starikov.jpg`,
   },
 };
-const agentOg = OG_BY_AGENT[agent.slug];
+// Фолбэк — на случай нового агента без явной записи (осмысленный title из данных).
+const seo: { title: string; description: string; ogImage?: string } =
+  SEO_BY_AGENT[agent.slug] ?? {
+    title: `${agent.name} — ${agent.role} | Первый город`,
+    description: agent.summary,
+  };
 
 // Фото агента (astro:assets) по slug; у кого фото нет — плейсхолдер (иконка User)
 const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
@@ -67,11 +75,9 @@ const agentPhoto = PHOTO_BY_SLUG[agent.slug];
 ---
 
 <Layout
-  title={pageTitle}
-  description={pageDescription}
-  ogTitle={agentOg?.title}
-  ogDescription={agent.summary}
-  ogImage={agentOg?.image}
+  title={seo.title}
+  description={seo.description}
+  ogImage={seo.ogImage}
 >
   <main id="main" class="section-y">
     <div class="wrap flex flex-col gap-10">
