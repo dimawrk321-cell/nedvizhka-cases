@@ -15,6 +15,7 @@ const FRAME = 3; // толщина рамки brass, px
 const AGENTS = [
   { src: 'src/assets/daria.jpg', out: 'public/og/og-daria.jpg' },
   { src: 'src/assets/starikov.jpg', out: 'public/og/og-starikov.jpg' },
+  { src: 'src/assets/dmitriy.jpg', out: 'public/og/og-dmitriy.jpg' },
 ];
 
 for (const { src, out } of AGENTS) {

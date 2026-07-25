@@ -24,6 +24,7 @@ import { User, Check } from 'lucide-static';
 import type { ImageMetadata } from 'astro';
 import dariaPhoto from '../../assets/daria.jpg';
 import starikovPhoto from '../../assets/starikov.jpg';
+import dmitriyPhoto from '../../assets/dmitriy.jpg';
 
 export function getStaticPaths() {
   return agents.map((agent) => ({
@@ -37,14 +38,16 @@ const base = import.meta.env.BASE_URL;
 const pageTitle = `${agent.name} — ${agent.role} · Первый город`;
 const pageDescription = agent.summary;
 
-// OG-превью профиля: у Дарьи — её фото (public/og/og-daria.jpg 1200×630), у Дмитрия — пока
-// дефолтный логотип (фото нет). Заголовки — в требуемом формате; описание — из summary.
+// OG-превью профиля: у каждого агента — его фото, вписанное в 1200×630 на фирменном фоне
+// (public/og/og-<agent>.jpg, генерит scripts/gen-og-agents.mjs). Заголовки — в требуемом
+// формате; описание — из summary.
 const OG_BY_AGENT: Record<string, { image?: string; title: string }> = {
   'darya-salnikova': {
     image: `${base}og/og-daria.jpg`,
     title: 'Дарья Сальникова — риелтор, ипотечный и страховой брокер · Первый город',
   },
   'dmitriy-kazennov': {
+    image: `${base}og/og-dmitriy.jpg`,
     title: 'Дмитрий Казеннов — руководитель компании, юрист · Первый город',
   },
   'anatoliy-starikov': {
@@ -58,6 +61,7 @@ const agentOg = OG_BY_AGENT[agent.slug];
 const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
   'darya-salnikova': dariaPhoto,
   'anatoliy-starikov': starikovPhoto,
+  'dmitriy-kazennov': dmitriyPhoto,
 };
 const agentPhoto = PHOTO_BY_SLUG[agent.slug];
 ---
@@ -126,8 +130,8 @@ const agentPhoto = PHOTO_BY_SLUG[agent.slug];
           </div>
         </div>
 
-        {/* Фото: на мобильном второй, на десктопе слева. Дарья — реальное фото
-            (astro:assets, eager/LCP этой страницы), Дмитрий — плейсхолдер */}
+        {/* Фото: на мобильном второй, на десктопе слева. Реальное фото агента
+            (astro:assets, eager/LCP этой страницы); у кого фото нет — плейсхолдер */}
         <div class="order-2 lg:order-1 lg:col-span-5">
           <div class="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-xl border border-brass/40 bg-[linear-gradient(160deg,var(--color-pine),var(--color-ink))] lg:mx-0">
             {
@@ -153,7 +157,6 @@ const agentPhoto = PHOTO_BY_SLUG[agent.slug];
                 </div>
               )
             }
-            {/* TODO: фото Дмитрия — заменить плейсхолдер, когда будет фото */}
           </div>
         </div>
       </div>

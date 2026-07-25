@@ -14,12 +14,14 @@ import { agents, agentsHeading, agentCardCta } from '../data/agents';
 import { User, ArrowRight } from 'lucide-static';
 import dariaPhoto from '../assets/daria.jpg';
 import starikovPhoto from '../assets/starikov.jpg';
+import dmitriyPhoto from '../assets/dmitriy.jpg';
 
 const base = import.meta.env.BASE_URL;
 // Фото агента (astro:assets) по slug; у кого фото нет — плейсхолдер (иконка User)
 const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
   'darya-salnikova': dariaPhoto,
   'anatoliy-starikov': starikovPhoto,
+  'dmitriy-kazennov': dmitriyPhoto,
 };
 ---
 
@@ -58,7 +60,6 @@ const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
                   </div>
                 )
               }
-              {/* TODO: фото Дмитрия — заменить плейсхолдер, когда будет фото */}
             </div>
 
             <div class="flex flex-col gap-1">
