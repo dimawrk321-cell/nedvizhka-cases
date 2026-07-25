@@ -6,7 +6,8 @@
  *
  * Переменные окружения (задаются в настройках функции, НЕ в коде):
  *   TELEGRAM_BOT_TOKEN — токен бота.
- *   TELEGRAM_CHAT_ID   — id чата/канала для уведомлений.
+ *   TELEGRAM_CHAT_ID   — chat_id получателя заявок (сейчас — Дарьи). Заявки идут
+ *                        только в этот чат; получатель меняется значением переменной.
  */
 
 // TODO: после привязки домена сузить до 'https://ваш-домен'
@@ -62,6 +63,44 @@ function escapeHtml(value) {
     .replace(/>/g, '&gt;');
 }
 
+// Соответствие «часть пути → человекочитаемый источник». Проверяется по порядку.
+const SOURCE_BY_PATH = [
+  ['/agents/darya-salnikova', 'Профиль Дарьи Сальниковой'],
+  ['/agents/dmitriy-kazennov', 'Профиль Дмитрия Казеннова'],
+  ['/agents/anatoliy-starikov', 'Профиль Анатолия Старикова'],
+  ['/mortgage', 'Калькулятор ипотеки'],
+  ['/listings', 'Страница объявлений'],
+  ['/documents', 'Страница документов'],
+];
+
+/**
+ * Человекочитаемый источник заявки по URL страницы, с которой она пришла (payload.page —
+ * это window.location.href). Возвращаем понятный текст вместо ссылки, чтобы в Telegram
+ * не было кликабельного URL. Запасной вариант — путь как есть (без домена → не кликабелен).
+ */
+function resolveSource(rawPage) {
+  const raw = String(rawPage || '').trim();
+  if (!raw) return 'Сайт';
+
+  // Путь из абсолютного URL; если пришёл относительный путь — используем как есть.
+  let path = raw;
+  try {
+    path = new URL(raw).pathname;
+  } catch (e) {
+    /* raw — не абсолютный URL, значит это уже путь */
+  }
+  const lower = path.toLowerCase();
+
+  for (const [prefix, label] of SOURCE_BY_PATH) {
+    if (lower.includes(prefix)) return label;
+  }
+
+  // Главная — корень (пустой путь или только слэши)
+  if (lower.replace(/^\/+|\/+$/g, '') === '') return 'Главная страница';
+
+  return path;
+}
+
 module.exports.handler = async function handler(event, context) {
   const method = (
     (event && event.httpMethod) ||
@@ -96,7 +135,6 @@ module.exports.handler = async function handler(event, context) {
   const page = String(data.page || '').trim();
   const utm = data.utm && typeof data.utm === 'object' ? data.utm : {};
   const honeypot = String(data.company || '').trim();
-  const agent = String(data.agent || '').trim();
   const formType = String(data.formType || 'lead').trim();
   const isMortgage = formType === 'mortgage';
   const details = data.details && typeof data.details === 'object' ? data.details : {};
@@ -119,23 +157,16 @@ module.exports.handler = async function handler(event, context) {
   }
 
   const moscowTime = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
+  const source = resolveSource(page);
 
-  const lines = [];
-  // Если заявка привязана к агенту — показываем это первой строкой, чтобы сразу
-  // было видно, к кому запись. Без agent (общие/старые/ипотечные заявки) — как раньше.
-  if (agent) {
-    lines.push(`👤 <b>Заявка к агенту:</b> ${escapeHtml(agent)}`);
-  }
-  lines.push(
+  // Источник — понятным текстом сразу после заголовка (вместо ссылки на страницу).
+  const lines = [
     isMortgage ? '🏦 <b>Заявка на ипотеку</b>' : '🔔 <b>Новая заявка с сайта</b>',
-    '',
+    `<b>Источник:</b> ${escapeHtml(source)}`,
     `<b>Имя:</b> ${escapeHtml(name)}`,
     `<b>Телефон:</b> ${escapeHtml(phone)}`,
     `<b>Способ связи:</b> ${escapeHtml(CONTACT_LABELS[contactMethod] || contactMethod || '—')}`,
-  );
-  if (page) {
-    lines.push(`<b>Страница:</b> ${escapeHtml(page)}`);
-  }
+  ];
 
   // Блок параметров расчёта — только для ипотечной заявки
   if (isMortgage) {
@@ -158,7 +189,7 @@ module.exports.handler = async function handler(event, context) {
       lines.push(`• ${escapeHtml(key)}: ${escapeHtml(utm[key])}`);
     });
   }
-  lines.push('', `🕐 ${escapeHtml(moscowTime)} (МСК)`);
+  lines.push(`<b>Время:</b> ${escapeHtml(moscowTime)} (МСК)`);
 
   const text = lines.join('\n');
 
