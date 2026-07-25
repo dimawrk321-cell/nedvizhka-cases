@@ -9,7 +9,7 @@
 import { site } from './site';
 import { services as daryaServices, type Service } from './services';
 import { cases as daryaCases, type CaseStudy } from './cases';
-import { reviews as daryaReviews, type Review } from './reviews';
+import { reviews as daryaReviews, dmitriyReviews, type Review } from './reviews';
 import { partnerBanks } from './banks';
 import { certificates as daryaCerts, type Certificate } from './certs';
 
@@ -255,8 +255,8 @@ export const agents: Agent[] = [
     ],
     // TODO: добавить реальные кейсы Дмитрия — пока пусто, блок в профиле не показывается
     cases: [],
-    // TODO: добавить отзывы Дмитрия — пока пусто, блок в профиле не показывается
-    reviews: [],
+    // Отзывы Дмитрия — реальные, из reviews.ts (лента как у Дарьи)
+    reviews: dmitriyReviews,
     // TODO: добавить сертификаты Дмитрия — пока пусто, блок в профиле не показывается
     certificates: [],
     // Форма заявки к Дмитрию — agentName уходит в payload.agent (видно в Telegram)
