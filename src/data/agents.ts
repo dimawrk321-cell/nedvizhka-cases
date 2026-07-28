@@ -304,7 +304,8 @@ export const agents: Agent[] = [
       href: 'tel:+79261552777',
     },
     telegram: null, // TODO: Telegram Анатолия — добавить, когда уточнит
-    maxHref: 'https://web.max.ru/154176281',
+    // MAX Анатолия — единый источник site.maxLinkStarikov (тот же, что в футере)
+    maxHref: site.maxLinkStarikov,
     // Форма заявки к Анатолию — agentName уходит в payload.agent (видно в Telegram)
     leadForm: {
       heading: 'Оставьте заявку Анатолию',

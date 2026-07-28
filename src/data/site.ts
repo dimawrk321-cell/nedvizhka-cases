@@ -27,8 +27,10 @@ export interface Site {
   telegram: string;
   /** Ссылка на Telegram */
   telegramHref: string;
-  /** Ссылка на мессенджер MAX */
+  /** Ссылка на мессенджер MAX Дарьи (её профиль) */
   maxLink: string;
+  /** Ссылка на MAX Анатолия — используется в футере и в контактах его профиля */
+  maxLinkStarikov: string;
   /** Адрес офиса */
   office: string;
   /** Ссылка на карту офиса (Яндекс.Карты) — квадратные скобки в URL закодированы */
@@ -50,6 +52,7 @@ export const site: Site = {
   telegram: '@moneymarketdaria',
   telegramHref: 'https://t.me/moneymarketdaria',
   maxLink: 'https://max.ru/u/f9LHodD0cOJy5-5xuVhTUtK3edW-2BIw6gX4IW--mxP17Ww52oP5ZIRR0CU',
+  maxLinkStarikov: 'https://max.ru/u/f9LHodD0cOJWFKqu-7_DCxuOEE7IoYfZUNFbI9mVaQP3BdJickSa2RC3qrk',
   office: 'Ленинградский проспект, 26к1, Москва',
   // Яндекс.Карты: квадратные скобки закодированы (%5B / %5D), иначе href в HTML ломается
   mapHref:
