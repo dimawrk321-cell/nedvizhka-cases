@@ -7,13 +7,4 @@ export interface Stat {
   label: string;
 }
 
-export const stats: Stat[] = [
-  {
-    // Стаж считается из site.practiceSince — число не дублируем строкой
-    value: String(experienceYears()),
-    label: `${plural(experienceYears(), YEAR_FORMS)} на рынке`,
-  },
-  { value: '330', label: 'закрытых сделок' },
-  { value: '3,3 млрд ₽', label: 'объём проданной недвижимости' },
-  { value: '30 дней', label: 'средний срок продажи' },
-];
+export const stats = [];
