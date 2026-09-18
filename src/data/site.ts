@@ -29,12 +29,14 @@ export interface Site {
   telegramHref: string;
   /** Ссылка на мессенджер MAX Дарьи (её профиль) */
   maxLink: string;
-  /** Ссылка на MAX Анатолия — используется в футере и в контактах его профиля */
-  maxLinkStarikov: string;
-  /** Адрес офиса */
+  /** Адрес московского офиса */
   office: string;
-  /** Ссылка на карту офиса (Яндекс.Карты) — квадратные скобки в URL закодированы */
+  /** Ссылка на карту московского офиса (Яндекс.Карты) — квадратные скобки в URL закодированы */
   mapHref: string;
+  /** Адрес офиса в Красногорске */
+  officeKrasnogorsk: string;
+  /** Ссылка на карту офиса в Красногорске */
+  mapHrefKrasnogorsk: string;
   /** ИНН */
   inn: string;
   /** Год начала работы (для расчёта стажа) */
@@ -49,14 +51,16 @@ export const site: Site = {
   legalName: 'ИП Казеннов Дмитрий Владимирович',
   phone: '+7 (902) 940-78-18',
   phoneHref: 'tel:+79029407818',
-  telegram: '@moneymarketdaria',
-  telegramHref: 'https://t.me/moneymarketdaria',
+  telegram: '@bysalnikova_ipoteka',
+  telegramHref: 'https://t.me/bysalnikova_ipoteka',
   maxLink: 'https://max.ru/u/f9LHodD0cOJy5-5xuVhTUtK3edW-2BIw6gX4IW--mxP17Ww52oP5ZIRR0CU',
-  maxLinkStarikov: 'https://max.ru/u/f9LHodD0cOJWFKqu-7_DCxuOEE7IoYfZUNFbI9mVaQP3BdJickSa2RC3qrk',
   office: 'Ленинградский проспект, 26к1, Москва',
   // Яндекс.Карты: квадратные скобки закодированы (%5B / %5D), иначе href в HTML ломается
   mapHref:
     'https://yandex.ru/maps?whatshere%5Bpoint%5D=37.572854225207536,55.78301769778434&whatshere%5Bzoom%5D=17.8&ll=37.572854,55.783018&z=17.8',
+  officeKrasnogorsk: 'Московская область, Красногорск, Успенская улица, 28',
+  mapHrefKrasnogorsk:
+    'https://yandex.ru/maps/?text=Московская+область%2C+Красногорск%2C+Успенская+улица%2C+28',
   inn: '244203038015', // ИНН ИП Казеннова (юрлицо компании — реквизит футера и оператор в privacy)
   practiceSince: 2020, // Дарья в недвижимости с 2020 (отсюда же считается стаж в stats.ts)
 };

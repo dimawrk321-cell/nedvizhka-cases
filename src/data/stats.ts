@@ -1,5 +1,3 @@
-import { experienceYears, plural, YEAR_FORMS } from './site';
-
 export interface Stat {
   /** Крупное значение (выводится гарнитурой Prata) */
   value: string;
@@ -7,4 +5,4 @@ export interface Stat {
   label: string;
 }
 
-export const stats = [];
+export const stats: Stat[] = [];
