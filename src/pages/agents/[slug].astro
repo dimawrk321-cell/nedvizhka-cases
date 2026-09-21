@@ -24,7 +24,6 @@ import { dmitriyReviewsSource } from '../../data/reviews';
 import { User, Check } from 'lucide-static';
 import type { ImageMetadata } from 'astro';
 import dariaPhoto from '../../assets/daria.jpg';
-import starikovPhoto from '../../assets/starikov.jpg';
 import dmitriyPhoto from '../../assets/dmitriy.jpg';
 
 export function getStaticPaths() {
@@ -52,12 +51,6 @@ const SEO_BY_AGENT: Record<string, { title: string; description: string; ogImage
       'Риелтор и практикующий юрист в «Первом городе». Вторичная и коммерческая недвижимость, юридическая проверка объектов и сопровождение сделок в Москве и области.',
     ogImage: `${base}og/og-dmitriy.jpg`,
   },
-  'anatoliy-starikov': {
-    title: 'Анатолий Стариков — специалист по недвижимости | Первый город',
-    description:
-      'Специалист по недвижимости с юридическим уклоном в «Первом городе»: проверка чистоты объектов, снятие обременений и сопровождение сложных сделок в Москве и области.',
-    ogImage: `${base}og/og-starikov.jpg`,
-  },
 };
 // Фолбэк — на случай нового агента без явной записи (осмысленный title из данных).
 const seo: { title: string; description: string; ogImage?: string } =
@@ -69,7 +62,6 @@ const seo: { title: string; description: string; ogImage?: string } =
 // Фото агента (astro:assets) по slug; у кого фото нет — плейсхолдер (иконка User)
 const PHOTO_BY_SLUG: Record<string, ImageMetadata> = {
   'darya-salnikova': dariaPhoto,
-  'anatoliy-starikov': starikovPhoto,
   'dmitriy-kazennov': dmitriyPhoto,
 };
 const agentPhoto = PHOTO_BY_SLUG[agent.slug];
@@ -170,23 +162,6 @@ const agentPhoto = PHOTO_BY_SLUG[agent.slug];
 
       {/* Чем могу помочь — блок компетенций под био (у Дарьи заполнен, у Дмитрия пусто) */}
       <AgentHelp help={agent.help} />
-
-      {/* Результаты в цифрах — достижения агента (у кого заданы; цифры-акценты brass) */}
-      {
-        agent.achievements && agent.achievements.length > 0 && (
-          <div class="flex flex-col gap-6 border-t border-stone pt-10">
-            <h2 class="text-2xl">Результаты в цифрах</h2>
-            <div class="grid gap-6 sm:grid-cols-3">
-              {agent.achievements.map((stat) => (
-                <div class="flex flex-col gap-1">
-                  <span class="stat-num text-[32px] leading-none text-brass sm:text-[40px]">{stat.value}</span>
-                  <span class="text-sm text-muted">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )
-      }
 
       {/* Банки-партнёры — сплошным текстом, продолжает тему брокера (у Дарьи; у Дмитрия пусто) */}
       <AgentBanks banks={agent.banks} />

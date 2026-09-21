@@ -67,7 +67,6 @@ function escapeHtml(value) {
 const SOURCE_BY_PATH = [
   ['/agents/darya-salnikova', 'Профиль Дарьи Сальниковой'],
   ['/agents/dmitriy-kazennov', 'Профиль Дмитрия Казеннова'],
-  ['/agents/anatoliy-starikov', 'Профиль Анатолия Старикова'],
   ['/mortgage', 'Калькулятор ипотеки'],
   ['/listings', 'Страница объявлений'],
   ['/documents', 'Страница документов'],
